@@ -1,43 +1,53 @@
 import { CPU } from "./cpu";
-import { Instruction } from "./instruction";
-import { parse } from './x86_parser';
-
-interface LabelMap {
-    [index: string]: number;
-}
+import { Register } from "./register";
+import { Executor } from "./executor";
+import { assert } from "./utils";
 
 class Emulator {
-    static stackSize = 256; // in bytes
-    cpu:CPU;
+  static stackSize = 128; // in bytes
+  cpu: CPU;
+  executor: Executor | null;
 
-    constructor() {
-        this.reset();
+  constructor() {
+    this.reset();
+  }
+
+  public reset() {
+    this.cpu = new CPU(Emulator.stackSize);
+    this.executor = null;
+  }
+
+  public assemble(program: string) {
+    this.executor = new Executor(program, this.cpu);
+  }
+
+  public displayRegister(registerName: string): string[] {
+    let register: Register = this.cpu.getRegister(registerName);
+    return register.getHexadecimalBytes();
+  }
+
+  public displayAllRegisters(): void {
+    for (let reg of CPU.registerNames) {
+      console.log(reg + " : " + this.displayRegister(reg));
     }
+  }
 
-    public reset() {
-        this.cpu = new CPU(Emulator.stackSize);
-    }
+  public displayMemoryBytes(): string[] {
+    return this.cpu.stackMemory.getHexadecimalBytes();
+  }
 
-    parseAssembly(program: string) : [Instruction[], LabelMap] {
-        let rawInstructions: object[];
-        rawInstructions = parse(program);
+  public displayMemoryWords(): string[] {
+    return this.cpu.stackMemory.getHexadecimalWords();
+  }
 
-        let returnInstructions: Instruction[] = [];
-        let labelMap = {}
+  public displayMemoryLongs(): string[] {
+    return this.cpu.stackMemory.getHexadecimalLongs();
+  }
 
-        for (let i of rawInstructions) {
-            let label: object | null = i["label"];
-            let instruction: Instruction = Instruction.parseInstruction(i["instruction"],
-                this.cpu);
-            // Returns count after pushing
-            let count: number = returnInstructions.push(instruction);
-            if (label != null) {
-                // Label points to the newly added instruction
-                labelMap[label["value"]] = count - 1;
-            }
-        }
-        return [returnInstructions, labelMap];
-    }
+  public executeNext(): void {
+    assert(this.executor != null, "No program assembled");
+    this.executor.executeNext();
+  }
 }
 
 export { Emulator };
