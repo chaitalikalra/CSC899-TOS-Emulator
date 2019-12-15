@@ -1,4 +1,8 @@
-import { InstructionFunc, InstructionSuffix } from "./x86_instruction";
+import {
+  InstructionFunc,
+  InstructionSuffix,
+  get_data_size_src_dest
+} from "./x86_instruction";
 import { CPU } from "../cpu";
 import { AssembledCode } from "../assembled_code";
 import { Operand, OperandType, RegisterOperand } from "../instruction";
@@ -29,14 +33,7 @@ const move: InstructionFunc = function(
     "mov does not support memory to memory transfer"
   );
 
-  let data_size: number = 4;
-  if (dst.type == OperandType.Register) {
-    data_size = (dst as RegisterOperand).register.byteLength;
-  } else if (src.type == OperandType.Register) {
-    data_size = (src as RegisterOperand).register.byteLength;
-  } else if (suffix != null) {
-    data_size = suffix;
-  }
+  let data_size: number = get_data_size_src_dest(suffix, src, dst);
 
   cpu.writeValue(dst, cpu.readValue(src, data_size), data_size);
 };
@@ -54,10 +51,7 @@ const lea: InstructionFunc = function(
 
   assert(dst.type == OperandType.Register, "lea dst can only be a register");
   let byte_length: number = (dst.getValue() as Register).byteLength;
-  assert(
-    byte_length >= 2,
-    "lea dst can only be 16/32 but register"
-  );
+  assert(byte_length >= 2, "lea dst can only be 16/32 bit register");
   assert(
     src.type == OperandType.IndirectAddress ||
       src.type == OperandType.NumericConstant,
