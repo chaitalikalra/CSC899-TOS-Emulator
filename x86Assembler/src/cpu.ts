@@ -147,7 +147,7 @@ class CPU {
                 );
             case OperandType.IndirectAddress:
                 return get_uint(
-                    this.stackMemory.getMemory(
+                    this.stackMemory.peekMemory(
                         (operand as IndirectAddressOperand).getValue(),
                         byte_length
                     ),
@@ -171,7 +171,7 @@ class CPU {
                 (operand as RegisterOperand).getValue().setNumericvalue(val);
                 break;
             case OperandType.IndirectAddress:
-                this.stackMemory.setMemory(
+                this.stackMemory.pokeMemory(
                     (operand as IndirectAddressOperand).getValue(),
                     val,
                     byte_length
@@ -188,7 +188,7 @@ class CPU {
         let sp_value: number = this.registers["esp"].getNumericValue();
         assert(sp_value + byte_length <= this.stackSize, "Stack underflow!");
 
-        let ret_value: number = this.stackMemory.getMemory(
+        let ret_value: number = this.stackMemory.peekMemory(
             sp_value,
             byte_length
         );
@@ -200,7 +200,7 @@ class CPU {
         let sp_value: number = this.registers["esp"].getNumericValue();
         assert(sp_value - byte_length >= 0, "Stack overflow!");
         sp_value -= byte_length;
-        this.stackMemory.setMemory(sp_value, data, byte_length);
+        this.stackMemory.pokeMemory(sp_value, data, byte_length);
         this.registers["esp"].setNumericvalue(sp_value);
     }
 
