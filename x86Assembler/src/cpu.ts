@@ -1,5 +1,5 @@
 import { Memory } from "./memory";
-import { Register } from "./register";
+import { Register, RegisterStorage } from "./register";
 import { EFlags } from "./eflags";
 import {
     Operand,
@@ -9,10 +9,6 @@ import {
     IndirectAddressOperand
 } from "./instruction";
 import { assert, get_uint } from "./utils";
-
-interface MemoryMapping {
-    [index: string]: Memory;
-}
 
 interface RegisterMapping {
     [index: string]: Register;
@@ -33,96 +29,69 @@ class CPU {
     stackSize: number;
     stackMemory: Memory;
     eFlags: EFlags;
-    registerMemory: MemoryMapping;
     registers: RegisterMapping;
 
     constructor(stackSize: number, stackStartIndex: number = 0) {
         this.stackSize = stackSize;
         this.stackMemory = new Memory(this.stackSize);
         this.eFlags = new EFlags();
-        this._constructX86Registers();
+        this._constructRegisters();
         this._init();
     }
 
-    private _constructX86Registers(): void {
-        this.registerMemory = {};
-        this.registers = {};
-        for (let reg of CPU.registerNames) {
-            // Allocate memory for registers
-            this.registerMemory[reg] = new Memory(4);
+    private _createX86Register(
+        name: string,
+        need8BitRegisters: boolean = false
+    ): void {
+        // Create the Register Storage for the specified register
+        let registerStorage = new RegisterStorage(name);
 
-            // Create 4 byte registers
-            this.registers[reg] = new Register(
-                reg,
-                reg,
-                this.registerMemory[reg],
-                4
+        // We create 4 byte and 2 byte register views for the given register
+        // All of these share the same underlying storage
+        // So when we update "ax", then "eax" will automatically get updated.
+        let register4Bytes: Register = new Register(name, registerStorage, 4);
+        // Create 2 byte registers
+        let name2Bytes: string = name.slice(1); // eax -> ax
+        let register2Bytes: Register = new Register(
+            name2Bytes,
+            registerStorage,
+            2
+        );
+        this.registers[name] = register4Bytes;
+        this.registers[name2Bytes] = register2Bytes;
+
+        // Create 1 byte registers, if needed
+        if (need8BitRegisters) {
+            let name1ByteLow: string = name.slice(1, 2) + "l"; // eax -> al
+            let register1ByteLow: Register = new Register(
+                name1ByteLow,
+                registerStorage,
+                1
             );
-            // Create 2 byte registers
-            let name_2byte = reg.slice(1); // eax -> ax
-            this.registers[name_2byte] = new Register(
-                name_2byte,
-                reg,
-                this.registerMemory[reg],
-                2
+
+            let name1ByteHigh: string = name.slice(1, 2) + "h"; // eax -> ah
+            let register1ByteHigh: Register = new Register(
+                name1ByteHigh,
+                registerStorage,
+                1,
+                1
             );
+            this.registers[name1ByteLow] = register1ByteLow;
+            this.registers[name1ByteHigh] = register1ByteHigh;
         }
-        // Create 1 byte registers
-        this.registers["al"] = new Register(
-            "al",
-            "eax",
-            this.registerMemory["eax"],
-            1
-        );
-        this.registers["ah"] = new Register(
-            "ah",
-            "eax",
-            this.registerMemory["eax"],
-            1,
-            1
-        );
+    }
 
-        this.registers["bl"] = new Register(
-            "bl",
-            "ebx",
-            this.registerMemory["ebx"],
-            1
-        );
-        this.registers["bh"] = new Register(
-            "bl",
-            "ebx",
-            this.registerMemory["ebx"],
-            1,
-            1
-        );
-
-        this.registers["cl"] = new Register(
-            "cl",
-            "ecx",
-            this.registerMemory["ecx"],
-            1
-        );
-        this.registers["ch"] = new Register(
-            "ch",
-            "ecx",
-            this.registerMemory["ecx"],
-            1,
-            1
-        );
-
-        this.registers["dl"] = new Register(
-            "dl",
-            "edx",
-            this.registerMemory["edx"],
-            1
-        );
-        this.registers["dh"] = new Register(
-            "dh",
-            "edx",
-            this.registerMemory["edx"],
-            1,
-            1
-        );
+    private _constructRegisters(): void {
+        this.registers = {};
+        // Create all 8 x86 Registers
+        this._createX86Register("eax", true);
+        this._createX86Register("ebx", true);
+        this._createX86Register("ecx", true);
+        this._createX86Register("edx", true);
+        this._createX86Register("ebp", false);
+        this._createX86Register("esi", false);
+        this._createX86Register("edp", false);
+        this._createX86Register("esp", false);
     }
 
     private _init(): void {
