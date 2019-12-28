@@ -90,7 +90,7 @@ class CPU {
         this._createX86Register("edx", true);
         this._createX86Register("ebp", false);
         this._createX86Register("esi", false);
-        this._createX86Register("edp", false);
+        this._createX86Register("edi", false);
         this._createX86Register("esp", false);
     }
 

@@ -1,168 +1,185 @@
 import { CPU } from "./cpu";
 import { Register } from "./register";
+import { assert } from "./utils";
+import { AssembledCode } from "./assembled_code";
 
 interface Operand {
-  type: OperandType;
-  getValue(): any;
+    type: OperandType;
+    getValue(): any;
 }
 
 enum OperandType {
-  NumericConstant = "numericConstant",
-  IndirectAddress = "indirectAddres",
-  Register = "register",
-  LabelAddress = "labelAddress"
+    NumericConstant = "numericConstant",
+    IndirectAddress = "indirectAddres",
+    Register = "register",
+    LabelAddress = "labelAddress"
 }
 
 class RegisterOperand implements Operand {
-  type: OperandType;
-  name: string;
-  register: Register;
-  constructor(name: string, register: Register) {
-    this.type = OperandType.Register;
-    this.name = name;
-    this.register = register;
-  }
+    type: OperandType;
+    name: string;
+    register: Register;
+    constructor(name: string, register: Register) {
+        this.type = OperandType.Register;
+        this.name = name;
+        this.register = register;
+    }
 
-  getValue(): Register {
-    return this.register;
-  }
+    getValue(): Register {
+        return this.register;
+    }
 }
 
 class IndirectAddressOperand implements Operand {
-  type: OperandType;
-  offset: number;
-  baseRegister: Register | null;
-  scale: number;
-  indexRegister: Register | null;
+    type: OperandType;
+    offset: number;
+    baseRegister: Register | null;
+    scale: number;
+    indexRegister: Register | null;
 
-  constructor(
-    baseRegister: Register | null,
-    offset: number,
-    indexRegister: Register | null,
-    scale: number
-  ) {
-    this.type = OperandType.IndirectAddress;
-    this.baseRegister = baseRegister;
-    this.indexRegister = indexRegister;
-    this.offset = offset;
-    this.scale = scale;
-  }
-
-  getValue(): number {
-    if (this.baseRegister == null && this.indexRegister == null) {
-      throw new Error("Both Base and Index Register cannot be null");
-    }
-    if (this.scale <= 0) {
-      throw new Error("Indirect address scale must be greater than 0");
+    constructor(
+        baseRegister: Register | null,
+        offset: number,
+        indexRegister: Register | null,
+        scale: number
+    ) {
+        this.type = OperandType.IndirectAddress;
+        this.baseRegister = baseRegister;
+        this.indexRegister = indexRegister;
+        this.offset = offset;
+        this.scale = scale;
     }
 
-    let baseAddress: number = 0;
-    if (this.baseRegister != null) {
-      baseAddress = this.baseRegister.getNumericValue();
-    }
+    getValue(): number {
+        if (this.baseRegister == null && this.indexRegister == null) {
+            throw new Error("Both Base and Index Register cannot be null");
+        }
+        if (this.scale <= 0) {
+            throw new Error("Indirect address scale must be greater than 0");
+        }
 
-    let indexAddress: number = 0;
-    if (this.indexRegister != null) {
-      indexAddress = this.indexRegister.getNumericValue() * this.scale;
-    }
+        let baseAddress: number = 0;
+        if (this.baseRegister != null) {
+            baseAddress = this.baseRegister.getNumericValue();
+        }
 
-    return baseAddress + indexAddress + this.offset;
-  }
+        let indexAddress: number = 0;
+        if (this.indexRegister != null) {
+            indexAddress = this.indexRegister.getNumericValue() * this.scale;
+        }
+
+        return baseAddress + indexAddress + this.offset;
+    }
 }
 
 class NumericConstantOperand implements Operand {
-  type: OperandType;
-  value: number;
-  constructor(value: number) {
-    this.type = OperandType.NumericConstant;
-    this.value = value;
-  }
+    type: OperandType;
+    value: number;
+    constructor(value: number) {
+        this.type = OperandType.NumericConstant;
+        this.value = value;
+    }
 
-  getValue(): number {
-    return this.value;
-  }
+    getValue(): number {
+        return this.value;
+    }
 }
 
 class LabelAddressOperand implements Operand {
-  type: OperandType;
-  name: string;
-  constructor(name: string) {
-    this.type = OperandType.LabelAddress;
-    this.name = name;
-  }
+    type: OperandType;
+    name: string;
+    constructor(name: string) {
+        this.type = OperandType.LabelAddress;
+        this.name = name;
+    }
 
-  getValue(): string {
-    return this.name;
-  }
+    getValue(): string {
+        return this.name;
+    }
 }
 
-class Instruction {
-  operator: string;
-  operands: Operand[];
+enum InstructionOperandSize {
+    Byte = 1,
+    Word = 2,
+    Long = 4
+}
 
-  constructor(operator: string, operands: Operand[]) {
-    this.operator = operator;
-    this.operands = operands;
-  }
+abstract class Instruction {
+    operator: string;
+    operands: Operand[];
+    base_mnemonic: string;
+    operand_size: InstructionOperandSize;
+    machine_code: Uint8Array;
 
-  static parseInstruction(i: object, cpu: CPU): Instruction | null {
-    let operator: string = i["operator"];
-    let operands: Operand[] = [];
-    for (let op of i["operands"]) {
-      let opTag: string = op["value"]["tag"];
-
-      if (opTag == "Register") {
-        let name: string = op["value"]["value"];
-        let reg: Register = Instruction.getRegister(name, cpu);
-        operands.push(new RegisterOperand(name, reg));
-      } else if (opTag == "IndirectAddess") {
-        let offset: number =
-          op["value"]["offset"] == null ? 0 : op["value"]["offset"];
-        let scale: number =
-          op["value"]["scale"] == null ? 1 : op["value"]["scale"];
-
-        let baseRegister: Register | null = null;
-        if (op["value"]["baseReg"] != null)
-          baseRegister = Instruction.getRegister(
-            op["value"]["baseReg"]["value"],
-            cpu
-          );
-
-        let indexRegister: Register | null = null;
-        if (op["value"]["indexReg"] != null)
-          indexRegister = Instruction.getRegister(
-            op["value"]["indexReg"]["value"],
-            cpu
-          );
-
-        operands.push(
-          new IndirectAddressOperand(baseRegister, offset, indexRegister, scale)
-        );
-      } else if (opTag == "NumericConstant") {
-        operands.push(new NumericConstantOperand(op["value"]["value"]));
-      } else if (opTag == "LabelAddress") {
-        operands.push(new LabelAddressOperand(op["value"]["value"]));
-      } else {
-        throw new Error("Invalid parsed operand type: " + opTag);
-      }
+    constructor(
+        operand_size: InstructionOperandSize | null = null,
+        operator: string,
+        operands: Operand[]
+    ) {
+        this.operator = operator;
+        this.operands = operands;
+        this.base_mnemonic = "";
+        // Set or infer operand size
+        this.validateAndSetOperandSize_(operand_size);
     }
-    return new Instruction(operator, operands);
-  }
 
-  static getRegister(name: string, cpu: CPU): Register {
-    let reg: Register | undefined = cpu.getRegister(name);
-    if (reg == undefined) {
-      throw new Error("Invalid Register: " + name);
+    abstract genMachineCode_(): void;
+
+    abstract validateInstruction_(): void;
+
+    abstract setMnemonic_(): void;
+
+    abstract executeInstruction(cpu: CPU, assembled_code: AssembledCode): void;
+
+    public assembleInstruction(
+        operand_size: InstructionOperandSize | null
+    ): void {
+        // Validate Instruction First
+        this.validateInstruction_();
+        // Set base mnemonic
+        this.setMnemonic_();
+        // Now generate machine code
+        this.genMachineCode_();
     }
-    return reg;
-  }
+
+    private validateAndSetOperandSize_(
+        operand_size: InstructionOperandSize | null = null
+    ): void {
+        for (let operand of this.operands) {
+            if (operand.type != OperandType.Register) continue;
+
+            if (operand_size == null)
+                operand_size = (operand as RegisterOperand).register.byteLength;
+
+            assert(
+                (operand as RegisterOperand).register.byteLength ==
+                    operand_size,
+                "Invalid operand size for instruction " + this.base_mnemonic
+            );
+        }
+        if (operand_size != null) {
+            this.operand_size = operand_size;
+        } else {
+            this.operand_size = InstructionOperandSize.Long;
+        }
+    }
+
+    static getRegister(name: string, cpu: CPU): Register {
+        let reg: Register | undefined = cpu.getRegister(name);
+        if (reg == undefined) {
+            throw new Error("Invalid Register: " + name);
+        }
+        return reg;
+    }
 }
 
 export {
-  Instruction,
-  Operand,
-  OperandType,
-  RegisterOperand,
-  IndirectAddressOperand,
-  NumericConstantOperand
+    Instruction,
+    InstructionOperandSize,
+    Operand,
+    OperandType,
+    RegisterOperand,
+    IndirectAddressOperand,
+    NumericConstantOperand,
+    LabelAddressOperand
 };
