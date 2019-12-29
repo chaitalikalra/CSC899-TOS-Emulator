@@ -127,7 +127,22 @@ class LeaInstruction extends Instruction {
         );
     }
 
-    genMachineCode_(): void {}
+    genMachineCode_(): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_153.html
+        let prefix: number[] = [];
+        if (this.operand_size == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let src: Operand = this.operands[0];
+        let dst: Operand = this.operands[1];
+        let opcode: number[] = [0x8d];
+        let mod_rm_sib_disp: number[] = fillModRmSibDisp(src, dst, null);
+        this.machine_code = combineMachineCode(
+            (prefix = prefix),
+            (opcode = opcode),
+            (mod_rm_sib_disp = mod_rm_sib_disp)
+        );
+    }
 
     executeInstruction(cpu: CPU, assembled_code: AssembledCode): void {
         let src: Operand = this.operands[0];
