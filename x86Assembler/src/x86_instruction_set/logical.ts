@@ -68,7 +68,7 @@ class AndInstruction extends BinaryLogicalInstruction {
     genMachineCode_(): void {}
 
     binaryLogicalFunction(op1: number, op2: number): number {
-        return op1 & op2;
+        return (op1 & op2) >>> 0;
     }
 }
 
@@ -80,7 +80,7 @@ class OrInstruction extends BinaryLogicalInstruction {
     genMachineCode_(): void {}
 
     binaryLogicalFunction(op1: number, op2: number): number {
-        return op1 | op2;
+        return (op1 | op2) >>> 0;
     }
 }
 
@@ -92,7 +92,7 @@ class XorInstruction extends BinaryLogicalInstruction {
     genMachineCode_(): void {}
 
     binaryLogicalFunction(op1: number, op2: number): number {
-        return op1 ^ op2;
+        return (op1 ^ op2) >>> 0;
     }
 }
 

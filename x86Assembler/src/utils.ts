@@ -11,15 +11,16 @@ function get_sign_mask(data_size: number = 4): number {
 }
 
 function uint16(n: number): number {
-    return n & 0xffff;
+    return (n & 0xffff) >>> 0;
 }
 
 function uint8(n: number): number {
-    return n & 0xff;
+    return (n & 0xff) >>> 0;
 }
 
 function uint32(n: number): number {
-    return n & 0xffffffff;
+    // https://stackoverflow.com/questions/6798111/bitwise-operations-on-32-bit-unsigned-ints
+    return (n & 0xffffffff)>>>0;
 }
 
 function get_uint(n: number, data_size: number): number {
