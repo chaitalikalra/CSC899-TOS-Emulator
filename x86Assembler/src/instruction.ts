@@ -6,6 +6,7 @@ import { AssembledCode } from "./assembled_code";
 interface Operand {
     type: OperandType;
     getValue(): any;
+    toString(): string;
 }
 
 enum OperandType {
@@ -27,6 +28,10 @@ class RegisterOperand implements Operand {
 
     getValue(): Register {
         return this.register;
+    }
+
+    toString(): string {
+        return "%" + this.name;
     }
 }
 
@@ -70,6 +75,24 @@ class IndirectAddressOperand implements Operand {
 
         return baseAddress + indexAddress + this.offset;
     }
+
+    toString(): string {
+        let content: string = "";
+        if (this.baseRegister != null) content += "%" + this.baseRegister.name;
+        if (this.indexRegister != null) {
+            content += ",";
+            content += "%" + this.indexRegister.name;
+        }
+        if (this.scale != 1) {
+            content += ",";
+            content += this.scale.toString();
+        }
+        if (this.offset != 0) {
+            return this.offset.toString() + "(" + content + ")";
+        } else {
+            return "(" + content + ")";
+        }
+    }
 }
 
 class NumericConstantOperand implements Operand {
@@ -83,6 +106,10 @@ class NumericConstantOperand implements Operand {
     getValue(): number {
         return this.value;
     }
+
+    toString(): string {
+        return "$0x" + this.value.toString(16);
+    }
 }
 
 class LabelAddressOperand implements Operand {
@@ -94,6 +121,10 @@ class LabelAddressOperand implements Operand {
     }
 
     getValue(): string {
+        return this.name;
+    }
+
+    toString(): string {
         return this.name;
     }
 }
@@ -131,9 +162,7 @@ abstract class Instruction {
 
     abstract executeInstruction(cpu: CPU, assembled_code: AssembledCode): void;
 
-    public assembleInstruction(
-        operand_size: InstructionOperandSize | null
-    ): void {
+    public assembleInstruction(): void {
         // Validate Instruction First
         this.validateInstruction_();
         // Set base mnemonic
@@ -170,6 +199,22 @@ abstract class Instruction {
             throw new Error("Invalid Register: " + name);
         }
         return reg;
+    }
+
+    public toString(): string {
+        const max_machine_code_size: number = 30
+        let ret: string = "";
+        let machine_code_str_arr: string[] = [];
+        for (let byte of this.machine_code) {
+            machine_code_str_arr.push(byte.toString(16));
+        }
+        ret += machine_code_str_arr.join(" ");
+        ret += " ".repeat(max_machine_code_size - ret.length);
+        ret += this.operator + "  ";
+        let operands_str_arr: string[] = [];
+        for (let op of this.operands) operands_str_arr.push(op.toString());
+        ret += operands_str_arr.join(",");
+        return ret;
     }
 }
 

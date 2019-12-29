@@ -48,6 +48,11 @@ class Emulator {
         assert(this.executor != null, "No program assembled");
         this.executor.executeNext();
     }
+
+    public displayAssembledInstructions(): void {
+        console.log(this.executor.assembledCode.toString());
+    }
+
 }
 
 export { Emulator };

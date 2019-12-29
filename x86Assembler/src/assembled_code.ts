@@ -16,10 +16,16 @@ interface LabelMap {
     [index: string]: number;
 }
 
+interface AddrInstructionMap {
+    [addr: number]: number;
+}
+
 class AssembledCode {
     instructions: Instruction[];
+    instructionStartAddr: number[];
     labelMap: LabelMap;
     instructionPtr: number;
+    addrInstructionIndexMap: AddrInstructionMap;
 
     constructor(
         instructions: Instruction[],
@@ -29,12 +35,27 @@ class AssembledCode {
         this.instructions = instructions;
         this.labelMap = labelMap;
 
+        this.assembleInstructions_();
+
         if (instructionPtr != null) this.instructionPtr = instructionPtr;
 
         if (this.instructionPtr == null) {
             if ("start" in this.labelMap)
                 this.instructionPtr = this.labelMap["start"];
             else this.instructionPtr = 0;
+        }
+    }
+
+    private assembleInstructions_(): void {
+        this.instructionStartAddr = [];
+        this.addrInstructionIndexMap = {};
+
+        let startAddr: number = 0;
+        for (let i = 0; i < this.instructions.length; i++) {
+            this.instructionStartAddr.push(startAddr);
+            this.addrInstructionIndexMap[startAddr] = i;
+            this.instructions[i].assembleInstruction();
+            startAddr += this.instructions[i].machine_code.length;
         }
     }
 
@@ -110,6 +131,20 @@ class AssembledCode {
 
         assert(operator in InstructionSet, "Invalid instruction: " + operator);
         return new InstructionSet[operator](operator, operands);
+    }
+
+    toString(): string {
+        let ret: string = "";
+        ret += "Addr\t\t\tMachine Code\t\t\tAssembly\n";
+        ret += "-".repeat(80) + "\n";
+        for (let i = 0; i < this.instructions.length; i++) {
+            ret +=
+                this.instructionStartAddr[i].toString(16) +
+                ":\t\t\t" +
+                this.instructions[i].toString() +
+                "\n";
+        }
+        return ret;
     }
 }
 
