@@ -1,6 +1,5 @@
-import { get_uint } from "./utils";
-import { Operand, OperandType, RegisterOperand } from "./operand";
-import { assert } from "./error";
+import { get_uint, assert } from "./utils";
+import { Operand, OperandType, RegisterOperand } from "./instruction";
 
 const OPERAND_SIZE_OVERRIDE = 0x66;
 
