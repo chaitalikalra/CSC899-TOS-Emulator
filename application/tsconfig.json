@@ -22,6 +22,9 @@
     "references": [
         {
             "path": "../x86Assembler"
+        },
+        {
+            "path": "../x86PC"
         }
     ]
 }

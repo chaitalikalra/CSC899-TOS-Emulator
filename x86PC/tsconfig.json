@@ -9,7 +9,8 @@
         "allowJs": true,
         "allowUmdGlobalAccess": true,
         "noEmitOnError": true,
-        "outDir": "../build/x86Emulator/"
+        "outDir": "../build/x86PC/",
+        "composite": true
     },
     "include": [
         "src/**/*"
