@@ -9,8 +9,8 @@
         "allowJs": true,
         "allowUmdGlobalAccess": true,
         "noEmitOnError": true,
-        "outDir": "../build/x86Assembler/",
-        "composite": true
+        "outDir": "../build/application/",
+        "composite": true,
     },
     "include": [
         "src/**/*"
@@ -18,5 +18,10 @@
     "exclude": [
         "node_modules",
         "**/*.spec.ts"
+    ],
+    "references": [
+        {
+            "path": "../x86Assembler"
+        }
     ]
 }

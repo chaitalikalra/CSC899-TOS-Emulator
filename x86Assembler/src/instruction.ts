@@ -26,31 +26,33 @@ abstract class Instruction {
 
         // Set base mnemonic
         this.setBaseMnemonic_();
-        
-        // Validate if the instruction has correct format
-        this.validateInstruction_();
-        
+
         // Validate the instruction operand size
         this.validateAndSetOperandSize_();
+
+        // Validate if the instruction has correct format
+        this.validateInstruction_();
     }
 
     protected abstract setBaseMnemonic_(): void;
     protected abstract validateInstruction_(): void;
-    public abstract generateMachineCode(assembledProgram: AssembledProgram): void;
+    public abstract generateMachineCode(
+        assembledProgram: AssembledProgram
+    ): void;
 
     public toString(): string {
-        const max_machine_code_size: number = 30;
+        const MaxMachineCodeSize: number = 30;
         let ret: string = "";
-        let machine_code_str_arr: string[] = [];
+        let machineCodeStr_arr: string[] = [];
         for (let byte of this.machineCode) {
-            machine_code_str_arr.push(byte.toString(16));
+            machineCodeStr_arr.push(byte.toString(16));
         }
-        ret += machine_code_str_arr.join(" ");
-        ret += " ".repeat(max_machine_code_size - ret.length);
+        ret += machineCodeStr_arr.join(" ");
+        ret += " ".repeat(MaxMachineCodeSize - ret.length);
         ret += this.operator + "  ";
-        let operands_str_arr: string[] = [];
-        for (let op of this.operands) operands_str_arr.push(op.toString());
-        ret += operands_str_arr.join(",");
+        let operandsStrArr: string[] = [];
+        for (let op of this.operands) operandsStrArr.push(op.toString());
+        ret += operandsStrArr.join(",");
         return ret;
     }
 
@@ -58,8 +60,7 @@ abstract class Instruction {
         for (let operand of this.operands) {
             if (operand.type != OperandType.Register) continue;
             if (this.operandSize == null) {
-                this.operandSize ==
-                    (operand as RegisterOperand).getRegisterSize();
+                this.operandSize = (operand as RegisterOperand).getRegisterSize();
             }
             if (
                 (operand as RegisterOperand).getRegisterSize() !=
@@ -67,12 +68,12 @@ abstract class Instruction {
             ) {
                 throw AssemblyError.throwInvalidOperandSizeError(this.operator);
             }
+        }
 
-            // Default operand size when no other information is available 
-            // is 4 bytes
-            if (this.operandSize == null) {
-                this.operandSize = InstructionOperandSize.Long;
-            }
+        // Default operand size when no other information is available
+        // is 4 bytes
+        if (this.operandSize == null) {
+            this.operandSize = InstructionOperandSize.Long;
         }
     }
 }

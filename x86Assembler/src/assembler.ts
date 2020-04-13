@@ -1,7 +1,13 @@
 import { parse, SyntaxError } from "./x86_parser";
 import { Instruction } from "./instruction";
 import { AssemblyError } from "./error";
-import { Operand, RegisterOperand, IndirectAddressOperand, NumericConstantOperand, LabelAddressOperand } from "./operand";
+import {
+    Operand,
+    RegisterOperand,
+    IndirectAddressOperand,
+    NumericConstantOperand,
+    LabelAddressOperand
+} from "./operand";
 import { InstructionSet } from "./instruction_set/x86_instructions";
 
 class Assembler {
@@ -15,11 +21,13 @@ class Assembler {
         }
 
         // Step 2: Pass 1 of the Assembler that builds the symbol table and instruction objects
-        let assembledProgram: AssembledProgram = this.assemblerPass1_(rawInstructions);
+        let assembledProgram: AssembledProgram = this.assemblerPass1_(
+            rawInstructions
+        );
 
         // Step 3: Pass 2 of the assembler generates machine code for the instructions
         this.assemblerPass2_(assembledProgram);
-        
+
         return assembledProgram;
     }
 
@@ -55,12 +63,18 @@ class Assembler {
                 operands.push(new RegisterOperand(name));
             } else if (opTag == "IndirectAddess") {
                 let offset: number =
-                    op["value"]["offset"] == null ? 0 : op["value"]["offset"];
+                    op["value"]["offset"] == null ? 0 : op["value"]["offset"]["value"];
                 let scale: number =
-                    op["value"]["scale"] == null ? 1 : op["value"]["scale"];
+                    op["value"]["scale"] == null ? 1 : op["value"]["scale"]["value"];
 
-                let baseRegister: string | null = op["value"]["baseReg"];
-                let indexRegister: string | null = op["value"]["indexReg"];
+                let baseRegister: string | null =
+                    op["value"]["baseReg"] != null
+                        ? op["value"]["baseReg"]["value"]
+                        : null;
+                let indexRegister: string | null =
+                    op["value"]["indexReg"] != null
+                        ? op["value"]["indexReg"]["value"]
+                        : null;
                 operands.push(
                     new IndirectAddressOperand(
                         baseRegister,
@@ -111,6 +125,20 @@ class AssembledProgram {
             this.instructions[i].generateMachineCode(this);
             startAddr += this.instructions[i].machineCode.length;
         }
+    }
+
+    toString(): string {
+        let ret: string = "";
+        ret += "Addr\t\t\tMachine Code\t\t\tAssembly\n";
+        ret += "-".repeat(80) + "\n";
+        for (let i = 0; i < this.instructions.length; i++) {
+            ret +=
+                this.instructionStartAddr[i].toString(16) +
+                ":\t\t\t" +
+                this.instructions[i].toString() +
+                "\n";
+        }
+        return ret;
     }
 }
 
