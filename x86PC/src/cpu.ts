@@ -2,7 +2,16 @@ import { Register, RegisterStorage } from "./register";
 import { EFlags } from "./eflags";
 import { Memory } from "./memory";
 import { x86Disassembler } from "./disassembler";
-import { x86Instruction } from "./instruction";
+import { x86Instruction, InstructionOperandSize } from "./instruction";
+import { uint32, get_uint } from "./utils";
+import {
+    x86Operand,
+    x86OperandType,
+    x86RegisterOperand,
+    x86NumericOperand,
+    x86AddressOperand,
+} from "./operand";
+import { assert } from "./error";
 
 interface RegisterMapping {
     [index: string]: Register;
@@ -23,8 +32,10 @@ class CPU {
     eFlags: EFlags;
     registers: RegisterMapping;
     eip: Register;
+    memory: Memory;
 
-    constructor() {
+    constructor(memory: Memory) {
+        this.memory = memory;
         this.eFlags = new EFlags();
         this.constructRegisters_();
         // Create EIP register
@@ -87,28 +98,123 @@ class CPU {
     }
 
     setInstructionPointer(value: number) {
-        this.eip.setNumericvalue(value);
+        this.eip.setNumericvalue(uint32(value));
+    }
+
+    getInstructionPointer(): number {
+        return uint32(this.eip.getNumericValue());
     }
 
     setStackPointer(value: number) {
         this.registers["esp"].setNumericvalue(value);
     }
 
-    executeNextInstruction(
-        disassembler: x86Disassembler,
-        memory: Memory
-    ): boolean {
-        let ipValue: number = this.eip.getNumericValue();
+    executeNextInstruction(disassembler: x86Disassembler): boolean {
+        let ipValue: number = this.getInstructionPointer();
         let instruction: x86Instruction | null = disassembler.getNextInstructionFromBytes(
-            memory.getSlice(ipValue, x86Instruction.MAX_INSTRUCTION_LENGTH),
+            this.memory.getSlice(
+                ipValue,
+                x86Instruction.MAX_INSTRUCTION_LENGTH
+            ),
             ipValue
         );
         if (instruction == null || instruction.instructionName == "nop") {
             return false;
         }
-        this.eip.setNumericvalue(ipValue + instruction.byteLength);
+        this.setInstructionPointer(ipValue + instruction.byteLength);
         console.log(instruction);
+        instruction.executeInstruction(this);
         return true;
+    }
+
+    writeOperand(
+        operand: x86Operand,
+        value: number,
+        operandSize: InstructionOperandSize = InstructionOperandSize.Long
+    ) {
+        let val: number = get_uint(value, operandSize);
+        switch (operand.type) {
+            case x86OperandType.Register:
+                this.getRegisterFromOperand_(
+                    operand as x86RegisterOperand
+                ).setNumericvalue(val);
+                break;
+
+            case x86OperandType.Address:
+                this.memory.pokeMemory(
+                    this.getMemoryAddressFromOperand_(
+                        operand as x86AddressOperand
+                    ),
+                    val,
+                    operandSize
+                );
+                break;
+
+            default:
+                assert(
+                    false,
+                    `Invalid operand type for write: ${operand.type}`
+                );
+        }
+    }
+
+    readOperand(
+        operand: x86Operand,
+        operandSize: InstructionOperandSize = InstructionOperandSize.Long
+    ): number {
+        switch (operand.type) {
+            case x86OperandType.Register:
+                return get_uint(
+                    this.getRegisterFromOperand_(
+                        operand as x86RegisterOperand
+                    ).getNumericValue(),
+                    operandSize
+                );
+                break;
+            case x86OperandType.Address:
+                return get_uint(
+                    this.memory.peekMemory(
+                        this.getMemoryAddressFromOperand_(
+                            operand as x86AddressOperand
+                        )
+                    ),
+                    operandSize
+                );
+                break;
+            case x86OperandType.Numeric:
+                return get_uint(
+                    (operand as x86NumericOperand).value,
+                    operandSize
+                );
+                break;
+            default:
+                assert(
+                    false,
+                    `Invalid operand type for write: ${operand.type}`
+                );
+        }
+    }
+
+    private getRegisterFromOperand_(operand: x86RegisterOperand): Register {
+        return this.registers[operand.name];
+    }
+
+    private getMemoryAddressFromOperand_(operand: x86AddressOperand): number {
+        let baseAddress: number = 0;
+        if (operand.baseRegister != null) {
+            baseAddress = this.registers[
+                operand.baseRegister
+            ].getNumericValue();
+        }
+
+        let indexAddress: number = 0;
+        if (operand.indexRegister != null) {
+            baseAddress =
+                this.registers[operand.indexRegister].getNumericValue() *
+                operand.scale;
+        }
+
+        return baseAddress + indexAddress + operand.offset;
     }
 }
 

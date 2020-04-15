@@ -16,8 +16,8 @@ class PC {
     }
 
     private initPC_(): void {
-        this.cpu = new CPU();
         this.memory = new Memory(this.memorySize);
+        this.cpu = new CPU(this.memory);
         this.disassembler = new x86Disassembler();
     }
 
@@ -47,7 +47,7 @@ class PC {
     }
 
     public executeNextInstruction(): boolean {
-        return this.cpu.executeNextInstruction(this.disassembler, this.memory);
+        return this.cpu.executeNextInstruction(this.disassembler);
     }
 }
 

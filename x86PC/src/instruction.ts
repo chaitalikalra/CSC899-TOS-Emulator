@@ -1,6 +1,7 @@
 import { x86Operand, parseOperand } from "./operand";
 import { parse, SyntaxError } from "./x86_operands_parser";
 import { assert } from "./error";
+import { CPU } from "./cpu";
 
 enum InstructionOperandSize {
     Byte = 1,
@@ -66,6 +67,8 @@ abstract class x86Instruction {
             }
         }
     }
+
+    abstract executeInstruction(cpu: CPU): void;
 }
 
-export { x86Instruction };
+export { x86Instruction, InstructionOperandSize };
