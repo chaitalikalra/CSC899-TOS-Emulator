@@ -140,6 +140,14 @@ class AssembledProgram {
         }
         return ret;
     }
+
+    getMachineCode(): Uint8Array {
+        let retBytes: number[] = [];
+        for (let instruction of this.instructions) {
+            retBytes.push(...instruction.machineCode);
+        }
+        return new Uint8Array(retBytes);
+    }
 }
 
 interface LabelMap {
