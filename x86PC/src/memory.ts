@@ -75,6 +75,10 @@ class Memory {
         let arr: Uint32Array = new Uint32Array(this.buffer, address, 1);
         return arr[0];
     }
+
+    getSlice(start: number, size: number) {
+        return new Uint8Array(this.buffer.slice(start, start + size));
+    }
 }
 
 export { Memory };

@@ -25,8 +25,11 @@ class Register {
     ) {
         this.name = name;
         this.byteLength = byteLength;
-        this.storage =
-            storage == null ? new RegisterStorage(name, byteLength) : storage;
+        if (storage == null) {
+            storage = new RegisterStorage(name, byteLength);
+        }
+
+        this.storage = storage;
         if (this.byteLength == 1) {
             this.register = new Uint8Array(
                 storage.registerStore,

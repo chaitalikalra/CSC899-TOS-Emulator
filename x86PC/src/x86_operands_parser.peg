@@ -1,0 +1,45 @@
+{
+  function makeString(o) {
+  	return o.join("");
+  }
+}
+
+OperandString 
+	= _ op1:Operand _ "," _ op2:Operand _ {return [op1, op2]} / 
+    _ op:Operand _ {return [op]}  
+		
+
+Operand
+  = op:(NumericConstant/ Register / IndirectAddress) {return op;}
+
+IndirectAddress
+  = _ offset:Offset? _ "(" _ baseReg:Register _")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: null, scale: null}} /
+  _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: null}} /
+  _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ "," _ scale:Scale? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: scale}}
+
+
+Scale
+  = [0-9]+ {return {tag: "Number", value: parseInt(text(), 10)}; }
+
+Offset
+ = [-+]?[0-9]+ { return {tag: "Number", value: parseInt(text(), 10)}; }
+
+Register
+  = "%"name:RegisterName {return {tag: "Register", value: makeString(name).toLowerCase()}}
+
+RegisterName
+  = ([a-zA-Z][a-zA-Z][a-zA-Z]) /
+  	([a-zA-Z][a-zA-Z])
+
+NumericConstant
+  = "$"con:Number {return {tag: "NumericConstant", value: con.value};}
+
+Number
+  = ("0x"[0-9a-fA-F]+ { return { tag: "Number", value: parseInt(text(), 16), size: 4 }; }) /
+	[-+]?[0-9]+ { return { tag: "Number", value: parseInt(text(), 10), size: 4 }; }
+
+_ "whitespace"
+  = [ \t\r]*
+
+__ "whitespace_plus_lines"
+  = [ \t\r\n]*

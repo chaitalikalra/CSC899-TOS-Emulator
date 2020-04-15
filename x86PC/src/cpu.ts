@@ -1,5 +1,8 @@
 import { Register, RegisterStorage } from "./register";
 import { EFlags } from "./eflags";
+import { Memory } from "./memory";
+import { x86Disassembler } from "./disassembler";
+import { x86Instruction } from "./instruction";
 
 interface RegisterMapping {
     [index: string]: Register;
@@ -14,7 +17,7 @@ class CPU {
         "ebp",
         "esi",
         "edi",
-        "esp"
+        "esp",
     ];
 
     eFlags: EFlags;
@@ -25,7 +28,7 @@ class CPU {
         this.eFlags = new EFlags();
         this.constructRegisters_();
         // Create EIP register
-        this.eip = new Register("eip", null, 4); 
+        this.eip = new Register("eip", null, 4);
     }
 
     private createX86Register_(
@@ -89,6 +92,23 @@ class CPU {
 
     setStackPointer(value: number) {
         this.registers["esp"].setNumericvalue(value);
+    }
+
+    executeNextInstruction(
+        disassembler: x86Disassembler,
+        memory: Memory
+    ): boolean {
+        let ipValue: number = this.eip.getNumericValue();
+        let instruction: x86Instruction | null = disassembler.getNextInstructionFromBytes(
+            memory.getSlice(ipValue, x86Instruction.MAX_INSTRUCTION_LENGTH),
+            ipValue
+        );
+        if (instruction == null || instruction.instructionName == "nop") {
+            return false;
+        }
+        this.eip.setNumericvalue(ipValue + instruction.byteLength);
+        console.log(instruction);
+        return true;
     }
 }
 

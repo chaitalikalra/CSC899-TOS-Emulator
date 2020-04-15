@@ -1,6 +1,7 @@
 enum ErrorType {
     LowMemoryError,
-    AssertionError
+    AssertionError,
+    InstructionNotSupportedError,
 }
 
 class RuntimeError extends Error {
@@ -22,7 +23,12 @@ class RuntimeError extends Error {
         );
     }
 
-    
+    static throwInstructionNotSupportedError(i: string) {
+        return new RuntimeError(
+            ErrorType.InstructionNotSupportedError,
+            `Instruction ${i} not yet supported.`
+        );
+    }
 }
 
 function assert(condition: boolean, message: string) {
