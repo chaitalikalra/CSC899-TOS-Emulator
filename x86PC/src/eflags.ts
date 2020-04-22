@@ -15,23 +15,23 @@ class EFlags {
         this.flags = new Array(32).fill(false);
     }
 
-    public set_carry_flag(val: boolean): void {
+    public setCarryFlag(val: boolean): void {
         this.flags[EFlags.byteMappings["CF"]] = val;
     }
 
-    public set_overflow_flag(val: boolean): void {
+    public setOverflowFlag(val: boolean): void {
         this.flags[EFlags.byteMappings["OF"]] = val;
     }
 
-    public set_zero_flag(val: boolean): void {
+    public setZeroFlag(val: boolean): void {
         this.flags[EFlags.byteMappings["ZF"]] = val;
     }
 
-    public set_sign_flag(val: boolean): void {
+    public setSignFlag(val: boolean): void {
         this.flags[EFlags.byteMappings["SF"]] = val;
     }
 
-    public set_parity_flag(val: boolean): void {
+    public setParityFlag(val: boolean): void {
         this.flags[EFlags.byteMappings["PF"]] = val;
     }
 }

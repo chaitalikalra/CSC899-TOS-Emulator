@@ -135,14 +135,14 @@ class CPU {
         let val: number = get_uint(value, operandSize);
         switch (operand.type) {
             case x86OperandType.Register:
-                this.getRegisterFromOperand_(
+                this.getRegisterFromOperand(
                     operand as x86RegisterOperand
                 ).setNumericvalue(val);
                 break;
 
             case x86OperandType.Address:
                 this.memory.pokeMemory(
-                    this.getMemoryAddressFromOperand_(
+                    this.getMemoryAddressFromOperand(
                         operand as x86AddressOperand
                     ),
                     val,
@@ -165,7 +165,7 @@ class CPU {
         switch (operand.type) {
             case x86OperandType.Register:
                 return get_uint(
-                    this.getRegisterFromOperand_(
+                    this.getRegisterFromOperand(
                         operand as x86RegisterOperand
                     ).getNumericValue(),
                     operandSize
@@ -174,7 +174,7 @@ class CPU {
             case x86OperandType.Address:
                 return get_uint(
                     this.memory.peekMemory(
-                        this.getMemoryAddressFromOperand_(
+                        this.getMemoryAddressFromOperand(
                             operand as x86AddressOperand
                         )
                     ),
@@ -195,11 +195,11 @@ class CPU {
         }
     }
 
-    private getRegisterFromOperand_(operand: x86RegisterOperand): Register {
+    getRegisterFromOperand(operand: x86RegisterOperand): Register {
         return this.registers[operand.name];
     }
 
-    private getMemoryAddressFromOperand_(operand: x86AddressOperand): number {
+    getMemoryAddressFromOperand(operand: x86AddressOperand): number {
         let baseAddress: number = 0;
         if (operand.baseRegister != null) {
             baseAddress = this.registers[
@@ -215,6 +215,29 @@ class CPU {
         }
 
         return baseAddress + indexAddress + operand.offset;
+    }
+
+    pushStack(
+        data: number,
+        operandSize: InstructionOperandSize = InstructionOperandSize.Long
+    ): void {
+        let spValue: number = this.registers["esp"].getNumericValue();
+        assert(spValue - operandSize >= 0, "Stack overflow!");
+        spValue -= operandSize;
+        this.memory.pokeMemory(spValue, data, operandSize);
+        this.registers["esp"].setNumericvalue(spValue);
+    }
+
+    popStack(operandSize: InstructionOperandSize = InstructionOperandSize.Long): number {
+        let spValue: number = this.registers["esp"].getNumericValue();
+        assert(spValue + operandSize <= this.memory.size, "Stack underflow!");
+
+        let retValue: number = this.memory.peekMemory(
+            spValue,
+            operandSize
+        );
+        this.registers["esp"].setNumericvalue(spValue + operandSize);
+        return retValue;
     }
 }
 

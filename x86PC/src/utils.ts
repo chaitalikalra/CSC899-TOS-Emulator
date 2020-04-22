@@ -1,4 +1,5 @@
 import { assert } from "./error";
+import { InstructionOperandSize } from "./instruction";
 
 function uint16(n: number): number {
     return (n & 0xffff) >>> 0;
@@ -29,4 +30,20 @@ function get_uint(n: number, data_size: number): number {
     }
 }
 
-export { get_uint, uint8, uint16, uint32 };
+function getSignMask(
+    dataSize: InstructionOperandSize = InstructionOperandSize.Long
+): number {
+    return 1 << (dataSize * 8 - 1);
+}
+
+function getParity(data: number): boolean {
+    let lastByte: number = data & 0xff;
+    let count: number = 0;
+    while (lastByte != 0) {
+        count++;
+        lastByte = lastByte & (lastByte - 1);
+    }
+    return (count & 1) == 0;
+}
+
+export { getSignMask, uint8, uint16, uint32, getParity, get_uint };
