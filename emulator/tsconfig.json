@@ -11,6 +11,7 @@
         "noEmitOnError": true,
         "outDir": "../build/application/",
         "composite": true,
+        "experimentalDecorators": true,
     },
     "include": [
         "src/**/*"

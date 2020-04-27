@@ -10,10 +10,12 @@
         "allowUmdGlobalAccess": true,
         "noEmitOnError": true,
         "outDir": "../build/x86Assembler/",
-        "composite": true
+        "composite": true,
+        "experimentalDecorators": true,
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "tests/**/*"
     ],
     "exclude": [
         "node_modules",

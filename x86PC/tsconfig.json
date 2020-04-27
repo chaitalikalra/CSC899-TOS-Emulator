@@ -10,7 +10,8 @@
         "allowUmdGlobalAccess": true,
         "noEmitOnError": true,
         "outDir": "../build/x86PC/",
-        "composite": true
+        "composite": true,
+        "experimentalDecorators": true,
     },
     "include": [
         "src/**/*"
