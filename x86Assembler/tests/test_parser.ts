@@ -151,4 +151,23 @@ export class ParserTestFixture {
             );
         }
     }
+
+    @Test("Check assembly comments")
+    @TestCase("ret   ", null)
+    @TestCase("ret ; hello world", "hello world")
+    @TestCase("ret # hello world", "hello world")
+    @TestCase("ret ;", "")
+    @TestCase("ret #", "")
+    testAssemblyComments(instruction: string, comment: string | null) {
+        let instructions: object[] = parse(instruction);
+        Expect(instructions.length).toBe(1);
+        Expect(instructions[0]["tag"]).toBe("InstructionWithLabel");
+        if (comment == null) {
+            Expect(instructions[0]["comment"]).toBeNull();
+        } else {
+            Expect(instructions[0]["comment"]['tag']).toBe("Comment");
+            Expect(instructions[0]["comment"]['value']).toBe(comment);
+        }
+        
+    }    
 }

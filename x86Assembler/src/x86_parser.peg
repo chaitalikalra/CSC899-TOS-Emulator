@@ -8,7 +8,13 @@ CodeSection
   = InstructionWithLabel*
 
 InstructionWithLabel
-  = __ l:(Label __)? i:Instruction __ {return {tag: "InstructionWithLabel", instruction:i, label:l == null? null: l[0]};}
+  = __ l:(Label __)? i:Instruction c:(_ Comment)? __ {return {tag: "InstructionWithLabel", instruction:i, label:l == null? null: l[0], comment: c == null? null: c[1]};}
+
+Comment
+	= _ CommentMarker _ s:(.*) _ {return {tag: "Comment", value: makeString(s)};}
+
+CommentMarker
+	= ("#" / ";")
 
 Instruction
   = _ instruction:(BinaryInstruction / UnaryInstruction / NullaryInstruction) _ {return instruction;}
