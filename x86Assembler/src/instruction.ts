@@ -92,7 +92,6 @@ abstract class AssemblerDirective implements InstructionInterface {
     constructor(
         directive: string,
         expressions: (number | string)[],
-        isLittleEndian: boolean = true
     ) {
         this.directive = directive;
         this.expressions = expressions;

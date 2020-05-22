@@ -37,6 +37,28 @@ export class AssemblerTestFixture {
     @TestCase("push %ax", [0x66, 0x50])
     @TestCase("push %bx", [0x66, 0x53])
     @TestCase("pop %ax", [0x66, 0x58])
+
+    // Test .byte directive
+    @TestCase(".byte 23", [23])
+    @TestCase(".byte 0x23", [0x23])
+    @TestCase(".byte 0x23, 23", [0x23, 23])
+
+    // Test .value directive
+    @TestCase(".value 23", [23, 0])
+    @TestCase(".value 0x50", [0x50, 0])
+    @TestCase(".value 0x50, 23", [0x50, 0, 23, 0])
+    @TestCase(".value 0x50, 0xdead", [0x50, 0, 0xad, 0xde])
+    @TestCase(".value 0xbeef, 0xdead", [0xef, 0xbe, 0xad, 0xde])
+    @TestCase(".value 12345", [0x39, 0x30])
+
+    // Test .long directive
+    @TestCase(".long 23", [23, 0, 0, 0])
+    @TestCase(".long 0x50", [0x50, 0, 0, 0])
+    @TestCase(".long 0x50, 23", [0x50, 0, 0, 0, 23, 0, 0, 0])
+    @TestCase(".long 0x50, 0xdead", [0x50, 0, 0, 0, 0xad, 0xde, 0, 0])
+    @TestCase(".long 0xbeef, 0xdead", [0xef, 0xbe, 0, 0, 0xad, 0xde, 0, 0])
+    @TestCase(".long 12345", [0x39, 0x30, 0, 0])
+    @TestCase(".long 0xdeadbeef", [0xef, 0xbe, 0xad, 0xde])
     testSingleInstructions(
         instruction: string,
         expectedMachineCode: Uint8Array

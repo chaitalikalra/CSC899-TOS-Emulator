@@ -5,7 +5,7 @@ import { uint8, uint16, uint32 } from "../utils";
 
 class ByteDirective extends AssemblerDirective {
     generateMachineCode(assembledProgram: AssembledProgram): void {
-        let code: number[];
+        let code: number[] = [];
         for (let e of this.expressions) {
             code.push(uint8(e as number))
         }
@@ -26,7 +26,7 @@ class ByteDirective extends AssemblerDirective {
 
 class ValueDirective extends AssemblerDirective {
     generateMachineCode(assembledProgram: AssembledProgram): void {
-        let code: number[];
+        let code: number[] = [];
         for (let e of this.expressions) {
             code.push(uint16(e as number));
         }
@@ -47,7 +47,7 @@ class ValueDirective extends AssemblerDirective {
 
 class LongDirective extends AssemblerDirective {
     generateMachineCode(assembledProgram: AssembledProgram): void {
-        let code: number[];
+        let code: number[] = [];
         for (let e of this.expressions) {
             code.push(uint32(e as number));
         }

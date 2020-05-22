@@ -186,7 +186,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c11 = function(directive: any, match: any): any {
     	return {
       	tag:"Directive",
-          operator: directive,
+          operator: directive["value"],
           operands: match == null ? [] : [match[0], match[2]].flat()
       }
     };

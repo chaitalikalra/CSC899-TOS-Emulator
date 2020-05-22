@@ -1,16 +1,20 @@
 import { parse, SyntaxError } from "./x86_parser";
-import { Instruction, InstructionInterface } from "./instruction";
+import { Instruction, InstructionInterface, AssemblerDirective } from "./instruction";
 import { AssemblyError } from "./error";
 import {
     Operand,
     RegisterOperand,
     IndirectAddressOperand,
     NumericConstantOperand,
-    LabelAddressOperand
+    LabelAddressOperand,
 } from "./operand";
 import { InstructionSet } from "./instruction_set/x86_instructions";
+import { AssemblerDirectives } from "./assembler_directives/x86_assembler_directives";
 
 class Assembler {
+    static readonly INSTRUCTION_TAG: string = "InstructionWithLabel";
+    static readonly DIRECTIVE_TAG: string = "DirectiveWithLabel";
+
     public assembleProgram(program: string) {
         // Step 1: Read program from string using the parse tree grammar in an array of raw objects
         let rawInstructions: object[];
@@ -37,9 +41,18 @@ class Assembler {
 
         for (let i of rawInstructions) {
             let label: object | null = i["label"];
-            let count: number = instructions.push(
-                this.parseInstruction(i["instruction"])
-            );
+            let count: number;
+
+            if (i["tag"] == Assembler.INSTRUCTION_TAG) {
+                count = instructions.push(
+                    this.parseInstruction(i["instruction"])
+                );
+            } else if (i["tag"] == Assembler.DIRECTIVE_TAG) {
+                count = instructions.push(
+                    this.parseDirective(i["directive"])
+                );
+            }
+
             if (label != null) {
                 // Label points to the newly added instruction
                 symbolTable[label["value"]] = count - 1;
@@ -50,6 +63,18 @@ class Assembler {
 
     private assemblerPass2_(assembledProgram: AssembledProgram) {
         assembledProgram.generateMachineCode();
+    }
+
+    private parseDirective(i: Object): AssemblerDirective {
+        let operator: string = i["operator"];
+        let operands: (string | number)[] = [];
+        for (let op of i["operands"]) {
+            operands.push(op["value"]);
+        }
+        if (AssemblerDirectives[operator] == undefined) {
+            throw AssemblyError.throwInvalidDirectiveError(operator);
+        }
+        return new AssemblerDirectives[operator](operator, operands);
     }
 
     private parseInstruction(i: object): Instruction {
@@ -63,9 +88,13 @@ class Assembler {
                 operands.push(new RegisterOperand(name));
             } else if (opTag == "IndirectAddess") {
                 let offset: number =
-                    op["value"]["offset"] == null ? 0 : op["value"]["offset"]["value"];
+                    op["value"]["offset"] == null
+                        ? 0
+                        : op["value"]["offset"]["value"];
                 let scale: number =
-                    op["value"]["scale"] == null ? 1 : op["value"]["scale"]["value"];
+                    op["value"]["scale"] == null
+                        ? 1
+                        : op["value"]["scale"]["value"];
 
                 let baseRegister: string | null =
                     op["value"]["baseReg"] != null

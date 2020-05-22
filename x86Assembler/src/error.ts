@@ -1,6 +1,7 @@
 enum ErrorType {
     SyntaxError,
     InvalidOperator,
+    InvalidDirective,
     InvalidRegister,
     InvalidOperandType,
     InvalidOperandSize,
@@ -44,6 +45,13 @@ class AssemblyError extends Error {
         return new AssemblyError(
             ErrorType.InvalidOperator,
             `Invalid operator provided: ${op}`
+        );
+    }
+
+    static throwInvalidDirectiveError(op: string) {
+        return new AssemblyError(
+            ErrorType.InvalidDirective,
+            `Invalid directive provided: ${op}`
         );
     }
 

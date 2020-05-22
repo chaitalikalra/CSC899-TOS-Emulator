@@ -183,7 +183,7 @@ export class ParserTestFixture {
         let directives: object[] = parse(directive);
         Expect(directives.length).toBe(1);
         Expect(directives[0]["tag"]).toBe("DirectiveWithLabel");
-        Expect(directives[0]["directive"]["operator"]["value"]).toBe(operator);
+        Expect(directives[0]["directive"]["operator"]).toBe(operator);
         
         let parsedOperands: (string | number)[] = [];
         for (let o of directives[0]["directive"]["operands"]) {
