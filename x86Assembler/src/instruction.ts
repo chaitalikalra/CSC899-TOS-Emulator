@@ -5,10 +5,16 @@ import { AssembledProgram } from "./assembler";
 enum InstructionOperandSize {
     Byte = 1,
     Word = 2,
-    Long = 4
+    Long = 4,
 }
 
-abstract class Instruction {
+interface InstructionInterface {
+    machineCode: Uint8Array;
+    generateMachineCode(assembledProgram: AssembledProgram): void;
+    toString(): string;
+}
+
+abstract class Instruction implements InstructionInterface {
     operator: string;
     operands: Operand[];
     baseMnemonic: string;
@@ -78,4 +84,4 @@ abstract class Instruction {
     }
 }
 
-export { Instruction, InstructionOperandSize };
+export { Instruction, InstructionOperandSize, InstructionInterface };

@@ -1,5 +1,5 @@
 import { parse, SyntaxError } from "./x86_parser";
-import { Instruction } from "./instruction";
+import { Instruction, InstructionInterface } from "./instruction";
 import { AssemblyError } from "./error";
 import {
     Operand,
@@ -32,7 +32,7 @@ class Assembler {
     }
 
     private assemblerPass1_(rawInstructions: object[]) {
-        let instructions: Instruction[] = [];
+        let instructions: InstructionInterface[] = [];
         let symbolTable: LabelMap = {};
 
         for (let i of rawInstructions) {
@@ -104,12 +104,12 @@ interface AddrInstructionMap {
 }
 
 class AssembledProgram {
-    instructions: Instruction[];
+    instructions: InstructionInterface[];
     symbolTable: LabelMap;
     instructionStartAddr: number[];
     addrInstructionIndexMap: AddrInstructionMap;
 
-    constructor(instructions: Instruction[], symbolTable: LabelMap) {
+    constructor(instructions: InstructionInterface[], symbolTable: LabelMap) {
         this.instructions = instructions;
         this.symbolTable = symbolTable;
     }
