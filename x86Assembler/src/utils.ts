@@ -29,4 +29,4 @@ function get_uint(n: number, data_size: number): number {
     }
 }
 
-export { get_uint };
+export { get_uint, uint8, uint16, uint32 };
