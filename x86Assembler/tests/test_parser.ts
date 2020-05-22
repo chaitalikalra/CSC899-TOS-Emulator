@@ -170,4 +170,25 @@ export class ParserTestFixture {
         }
         
     }    
+
+    @Test("Check assembler directives")
+    @TestCase(".long", "long", [])
+    @TestCase(".byte 15", "byte", [15])
+    @TestCase(".byte 0x1A", "byte", [0x1A])
+    @TestCase(".byte 0x1A,23", "byte", [0x1A, 23])
+    @TestCase('.ascii "hello world"', "ascii", ["hello world"])
+    @TestCase('.ascii "hello world",    "test"', "ascii", ["hello world", "test"])
+    @TestCase('.byte 0x1A, "23"', "byte", [0x1A, "23"])
+    testAssemblerDirectives(directive: string, operator: string, operands: (string | number)[]) {
+        let directives: object[] = parse(directive);
+        Expect(directives.length).toBe(1);
+        Expect(directives[0]["tag"]).toBe("DirectiveWithLabel");
+        Expect(directives[0]["directive"]["operator"]["value"]).toBe(operator);
+        
+        let parsedOperands: (string | number)[] = [];
+        for (let o of directives[0]["directive"]["operands"]) {
+            parsedOperands.push(o["value"]);
+        }
+        Expect(parsedOperands).toEqual(operands);
+    }    
 }

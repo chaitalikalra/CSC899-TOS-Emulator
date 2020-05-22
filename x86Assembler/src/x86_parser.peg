@@ -5,7 +5,10 @@
 }
 
 CodeSection
-  = InstructionWithLabel*
+  = (InstructionWithLabel / DirectiveWithLabel)*
+
+DirectiveWithLabel
+  = __ l:(Label __)? i:DirectiveInstruction c:(_ Comment)? __ {return {tag: "DirectiveWithLabel", directive:i, label:l == null? null: l[0], comment: c == null? null: c[1]};}
 
 InstructionWithLabel
   = __ l:(Label __)? i:Instruction c:(_ Comment)? __ {return {tag: "InstructionWithLabel", instruction:i, label:l == null? null: l[0], comment: c == null? null: c[1]};}
@@ -15,6 +18,22 @@ Comment
 
 CommentMarker
 	= ("#" / ";")
+
+DirectiveInstruction
+  = _ directive:DirectiveName _ 
+  	match:(
+    	d1:DirectiveOperand _ d3:("," _ d2:DirectiveOperand _ {return d2;})*
+    )? 
+  _ {
+  	return {
+    	tag:"Directive",
+        operator: directive,
+        operands: match == null ? [] : [match[0], match[2]].flat()
+    }
+  }
+
+DirectiveOperand
+  = Number / String
 
 Instruction
   = _ instruction:(BinaryInstruction / UnaryInstruction / NullaryInstruction) _ {return instruction;}
@@ -36,7 +55,6 @@ IndirectAddress
   _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: null}} /
   _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ "," _ scale:Scale? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: scale}}
 
-
 Scale
   = [0-9]+ {return {tag: "Number", value: parseInt(text(), 10)}; }
 
@@ -50,6 +68,9 @@ RegisterName
   = ([a-zA-Z][a-zA-Z][a-zA-Z]) /
   	([a-zA-Z][a-zA-Z])
 
+DirectiveName
+  = ("." s:([a-zA-Z0-9][a-zA-Z0-9]*) { return { tag: "DirectiveName", value: makeString([s[0], makeString(s[1])]) }; })
+
 Label
   = identifier:Identifier ":" {return {tag: "Label", value: identifier.value};}
 
@@ -61,6 +82,9 @@ Identifier
 
 NumericConstant
   = "$"con:Number {return {tag: "NumericConstant", value: con.value};}
+
+String
+  = '"' s:([^"]*) '"'{ return { tag: "String", value:makeString(s)}; }
 
 Number
   = ("0x"[0-9a-fA-F]+ { return { tag: "Number", value: parseInt(text(), 16), size: 4 }; }) /
