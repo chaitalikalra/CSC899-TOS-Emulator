@@ -68,7 +68,7 @@ class MovInstruction extends Instruction {
         return instructionLength;
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_176.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {
@@ -163,7 +163,7 @@ class LeaInstruction extends Instruction {
         return instructionLength;
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_153.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {

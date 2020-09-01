@@ -10,7 +10,7 @@ enum InstructionOperandSize {
 
 interface InstructionInterface {
     machineCode: Uint8Array;
-    generateMachineCode(assembledProgram: AssembledProgram): void;
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void;
     calculateLength(): number;
     toString(): string;
 }
@@ -44,7 +44,8 @@ abstract class Instruction implements InstructionInterface {
     protected abstract setBaseMnemonic_(): void;
     protected abstract validateInstruction_(): void;
     public abstract generateMachineCode(
-        assembledProgram: AssembledProgram
+        assembledProgram: AssembledProgram,
+        idx: number
     ): void;
     public abstract calculateLength(): number;
 
@@ -115,7 +116,8 @@ abstract class AssemblerDirective implements InstructionInterface {
     }
 
     public abstract generateMachineCode(
-        assembledProgram: AssembledProgram
+        assembledProgram: AssembledProgram,
+        idx: number
     ): void;
 
     public abstract calculateLength(): number;

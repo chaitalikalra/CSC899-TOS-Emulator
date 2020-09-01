@@ -111,7 +111,7 @@ class AddInstruction extends BinaryArithmeticInstruction {
         this.baseMnemonic = "add";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_12.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {
@@ -171,7 +171,7 @@ class SubInstruction extends BinaryArithmeticInstruction {
         this.baseMnemonic = "sub";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_308.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {
@@ -231,7 +231,7 @@ class IncInstruction extends UnaryArithmeticInstruction {
         this.baseMnemonic = "inc";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_140.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {
@@ -265,7 +265,7 @@ class DecInstruction extends UnaryArithmeticInstruction {
         this.baseMnemonic = "dec";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_71.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {

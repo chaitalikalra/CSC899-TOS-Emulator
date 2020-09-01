@@ -80,7 +80,7 @@ class AndInstruction extends BinaryLogicalInstruction {
         this.baseMnemonic = "and";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_12.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {
@@ -140,7 +140,7 @@ class OrInstruction extends BinaryLogicalInstruction {
         this.baseMnemonic = "or";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_219.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {
@@ -200,7 +200,7 @@ class XorInstruction extends BinaryLogicalInstruction {
         this.baseMnemonic = "xor";
     }
 
-    generateMachineCode(assembledProgram: AssembledProgram): void {
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
         // Reference: https://c9x.me/x86/html/file_module_x86_id_330.html
         let prefix: number[] = [];
         if (this.operandSize == 2) {

@@ -176,8 +176,8 @@ class AssembledProgram {
     }
     
     generateMachineCode(): void {
-        for (let instruction of this.instructions) {
-            instruction.generateMachineCode(this);
+        for (let i = 0; i < this.instructions.length; i++) {
+            this.instructions[i].generateMachineCode(this, i);
         }
     }
 
