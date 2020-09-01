@@ -38,6 +38,9 @@ export class AssemblerTestFixture {
     @TestCase("push %bx", [0x66, 0x53])
     @TestCase("pop %ax", [0x66, 0x58])
 
+    // Test Ret Instructions
+    @TestCase("ret", [0xc3])
+
     // Test .byte directive
     @TestCase(".byte 23", [23])
     @TestCase(".byte 0x23", [0x23])
