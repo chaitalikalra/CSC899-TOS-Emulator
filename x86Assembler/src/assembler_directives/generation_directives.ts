@@ -4,6 +4,12 @@ import { assert } from "../error";
 import { uint8, uint16, uint32 } from "../utils";
 
 class ByteDirective extends AssemblerDirective {
+
+    calculateLength(): number {
+        // Length is 1 byte per expression
+        return 1 * this.expressions.length;
+    }
+
     generateMachineCode(assembledProgram: AssembledProgram): void {
         let code: number[] = [];
         for (let e of this.expressions) {
@@ -25,6 +31,12 @@ class ByteDirective extends AssemblerDirective {
 }
 
 class ValueDirective extends AssemblerDirective {
+    
+    calculateLength(): number {
+        // Length is 2 bytes per expression
+        return 2 * this.expressions.length;
+    }
+
     generateMachineCode(assembledProgram: AssembledProgram): void {
         let code: number[] = [];
         for (let e of this.expressions) {
@@ -46,6 +58,12 @@ class ValueDirective extends AssemblerDirective {
 }
 
 class LongDirective extends AssemblerDirective {
+    
+    calculateLength(): number {
+        // Length is 4 bytes per expression
+        return 4 * this.expressions.length;
+    }
+    
     generateMachineCode(assembledProgram: AssembledProgram): void {
         let code: number[] = [];
         for (let e of this.expressions) {

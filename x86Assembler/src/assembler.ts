@@ -1,5 +1,9 @@
 import { parse, SyntaxError } from "./x86_parser";
-import { Instruction, InstructionInterface, AssemblerDirective } from "./instruction";
+import {
+    Instruction,
+    InstructionInterface,
+    AssemblerDirective,
+} from "./instruction";
 import { AssemblyError } from "./error";
 import {
     Operand,
@@ -16,7 +20,7 @@ class Assembler {
     static readonly DIRECTIVE_TAG: string = "DirectiveWithLabel";
 
     public assembleProgram(program: string) {
-        // Step 1: Read program from string using the parse tree grammar in an array of raw objects
+        // Step 0: Read program from string using the parse tree grammar in an array of raw objects
         let rawInstructions: object[];
         try {
             rawInstructions = parse(program);
@@ -24,7 +28,11 @@ class Assembler {
             throw AssemblyError.throwSyntaxError(ex.message);
         }
 
-        // Step 2: Pass 1 of the Assembler that builds the symbol table and instruction objects
+        // Step 1: Pass 1 of the Assembler that does the following:
+        // a. Creates instruction objects
+        // b. Validates the instruction syntax and operand format
+        // c. Calculates the size of the instruction and the data
+        // d. builds the symbol table
         let assembledProgram: AssembledProgram = this.assemblerPass1_(
             rawInstructions
         );
@@ -35,7 +43,9 @@ class Assembler {
         return assembledProgram;
     }
 
-    private assemblerPass1_(rawInstructions: object[]) {
+    private buildAssembledProgramObject_(
+        rawInstructions: object[]
+    ): AssembledProgram {
         let instructions: InstructionInterface[] = [];
         let symbolTable: LabelMap = {};
 
@@ -48,9 +58,7 @@ class Assembler {
                     this.parseInstruction(i["instruction"])
                 );
             } else if (i["tag"] == Assembler.DIRECTIVE_TAG) {
-                count = instructions.push(
-                    this.parseDirective(i["directive"])
-                );
+                count = instructions.push(this.parseDirective(i["directive"]));
             }
 
             if (label != null) {
@@ -59,6 +67,15 @@ class Assembler {
             }
         }
         return new AssembledProgram(instructions, symbolTable);
+    }
+
+    private assemblerPass1_(rawInstructions: object[]): AssembledProgram {
+        let assembledProgram: AssembledProgram = this.buildAssembledProgramObject_(
+            rawInstructions
+        );
+        assembledProgram.generateInstructionLengthsAndOffsets();
+        return assembledProgram;
+
     }
 
     private assemblerPass2_(assembledProgram: AssembledProgram) {
@@ -137,22 +154,30 @@ class AssembledProgram {
     symbolTable: LabelMap;
     instructionStartAddr: number[];
     addrInstructionIndexMap: AddrInstructionMap;
+    instructionLengths: number[];
 
     constructor(instructions: InstructionInterface[], symbolTable: LabelMap) {
         this.instructions = instructions;
         this.symbolTable = symbolTable;
     }
 
-    generateMachineCode(): void {
+    generateInstructionLengthsAndOffsets(): void {
         this.instructionStartAddr = [];
+        this.instructionLengths = []
         this.addrInstructionIndexMap = {};
 
         let startAddr: number = 0;
         for (let i = 0; i < this.instructions.length; i++) {
             this.instructionStartAddr.push(startAddr);
             this.addrInstructionIndexMap[startAddr] = i;
-            this.instructions[i].generateMachineCode(this);
-            startAddr += this.instructions[i].machineCode.length;
+            this.instructionLengths.push(this.instructions[i].calculateLength());
+            startAddr += this.instructionLengths[i];
+        }
+    }
+    
+    generateMachineCode(): void {
+        for (let instruction of this.instructions) {
+            instruction.generateMachineCode(this);
         }
     }
 

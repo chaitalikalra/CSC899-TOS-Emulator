@@ -3,7 +3,7 @@ import {
     Operand,
     OperandType,
     RegisterOperand,
-    NumericConstantOperand
+    NumericConstantOperand,
 } from "../operand";
 import { assert } from "../error";
 import { AssembledProgram } from "../assembler";
@@ -12,7 +12,8 @@ import {
     fillModRmSibDisp,
     getImmediateBytes,
     combineMachineCode,
-    REGISTER_CODES
+    REGISTER_CODES,
+    getModRmSibDispLength,
 } from "../assembler_utils";
 
 abstract class UnaryArithmeticInstruction extends Instruction {
@@ -27,6 +28,22 @@ abstract class UnaryArithmeticInstruction extends Instruction {
                 dst.type == OperandType.Register,
             "Operand to " + this.operator + " can only be register or memory."
         );
+    }
+
+    calculateLength(): number {
+        let instructionLength: number = 0;
+        // For 16-bit operands, we add a prefix byte
+        if (this.operandSize == 2) {
+            instructionLength += 1;
+        }
+        // Add 1 byte for opcode
+        instructionLength += 1;
+
+        let dst: Operand = this.operands[0];
+        if (dst.type == OperandType.IndirectAddress) {
+            instructionLength += getModRmSibDispLength(dst);
+        }
+        return instructionLength;
     }
 }
 
@@ -53,6 +70,39 @@ abstract class BinaryArithmeticInstruction extends Instruction {
             this.operator +
                 " operator does not support memory to memory operations"
         );
+    }
+
+    calculateLength(): number {
+        let instructionLength: number = 0;
+        // For 16-bit operands, we add a prefix byte
+        if (this.operandSize == 2) {
+            instructionLength += 1;
+        }
+        // Add 1 byte for opcode
+        instructionLength += 1;
+
+        let src: Operand = this.operands[0];
+        let dst: Operand = this.operands[1];
+
+        if (src.type == OperandType.NumericConstant) {
+            if (
+                dst.type == OperandType.Register &&
+                (dst as RegisterOperand).name != "eax" &&
+                (dst as RegisterOperand).name != "ax" &&
+                (dst as RegisterOperand).name != "al"
+            ) {
+                instructionLength += getModRmSibDispLength(dst);
+            }
+            // Add length of immediate operand
+            instructionLength += this.operandSize;
+        } else if (src.type == OperandType.Register) {
+            instructionLength += getModRmSibDispLength(dst);
+        } else {
+            // src is memory
+            instructionLength += getModRmSibDispLength(src);
+        }
+
+        return instructionLength;
     }
 }
 
@@ -101,7 +151,7 @@ class AddInstruction extends BinaryArithmeticInstruction {
             mod_rm_sib_disp = fillModRmSibDisp(dst, src, null);
         } else {
             // src is a memory
-            // src is a register
+            // dst is a register
             if (this.operandSize == 1) opcode.push(0x02);
             else opcode.push(0x03);
             mod_rm_sib_disp = fillModRmSibDisp(src, dst, null);

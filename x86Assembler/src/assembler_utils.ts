@@ -28,7 +28,7 @@ const REGISTER_CODES = {
     esp: 4,
     ebp: 5,
     esi: 6,
-    edi: 7
+    edi: 7,
 };
 
 function getImmediateBytes(immediate: number, data_size: number): number[] {
@@ -38,6 +38,17 @@ function getImmediateBytes(immediate: number, data_size: number): number[] {
         ret.push(((uint_immediate >>> (i * 8)) & 0xff) >>> 0);
     }
     return ret;
+}
+
+function getModRmSibDispLength(rm_op: Operand): number {
+    // ToDo add implementation for memory operations
+    assert(rm_op.type == OperandType.Register, "");
+
+    if (rm_op.type == OperandType.Register) {
+        return 1; // Only 1 byte is used when rm_op is register
+    }
+
+    return 0;
 }
 
 function fillModRmSibDisp(
@@ -59,10 +70,13 @@ function fillModRmSibDisp(
 
     let reg_bits: number;
     if (reg == null) {
-        reg_bits = (reg_val & 0x07) >>> 0;
+        reg_bits = (reg_val & 0x07) >>> 0; // And because consider only 3 bits
     } else {
         reg_bits = REGISTER_CODES[(reg as RegisterOperand).name];
     }
+
+    // ToDo add implementation for memory operations
+    assert(rm_op.type == OperandType.Register, "");
 
     if (rm_op.type == OperandType.Register) {
         // Register addressing mode, mod bits are 11
@@ -107,5 +121,6 @@ export {
     REGISTER_CODES,
     getImmediateBytes,
     fillModRmSibDisp,
-    combineMachineCode
+    combineMachineCode,
+    getModRmSibDispLength,
 };

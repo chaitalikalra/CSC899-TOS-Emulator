@@ -65,7 +65,10 @@ export class AssemblerTestFixture {
     ) {
         let assembledProgram:AssembledProgram = this.assembler.assembleProgram(instruction);
         Expect(assembledProgram.instructions.length).toBe(1);
+        Expect(assembledProgram.instructionLengths.length).toBe(1);
+
         let generatedMachineCode: Uint8Array = assembledProgram.getMachineCode();
+        Expect(assembledProgram.instructionLengths[0]).toBe(expectedMachineCode.length);
         Expect(generatedMachineCode.length).toBe(expectedMachineCode.length);
         for (let i=0; i<generatedMachineCode.length; i++) {
             Expect(generatedMachineCode[i]).toBe(expectedMachineCode[i]);

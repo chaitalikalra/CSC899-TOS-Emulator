@@ -4,7 +4,7 @@ import {
     Operand,
     OperandType,
     RegisterOperand,
-    NumericConstantOperand
+    NumericConstantOperand,
 } from "../operand";
 import { AssembledProgram } from "../assembler";
 import {
@@ -12,7 +12,8 @@ import {
     REGISTER_CODES,
     fillModRmSibDisp,
     combineMachineCode,
-    getImmediateBytes
+    getImmediateBytes,
+    getModRmSibDispLength,
 } from "../assembler_utils";
 
 class PopInstruction extends Instruction {
@@ -32,6 +33,21 @@ class PopInstruction extends Instruction {
             this.operandSize >= 2,
             "pop operand size can only be 16/32 bits"
         );
+    }
+
+    calculateLength(): number {
+        let instructionLength: number = 0;
+        // For 16-bit operands, we add a prefix byte
+        if (this.operandSize == 2) {
+            instructionLength += 1;
+        }
+        // Add 1 byte for opcode
+        instructionLength += 1;
+        let dst: Operand = this.operands[0];
+        if (dst.type != OperandType.Register) {
+            instructionLength += getModRmSibDispLength(dst);
+        }
+        return instructionLength;
     }
 
     generateMachineCode(assembledProgram: AssembledProgram): void {
@@ -74,6 +90,23 @@ class PushInstruction extends Instruction {
             this.operandSize >= 2,
             "push operand size can only be 16/32 bits"
         );
+    }
+
+    calculateLength(): number {
+        let instructionLength: number = 0;
+        // For 16-bit operands, we add a prefix byte
+        if (this.operandSize == 2) {
+            instructionLength += 1;
+        }
+        // Add 1 byte for opcode
+        instructionLength += 1;
+        let src: Operand = this.operands[0];
+        if (src.type == OperandType.NumericConstant) {
+            instructionLength += this.operandSize;
+        } else if (src.type == OperandType.IndirectAddress) {
+            instructionLength += getModRmSibDispLength(src);
+        }
+        return instructionLength;
     }
 
     generateMachineCode(assembledProgram: AssembledProgram): void {

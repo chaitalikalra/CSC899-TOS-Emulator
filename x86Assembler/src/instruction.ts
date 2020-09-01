@@ -11,6 +11,7 @@ enum InstructionOperandSize {
 interface InstructionInterface {
     machineCode: Uint8Array;
     generateMachineCode(assembledProgram: AssembledProgram): void;
+    calculateLength(): number;
     toString(): string;
 }
 
@@ -45,6 +46,7 @@ abstract class Instruction implements InstructionInterface {
     public abstract generateMachineCode(
         assembledProgram: AssembledProgram
     ): void;
+    public abstract calculateLength(): number;
 
     public toString(): string {
         const MaxMachineCodeSize: number = 30;
@@ -89,13 +91,10 @@ abstract class AssemblerDirective implements InstructionInterface {
     expressions: (number | string)[];
     machineCode: Uint8Array;
 
-    constructor(
-        directive: string,
-        expressions: (number | string)[],
-    ) {
+    constructor(directive: string, expressions: (number | string)[]) {
         this.directive = directive;
         this.expressions = expressions;
-        
+
         this.validateDirective_();
     }
 
@@ -118,6 +117,8 @@ abstract class AssemblerDirective implements InstructionInterface {
     public abstract generateMachineCode(
         assembledProgram: AssembledProgram
     ): void;
+
+    public abstract calculateLength(): number;
 
     protected abstract validateDirective_(): void;
 }

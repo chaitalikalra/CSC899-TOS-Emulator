@@ -1,8 +1,20 @@
 import { Instruction } from "../instruction";
 import { assert } from "../error";
-import { Operand, OperandType, RegisterOperand, NumericConstantOperand } from "../operand";
+import {
+    Operand,
+    OperandType,
+    RegisterOperand,
+    NumericConstantOperand,
+} from "../operand";
 import { AssembledProgram } from "../assembler";
-import { OPERAND_SIZE_OVERRIDE, REGISTER_CODES, fillModRmSibDisp, getImmediateBytes, combineMachineCode } from "../assembler_utils";
+import {
+    OPERAND_SIZE_OVERRIDE,
+    REGISTER_CODES,
+    fillModRmSibDisp,
+    getImmediateBytes,
+    combineMachineCode,
+    getModRmSibDispLength,
+} from "../assembler_utils";
 
 class MovInstruction extends Instruction {
     protected setBaseMnemonic_(): void {
@@ -25,6 +37,35 @@ class MovInstruction extends Instruction {
             ),
             "mov does not support memory to memory transfer"
         );
+    }
+
+    calculateLength(): number {
+        let instructionLength: number = 0;
+        // For 16-bit operands, we add a prefix byte
+        if (this.operandSize == 2) {
+            instructionLength += 1;
+        }
+        // Add 1 byte for opcode
+        instructionLength += 1;
+
+        let src: Operand = this.operands[0];
+        let dst: Operand = this.operands[1];
+
+        if (src.type == OperandType.NumericConstant) {
+            // Add immediate bytes
+            instructionLength += this.operandSize;
+            // For destination register, nothing is added
+            // if dst is memory, then add mod_rm_sib_disp
+            if (dst.type == OperandType.IndirectAddress) {
+                instructionLength += getModRmSibDispLength(dst);
+            }
+        } else if (src.type == OperandType.Register) {
+            instructionLength += getModRmSibDispLength(dst);
+        } else {
+            // when src is memory,
+            instructionLength += getModRmSibDispLength(src);
+        }
+        return instructionLength;
     }
 
     generateMachineCode(assembledProgram: AssembledProgram): void {
@@ -55,7 +96,10 @@ class MovInstruction extends Instruction {
                 else opcode.push(0xc7);
                 mod_rm_sib_disp = fillModRmSibDisp(dst, null, 0);
             }
-            immediate = getImmediateBytes((src as NumericConstantOperand).getValue(), this.operandSize);
+            immediate = getImmediateBytes(
+                (src as NumericConstantOperand).getValue(),
+                this.operandSize
+            );
         } else if (src.type == OperandType.Register) {
             if (this.operandSize == 1) opcode.push(0x88);
             else opcode.push(0x89);
@@ -103,6 +147,20 @@ class LeaInstruction extends Instruction {
             this.operandSize >= 2,
             "lea operands size can only be 16/32 bits"
         );
+    }
+
+    calculateLength(): number {
+        let instructionLength: number = 0;
+        // For 16-bit operands, we add a prefix byte
+        if (this.operandSize == 2) {
+            instructionLength += 1;
+        }
+        // Add 1 byte for opcode
+        instructionLength += 1;
+        let src: Operand = this.operands[0];
+        // Src is always memory
+        instructionLength += getModRmSibDispLength(src);
+        return instructionLength;
     }
 
     generateMachineCode(assembledProgram: AssembledProgram): void {
