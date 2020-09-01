@@ -3,6 +3,7 @@ import { MovInstruction, LeaInstruction } from "./mov";
 import { PopInstruction, PushInstruction } from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
 import { AddInstruction, SubInstruction, IncInstruction, DecInstruction } from "./arithmetic";
+import { JmpInstruction, JmpNZInstruction } from "./jmp";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, null),
@@ -47,6 +48,8 @@ const InstructionSet = {
     decb: DecInstruction.bind(null, InstructionOperandSize.Byte),
     decw: DecInstruction.bind(null, InstructionOperandSize.Word),
     decl: DecInstruction.bind(null, InstructionOperandSize.Long),
+    jmp: JmpInstruction.bind(null, null),
+    jnz: JmpNZInstruction.bind(null, null),
 };
 
 export { InstructionSet };

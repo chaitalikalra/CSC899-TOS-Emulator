@@ -132,7 +132,7 @@ class Assembler {
             } else if (opTag == "NumericConstant") {
                 operands.push(new NumericConstantOperand(op["value"]["value"]));
             } else if (opTag == "LabelAddress") {
-                operands.push(new LabelAddressOperand(op["value"]["value"]));
+                operands.push(new LabelAddressOperand(op["value"]["value"]["value"]));
             } else {
                 throw new Error("Invalid parsed operand type: " + opTag);
             }
