@@ -156,6 +156,7 @@ export class ParserTestFixture {
     @TestCase("ret   ", null)
     @TestCase("ret ; hello world", "hello world")
     @TestCase("ret # hello world", "hello world")
+    @TestCase("ret # hello world     ", "hello world")
     @TestCase("ret ;", "")
     @TestCase("ret #", "")
     testAssemblyComments(instruction: string, comment: string | null) {
@@ -165,30 +166,55 @@ export class ParserTestFixture {
         if (comment == null) {
             Expect(instructions[0]["comment"]).toBeNull();
         } else {
-            Expect(instructions[0]["comment"]['tag']).toBe("Comment");
-            Expect(instructions[0]["comment"]['value']).toBe(comment);
+            Expect(instructions[0]["comment"]["tag"]).toBe("Comment");
+            Expect(instructions[0]["comment"]["value"]).toBe(comment);
         }
-        
-    }    
+    }
+
+    @Test("Check assembly comments")
+    @TestCase("ret   \n ret ; hello world \n ret #", [null, "hello world", ""])
+    testAssemblyCommentsMultipleInstructions(
+        instruction: string,
+        comments: (string | null)[]
+    ) {
+        let instructions: object[] = parse(instruction);
+        Expect(instructions.length).toBe(comments.length);
+        for (let i: number = 0; i < comments.length; i++) {
+            Expect(instructions[i]["tag"]).toBe("InstructionWithLabel");
+            if (comments[i] == null) {
+                Expect(instructions[i]["comment"]).toBeNull();
+            } else {
+                Expect(instructions[i]["comment"]["tag"]).toBe("Comment");
+                Expect(instructions[i]["comment"]["value"]).toBe(comments[i]);
+            }
+        }
+    }
 
     @Test("Check assembler directives")
     @TestCase(".long", "long", [])
     @TestCase(".byte 15", "byte", [15])
-    @TestCase(".byte 0x1A", "byte", [0x1A])
-    @TestCase(".byte 0x1A,23", "byte", [0x1A, 23])
+    @TestCase(".byte 0x1A", "byte", [0x1a])
+    @TestCase(".byte 0x1A,23", "byte", [0x1a, 23])
     @TestCase('.ascii "hello world"', "ascii", ["hello world"])
-    @TestCase('.ascii "hello world",    "test"', "ascii", ["hello world", "test"])
-    @TestCase('.byte 0x1A, "23"', "byte", [0x1A, "23"])
-    testAssemblerDirectives(directive: string, operator: string, operands: (string | number)[]) {
+    @TestCase('.ascii "hello world",    "test"', "ascii", [
+        "hello world",
+        "test",
+    ])
+    @TestCase('.byte 0x1A, "23"', "byte", [0x1a, "23"])
+    testAssemblerDirectives(
+        directive: string,
+        operator: string,
+        operands: (string | number)[]
+    ) {
         let directives: object[] = parse(directive);
         Expect(directives.length).toBe(1);
         Expect(directives[0]["tag"]).toBe("DirectiveWithLabel");
         Expect(directives[0]["directive"]["operator"]).toBe(operator);
-        
+
         let parsedOperands: (string | number)[] = [];
         for (let o of directives[0]["directive"]["operands"]) {
             parsedOperands.push(o["value"]);
         }
         Expect(parsedOperands).toEqual(operands);
-    }    
+    }
 }

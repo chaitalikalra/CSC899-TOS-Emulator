@@ -2,6 +2,10 @@
   function makeString(o) {
   	return o.join("");
   }
+  
+  function makeStringTrimmed(o) {
+  	return o.join("").trim();
+  }
 }
 
 CodeSection
@@ -14,7 +18,7 @@ InstructionWithLabel
   = __ l:(Label __)? i:Instruction c:(_ Comment)? __ {return {tag: "InstructionWithLabel", instruction:i, label:l == null? null: l[0], comment: c == null? null: c[1]};}
 
 Comment
-	= _ CommentMarker _ s:(.*) _ {return {tag: "Comment", value: makeString(s)};}
+	= _ CommentMarker _ s:([^\n]*) _ {return {tag: "Comment", value: makeStringTrimmed(s)};}
 
 CommentMarker
 	= ("#" / ";")
