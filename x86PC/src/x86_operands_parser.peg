@@ -23,7 +23,8 @@ Scale
   = [0-9]+ {return {tag: "Number", value: parseInt(text(), 10)}; }
 
 Offset
- = [-+]?[0-9]+ { return {tag: "Number", value: parseInt(text(), 10)}; }
+ = ("0x"[0-9a-fA-F]+ { return { tag: "Number", value: parseInt(text(), 16), size: 4 }; }) /
+ [-+]?[0-9]+ { return {tag: "Number", value: parseInt(text(), 10)}; } 
 
 Register
   = "%"name:RegisterName {return {tag: "Register", value: makeString(name).toLowerCase()}}

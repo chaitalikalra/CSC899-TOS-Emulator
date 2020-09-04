@@ -9,6 +9,7 @@ import {
     DecInstruction,
 } from "./arithmetic";
 import { JmpInstruction, JnzInstruction } from "./jmp";
+import { CallInstruction, RetInstruction } from "./procedure";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, "mov"),
@@ -26,6 +27,8 @@ const InstructionSet = {
     jmp: JmpInstruction.bind(null, "jmp"),
     jnz: JnzInstruction.bind(null, "jnz"),
     jne: JnzInstruction.bind(null, "jne"),
+    call: CallInstruction.bind(null, "call"),
+    ret: RetInstruction.bind(null, "ret"),
 };
 
 export { InstructionSet };
