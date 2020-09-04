@@ -12,7 +12,7 @@ interface InstructionInterface {
     machineCode: Uint8Array;
     generateMachineCode(assembledProgram: AssembledProgram, idx: number): void;
     calculateLength(): number;
-    toString(): string;
+    toString(label: string | null): string;
 }
 
 abstract class Instruction implements InstructionInterface {
@@ -49,7 +49,7 @@ abstract class Instruction implements InstructionInterface {
     ): void;
     public abstract calculateLength(): number;
 
-    public toString(): string {
+    public toString(label: string | null = null): string {
         const MaxMachineCodeSize: number = 30;
         let ret: string = "";
         let machineCodeStr_arr: string[] = [];
@@ -58,6 +58,9 @@ abstract class Instruction implements InstructionInterface {
         }
         ret += machineCodeStr_arr.join(" ");
         ret += " ".repeat(MaxMachineCodeSize - ret.length);
+        if (label != null) {
+            ret += label + ": ";
+        }
         ret += this.operator + "  ";
         let operandsStrArr: string[] = [];
         for (let op of this.operands) operandsStrArr.push(op.toString());
@@ -99,7 +102,7 @@ abstract class AssemblerDirective implements InstructionInterface {
         this.validateDirective_();
     }
 
-    public toString(): string {
+    public toString(label: string | null = null): string {
         const MaxMachineCodeSize: number = 30;
         let ret: string = "";
         let machineCodeStr_arr: string[] = [];
@@ -108,6 +111,9 @@ abstract class AssemblerDirective implements InstructionInterface {
         }
         ret += machineCodeStr_arr.join(" ");
         ret += " ".repeat(MaxMachineCodeSize - ret.length);
+        if (label != null) {
+            ret += label + ": ";
+        }
         ret += this.directive + "  ";
         let operandsStrArr: string[] = [];
         for (let op of this.expressions) operandsStrArr.push(op.toString());

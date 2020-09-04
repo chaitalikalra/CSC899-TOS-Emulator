@@ -75,7 +75,6 @@ class Assembler {
         );
         assembledProgram.generateInstructionLengthsAndOffsets();
         return assembledProgram;
-
     }
 
     private assemblerPass2_(assembledProgram: AssembledProgram) {
@@ -132,7 +131,9 @@ class Assembler {
             } else if (opTag == "NumericConstant") {
                 operands.push(new NumericConstantOperand(op["value"]["value"]));
             } else if (opTag == "LabelAddress") {
-                operands.push(new LabelAddressOperand(op["value"]["value"]["value"]));
+                operands.push(
+                    new LabelAddressOperand(op["value"]["value"]["value"])
+                );
             } else {
                 throw new Error("Invalid parsed operand type: " + opTag);
             }
@@ -152,6 +153,7 @@ interface AddrInstructionMap {
 class AssembledProgram {
     instructions: InstructionInterface[];
     symbolTable: LabelMap;
+    reverseSymbolTable: IndexLabelMap;
     instructionStartAddr: number[];
     addrInstructionIndexMap: AddrInstructionMap;
     instructionLengths: number[];
@@ -159,22 +161,28 @@ class AssembledProgram {
     constructor(instructions: InstructionInterface[], symbolTable: LabelMap) {
         this.instructions = instructions;
         this.symbolTable = symbolTable;
+        this.reverseSymbolTable = {};
+        for (let label in this.symbolTable) {
+            this.reverseSymbolTable[this.symbolTable[label]] = label;
+        }
     }
 
     generateInstructionLengthsAndOffsets(): void {
         this.instructionStartAddr = [];
-        this.instructionLengths = []
+        this.instructionLengths = [];
         this.addrInstructionIndexMap = {};
 
         let startAddr: number = 0;
         for (let i = 0; i < this.instructions.length; i++) {
             this.instructionStartAddr.push(startAddr);
             this.addrInstructionIndexMap[startAddr] = i;
-            this.instructionLengths.push(this.instructions[i].calculateLength());
+            this.instructionLengths.push(
+                this.instructions[i].calculateLength()
+            );
             startAddr += this.instructionLengths[i];
         }
     }
-    
+
     generateMachineCode(): void {
         for (let i = 0; i < this.instructions.length; i++) {
             this.instructions[i].generateMachineCode(this, i);
@@ -186,10 +194,14 @@ class AssembledProgram {
         ret += "Addr\t\t\tMachine Code\t\t\tAssembly\n";
         ret += "-".repeat(80) + "\n";
         for (let i = 0; i < this.instructions.length; i++) {
+            let label: string | null = null;
+            if (this.reverseSymbolTable[i] != undefined) {
+                label = this.reverseSymbolTable[i];
+            }
             ret +=
                 this.instructionStartAddr[i].toString(16) +
                 ":\t\t\t" +
-                this.instructions[i].toString() +
+                this.instructions[i].toString(label) +
                 "\n";
         }
         return ret;
@@ -206,6 +218,10 @@ class AssembledProgram {
 
 interface LabelMap {
     [index: string]: number;
+}
+
+interface IndexLabelMap {
+    [index: number]: string;
 }
 
 export { Assembler, AssembledProgram };
