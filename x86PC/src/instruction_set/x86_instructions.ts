@@ -1,6 +1,6 @@
 import { MovInstruction, LeaInstruction } from "./mov";
 import { NopInstruction } from "./nop";
-import { PushInstruction } from "./stack";
+import { PushInstruction, PopInstruction } from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
 import {
     AddInstruction,
@@ -16,7 +16,7 @@ const InstructionSet = {
     lea: LeaInstruction.bind(null, "lea"),
     nop: NopInstruction.bind(null, "nop"),
     push: PushInstruction.bind(null, "push"),
-    pop: PushInstruction.bind(null, "pop"),
+    pop: PopInstruction.bind(null, "pop"),
     and: AndInstruction.bind(null, "and"),
     or: OrInstruction.bind(null, "or"),
     xor: XorInstruction.bind(null, "xor"),
