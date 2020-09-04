@@ -8,7 +8,7 @@ class EFlags {
         ZF: 6,
         SF: 7,
         IF: 9,
-        OF: 11
+        OF: 11,
     };
 
     constructor() {
@@ -33,6 +33,26 @@ class EFlags {
 
     public setParityFlag(val: boolean): void {
         this.flags[EFlags.byteMappings["PF"]] = val;
+    }
+
+    public getCarryFlag(): boolean {
+        return this.flags[EFlags.byteMappings["CF"]];
+    }
+
+    public getOverflowFlag(): boolean {
+        return this.flags[EFlags.byteMappings["OF"]];
+    }
+
+    public getZeroFlag(): boolean {
+        return this.flags[EFlags.byteMappings["ZF"]];
+    }
+
+    public getSignFlag(): boolean {
+        return this.flags[EFlags.byteMappings["SF"]];
+    }
+
+    public getParityFlag(): boolean {
+        return this.flags[EFlags.byteMappings["PF"]];
     }
 }
 
