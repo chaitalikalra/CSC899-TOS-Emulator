@@ -4,7 +4,7 @@ import { PopInstruction, PushInstruction } from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
 import { AddInstruction, SubInstruction, IncInstruction, DecInstruction } from "./arithmetic";
 import { JmpInstruction, JmpNZInstruction } from "./jmp";
-import { RetInstruction } from "./procedure";
+import { RetInstruction, CallInstruction } from "./procedure";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, null),
@@ -52,6 +52,7 @@ const InstructionSet = {
     jmp: JmpInstruction.bind(null, null),
     jnz: JmpNZInstruction.bind(null, null),
     ret: RetInstruction.bind(null, null),
+    call: CallInstruction.bind(null, null),
 };
 
 export { InstructionSet };

@@ -123,6 +123,25 @@ export class AssemblerTestFixture {
             0x66, 0x89, 0xc8,
         ]
     )
+    @TestCase(
+        `
+        mov    $0x50000, %esp
+        mov    $0x1234, %ax
+        call   L2
+        L1:    jmp    L1
+        L2:    inc    %ax
+        ret
+        `,
+        // prettier-ignore
+        [
+            0xbc, 0x00, 0x00, 0x05, 0x00, 
+            0x66, 0xb8, 0x34, 0x12,
+            0xe8, 0x02, 0x00, 0x00, 0x00, 
+            0xeb, 0xfe,
+            0x66, 0x40,
+            0xc3,
+        ]
+    )
     testFullProgramOfInstructions(
         program: string,
         expectedMachineCode: Uint8Array
