@@ -54,7 +54,7 @@ abstract class Instruction implements InstructionInterface {
         let ret: string = "";
         let machineCodeStr_arr: string[] = [];
         for (let byte of this.machineCode) {
-            machineCodeStr_arr.push(byte.toString(16));
+            machineCodeStr_arr.push(byte.toString(16).padStart(2, "0"));
         }
         ret += machineCodeStr_arr.join(" ");
         ret += " ".repeat(MaxMachineCodeSize - ret.length);
