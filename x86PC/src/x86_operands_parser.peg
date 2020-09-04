@@ -15,7 +15,8 @@ Operand
 IndirectAddress
   = _ offset:Offset? _ "(" _ baseReg:Register _")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: null, scale: null}} /
   _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: null}} /
-  _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ "," _ scale:Scale? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: scale}}
+  _ offset:Offset? _ "(" _ baseReg:Register? _ "," _ indexReg:Register? _ "," _ scale:Scale? _ ")" {return {tag: "IndirectAddess", offset: offset, baseReg: baseReg, indexReg: indexReg, scale: scale}} / 
+  _ offset:Offset _  {return {tag: "IndirectAddess", offset: offset, baseReg: null, indexReg: null, scale: null}}
 
 
 Scale

@@ -2,7 +2,13 @@ import { MovInstruction, LeaInstruction } from "./mov";
 import { NopInstruction } from "./nop";
 import { PushInstruction } from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
-import { AddInstruction, SubInstruction, IncInstruction, DecInstruction } from "./arithmetic";
+import {
+    AddInstruction,
+    SubInstruction,
+    IncInstruction,
+    DecInstruction,
+} from "./arithmetic";
+import { JmpInstruction, JnzInstruction } from "./jmp";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, "mov"),
@@ -17,6 +23,9 @@ const InstructionSet = {
     sub: SubInstruction.bind(null, "sub"),
     inc: IncInstruction.bind(null, "inc"),
     dec: DecInstruction.bind(null, "dec"),
+    jmp: JmpInstruction.bind(null, "jmp"),
+    jnz: JnzInstruction.bind(null, "jnz"),
+    jne: JnzInstruction.bind(null, "jne"),
 };
 
 export { InstructionSet };
