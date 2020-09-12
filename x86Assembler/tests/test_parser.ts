@@ -217,4 +217,46 @@ export class ParserTestFixture {
         }
         Expect(parsedOperands).toEqual(operands);
     }
+
+    @Test("Test the locations in the parser outputs")
+    @TestCase("pop %ebx", [1])
+    @TestCase("ret", [1])
+    @TestCase("mov %ebx, %eax", [1])
+    @TestCase("L1: pop %ebx", [1])
+    @TestCase(
+        `L1:
+            pop %ebx`,
+        [2]
+    )
+    @TestCase(
+        `xor    %cx, %cx
+        mov    $0x3, %ax
+        L1:
+            
+            add    %ax, %cx
+        
+        dec    %ax
+        jnz    L1
+        
+        
+        mov    %cx, %ax`,
+        [1, 2, 5, 7, 8, 11]
+    )
+    testParserLocations(assemblyCode: string, startLines: number[]) {
+        let instructions: object[] = parse(assemblyCode);
+        Expect(instructions.length).toBe(startLines.length);
+
+        for (let i: number = 0; i < instructions.length; i++) {
+            let ins: object = instructions[i];
+            let key: string = "";
+            if (ins["tag"] == "DirectiveWithLabel") {
+                key = "directive";
+            } else if (ins["tag"] == "InstructionWithLabel") {
+                key = "instruction";
+            }
+            Expect(ins[key]["location"]["start"]["line"]).toEqual(
+                startLines[i]
+            );
+        }
+    }
 }

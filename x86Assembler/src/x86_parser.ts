@@ -188,13 +188,14 @@ function peg$parse(input: string, options?: IParseOptions) {
     	return {
       	tag:"Directive",
           operator: directive["value"],
-          operands: match == null ? [] : [match[0], match[2]].flat()
+          operands: match == null ? [] : [match[0], match[2]].flat(),
+          location: location()
       }
     };
   const peg$c13 = function(instruction: any): any {return instruction;};
-  const peg$c14 = function(operator: any, op1: any, op2: any): any {return {tag:"Instruction", operator:operator, operands:[op1, op2]}};
-  const peg$c15 = function(operator: any, op1: any): any {return {tag:"Instruction", operator:operator, operands:[op1]}};
-  const peg$c16 = function(operator: any): any {return {tag:"Instruction", operator:operator, operands:[]}};
+  const peg$c14 = function(operator: any, op1: any, op2: any): any {return {tag:"Instruction", operator:operator, operands:[op1, op2], location:location()}};
+  const peg$c15 = function(operator: any, op1: any): any {return {tag:"Instruction", operator:operator, operands:[op1], location:location()}};
+  const peg$c16 = function(operator: any): any {return {tag:"Instruction", operator:operator, operands:[], location:location()}};
   const peg$c17 = function(op: any): any {return {tag: "Operand", value: op};};
   const peg$c18 = function(id: any): any {return {tag: "Operand", value:{tag: "LabelAddress", value: id}};};
   const peg$c19 = "(";

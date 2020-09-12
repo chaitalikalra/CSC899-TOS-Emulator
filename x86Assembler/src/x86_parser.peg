@@ -32,7 +32,8 @@ DirectiveInstruction
   	return {
     	tag:"Directive",
         operator: directive["value"],
-        operands: match == null ? [] : [match[0], match[2]].flat()
+        operands: match == null ? [] : [match[0], match[2]].flat(),
+        location: location()
     }
   }
 
@@ -43,12 +44,12 @@ Instruction
   = _ instruction:(BinaryInstruction / UnaryInstruction / NullaryInstruction) _ {return instruction;}
 
 BinaryInstruction
-  = operator:Mnemonic _ op1:Operand _ "," _ op2:Operand {return {tag:"Instruction", operator:operator, operands:[op1, op2]}}
+  = operator:Mnemonic _ op1:Operand _ "," _ op2:Operand {return {tag:"Instruction", operator:operator, operands:[op1, op2], location:location()}}
 UnaryInstruction
- = operator:Mnemonic _ op1:Operand {return {tag:"Instruction", operator:operator, operands:[op1]}}
+ = operator:Mnemonic _ op1:Operand {return {tag:"Instruction", operator:operator, operands:[op1], location:location()}}
 
 NullaryInstruction
- = operator:Mnemonic {return {tag:"Instruction", operator:operator, operands:[]}}
+ = operator:Mnemonic {return {tag:"Instruction", operator:operator, operands:[], location:location()}}
 
 Operand
   = op:(NumericConstant/ Register / IndirectAddress) {return {tag: "Operand", value: op};} /
