@@ -14,6 +14,7 @@ import {
 } from "./operand";
 import { InstructionSet } from "./instruction_set/x86_instructions";
 import { AssemblerDirectives } from "./assembler_directives/x86_assembler_directives";
+import { deepcopy } from "./utils";
 
 class Assembler {
     static readonly INSTRUCTION_TAG: string = "InstructionWithLabel";
@@ -39,6 +40,9 @@ class Assembler {
 
         // Step 3: Pass 2 of the assembler generates machine code for the instructions
         this.assemblerPass2_(assembledProgram);
+
+        // Step 4: Add metadata for the PC for debugging
+        assembledProgram.createMetadata(rawInstructions, program);
 
         return assembledProgram;
     }
@@ -157,6 +161,7 @@ class AssembledProgram {
     instructionStartAddr: number[];
     addrInstructionIndexMap: AddrInstructionMap;
     instructionLengths: number[];
+    metadata: Object = {};
 
     constructor(instructions: InstructionInterface[], symbolTable: LabelMap) {
         this.instructions = instructions;
@@ -213,6 +218,39 @@ class AssembledProgram {
             retBytes.push(...instruction.machineCode);
         }
         return new Uint8Array(retBytes);
+    }
+
+    createMetadata(rawInstructions: object[], program: string) {
+        this.metadata = {};
+        this.metadata["program"] = program;
+        this.metadata["line_nums"] = [];
+        for (let i: number = 0; i < rawInstructions.length; i++) {
+            let ins: object = rawInstructions[i];
+            let key: string = "";
+            if (ins["tag"] == "DirectiveWithLabel") {
+                key = "directive";
+            } else if (ins["tag"] == "InstructionWithLabel") {
+                key = "instruction";
+            }
+            this.metadata["line_nums"].append(
+                ins[key]["location"]["start"]["line"]
+            );
+        }
+    }
+
+    genMetadata(): Object {
+        let metadata: Object = deepcopy(this.metadata);
+        metadata["symbol_table"] = deepcopy(this.symbolTable);
+        metadata["reverse_symbol_table"] = deepcopy(this.reverseSymbolTable);
+        metadata["instruction_start_addr"] = deepcopy(
+            this.instructionStartAddr
+        );
+        metadata["instruction_lengths"] = deepcopy(this.instructionLengths);
+        metadata["addr_instruction_map"] = deepcopy(
+            this.addrInstructionIndexMap
+        );
+        return metadata;
+
     }
 }
 

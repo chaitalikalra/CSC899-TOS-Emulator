@@ -29,4 +29,9 @@ function get_uint(n: number, data_size: number): number {
     }
 }
 
-export { get_uint, uint8, uint16, uint32 };
+function deepcopy(obj: object): object {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+export { get_uint, uint8, uint16, uint32, deepcopy
+ };
