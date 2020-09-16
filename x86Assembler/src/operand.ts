@@ -9,7 +9,7 @@ enum OperandType {
     NumericConstant = "numericConstant",
     IndirectAddress = "indirectAddres",
     Register = "register",
-    LabelAddress = "labelAddress"
+    LabelAddress = "labelAddress",
 }
 
 interface RegisterSizeMap {
@@ -17,32 +17,31 @@ interface RegisterSizeMap {
 }
 
 class RegisterOperand implements Operand {
-    
     static x86Registers: RegisterSizeMap = {
-        "eax": 4,
-        "ecx": 4,
-        "edx": 4,
-        "ebx": 4,
-        "esp": 4,
-        "ebp": 4,
-        "esi": 4,
-        "edi": 4,
-        "ax": 2,
-        "cx": 2,
-        "dx": 2,
-        "bx": 2,
-        "sp": 2,
-        "bp": 2,
-        "si": 2,
-        "di": 2,
-        "al": 1,
-        "ah": 1,
-        "bl": 1,
-        "bh": 1,
-        "dl": 1,
-        "dh": 1,
-        "cl": 1,
-        "ch": 1,
+        eax: 4,
+        ecx: 4,
+        edx: 4,
+        ebx: 4,
+        esp: 4,
+        ebp: 4,
+        esi: 4,
+        edi: 4,
+        ax: 2,
+        cx: 2,
+        dx: 2,
+        bx: 2,
+        sp: 2,
+        bp: 2,
+        si: 2,
+        di: 2,
+        al: 1,
+        ah: 1,
+        bl: 1,
+        bh: 1,
+        dl: 1,
+        dh: 1,
+        cl: 1,
+        ch: 1,
     };
 
     type: OperandType;
@@ -50,7 +49,7 @@ class RegisterOperand implements Operand {
 
     constructor(name: string) {
         this.type = OperandType.Register;
-        if(RegisterOperand.x86Registers[name] == undefined) {
+        if (RegisterOperand.x86Registers[name] == undefined) {
             throw AssemblyError.throwInvalidRegisterError(name);
         }
         this.name = name;
@@ -65,11 +64,18 @@ class RegisterOperand implements Operand {
     }
 }
 
+enum IndirectAddressScale {
+    Scale1 = 1,
+    Scale2 = 2,
+    Scale4 = 4,
+    Scale8 = 8,
+}
+
 class IndirectAddressOperand implements Operand {
     type: OperandType;
     offset: number;
     baseRegister: string | null;
-    scale: number;
+    scale: IndirectAddressScale;
     indexRegister: string | null;
 
     constructor(
@@ -78,6 +84,11 @@ class IndirectAddressOperand implements Operand {
         indexRegister: string | null,
         scale: number
     ) {
+
+        if (baseRegister != null) {
+            baseRegister = baseRegister.trim().toLowerCase();
+        }
+
         this.type = OperandType.IndirectAddress;
         this.baseRegister = baseRegister;
         this.indexRegister = indexRegister;
@@ -140,5 +151,6 @@ export {
     RegisterOperand,
     LabelAddressOperand,
     IndirectAddressOperand,
-    NumericConstantOperand
+    NumericConstantOperand,
+    IndirectAddressScale,
 };

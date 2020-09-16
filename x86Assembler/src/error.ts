@@ -5,7 +5,8 @@ enum ErrorType {
     InvalidRegister,
     InvalidOperandType,
     InvalidOperandSize,
-    AssertionError
+    AssertionError,
+    InvalidIndirectAddress,
 }
 
 class AssemblyError extends Error {
@@ -59,6 +60,13 @@ class AssemblyError extends Error {
         return new AssemblyError(
             ErrorType.InvalidOperandSize,
             `Invalid operator size for operator: ${op}`
+        );
+    }
+
+    static throwInvalidIndirectAddressError(op: string) {
+        return new AssemblyError(
+            ErrorType.InvalidIndirectAddress,
+            `Invalid indirect address: ${op}`
         );
     }
 }

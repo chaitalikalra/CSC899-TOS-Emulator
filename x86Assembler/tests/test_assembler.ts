@@ -19,6 +19,8 @@ export class AssemblerTestFixture {
     @TestCase("mov $0xdeadbeef,%ebx", [0xbb, 0xef, 0xbe, 0xad, 0xde])
     @TestCase("mov %bx,%ax", [0x66, 0x89, 0xd8])
     @TestCase("mov %ah,%bl", [0x88, 0xe3])
+    @TestCase("mov %bl,(%eax)", [0x88, 0x18])
+    @TestCase("mov %bx,(%eax)", [0x66, 0x89, 0x18])
 
     // Test Arithmetic Instructions
     @TestCase("add %bx,%ax", [0x66, 0x01, 0xd8])

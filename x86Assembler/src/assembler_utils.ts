@@ -1,5 +1,11 @@
 import { get_uint } from "./utils";
-import { Operand, OperandType, RegisterOperand } from "./operand";
+import {
+    IndirectAddressOperand,
+    Operand,
+    OperandType,
+    RegisterOperand,
+    IndirectAddressScale,
+} from "./operand";
 import { assert } from "./error";
 
 const OPERAND_SIZE_OVERRIDE = 0x66;
@@ -41,11 +47,18 @@ function getImmediateBytes(immediate: number, data_size: number): number[] {
 }
 
 function getModRmSibDispLength(rm_op: Operand): number {
-    // ToDo add implementation for memory operations
-    assert(rm_op.type == OperandType.Register, "");
-
     if (rm_op.type == OperandType.Register) {
         return 1; // Only 1 byte is used when rm_op is register
+    } else if (rm_op.type == OperandType.IndirectAddress) {
+        let len: number = 1;
+        let rmOp: IndirectAddressOperand = rm_op as IndirectAddressOperand;
+        // Add implementation for displacement size calculation
+        assert(
+            rmOp.offset == 0,
+            "Implementation support for displacement does not exist yet"
+        );
+        if (rmOp.indexRegister != null) len += 1;
+        return len;
     }
 
     return 0;
@@ -75,8 +88,11 @@ function fillModRmSibDisp(
         reg_bits = REGISTER_CODES[(reg as RegisterOperand).name];
     }
 
-    // ToDo add implementation for memory operations
-    assert(rm_op.type == OperandType.Register, "");
+    assert(
+        rm_op.type == OperandType.Register ||
+            rm_op.type == OperandType.IndirectAddress,
+        "rm_op can only be Indirect Address or Register"
+    );
 
     if (rm_op.type == OperandType.Register) {
         // Register addressing mode, mod bits are 11
@@ -85,6 +101,29 @@ function fillModRmSibDisp(
         mod_rm_byte = makeModRmByte(mod_bits, reg_bits, rm_bits);
         ret.push(mod_rm_byte);
         return ret;
+    } else {
+        // rm_op is type Indirect Address
+        let rmOp: IndirectAddressOperand = rm_op as IndirectAddressOperand;
+        // Add assert to only allow currently supported functionality
+        assert(rmOp.baseRegister != null, "");
+        if (rmOp.baseRegister != null) {
+            let mod_bits: number = 0x00;
+            let rm_bits: number;
+            let sib_byte: number | null = null;
+            if (rmOp.indexRegister != null) {
+                // SIB mode - rm will contain 100
+                rm_bits = 4;
+                // prepare sib byte
+                sib_byte = makeSibByte(rmOp);
+            } else {
+                // No SIB - rm will contain base register
+                rm_bits = REGISTER_CODES[rmOp.baseRegister];
+            }
+            mod_rm_byte = makeModRmByte(mod_bits, reg_bits, rm_bits);
+            ret.push(mod_rm_byte);
+            if (sib_byte != null) ret.push(sib_byte);
+            return ret;
+        }
     }
 }
 
@@ -94,6 +133,27 @@ function makeModRmByte(
     rm_bits: number
 ): number {
     return get_uint(((mod_bits << 6) | (reg_bits << 3) | rm_bits) >>> 0, 1);
+}
+
+function makeSibByte(rmOp: IndirectAddressOperand) {
+    let scaleBits: number;
+    switch (rmOp.scale) {
+        case IndirectAddressScale.Scale1:
+            scaleBits = 0;
+            break;
+        case IndirectAddressScale.Scale2:
+            scaleBits = 1;
+            break;
+        case IndirectAddressScale.Scale4:
+            scaleBits = 2;
+            break;
+        case IndirectAddressScale.Scale8:
+            scaleBits = 3;
+            break;
+    }
+    let baseBits = REGISTER_CODES[rmOp.baseRegister];
+    let indexBits = REGISTER_CODES[rmOp.indexRegister];
+    return get_uint(((scaleBits << 6) | (indexBits << 3) | baseBits) >>> 0, 1);
 }
 
 function combineMachineCode(
