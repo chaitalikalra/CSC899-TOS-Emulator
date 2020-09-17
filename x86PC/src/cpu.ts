@@ -122,7 +122,7 @@ class CPU {
             return false;
         }
         this.setInstructionPointer(ipValue + instruction.byteLength);
-        console.log(instruction);
+        console.log(instruction.toString());
         instruction.executeInstruction(this);
         return true;
     }

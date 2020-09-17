@@ -19,6 +19,7 @@ abstract class x86Instruction {
     bytes: Uint8Array;
     operands: x86Operand[];
     instructionOpSize: number;
+    opString: string;
 
     constructor(
         instructionName: string,
@@ -34,6 +35,7 @@ abstract class x86Instruction {
         this.byteLength = bytes.length;
         this.operands = [];
         this.instructionOpSize = InstructionOperandSize.Long;
+        this.opString = opString;
 
         if (opString.length > 0) {
             let opObjs: object[] = parse(opString);
@@ -66,6 +68,10 @@ abstract class x86Instruction {
                     assert(false, "Could not get operand size from mnemonic");
             }
         }
+    }
+
+    toString(): string {
+        return this.instructionName + " " + this.opString;
     }
 
     abstract executeInstruction(cpu: CPU): void;
