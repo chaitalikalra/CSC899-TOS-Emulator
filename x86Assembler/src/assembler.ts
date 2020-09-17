@@ -232,7 +232,7 @@ class AssembledProgram {
             } else if (ins["tag"] == "InstructionWithLabel") {
                 key = "instruction";
             }
-            this.metadata["line_nums"].append(
+            this.metadata["line_nums"].push(
                 ins[key]["location"]["start"]["line"]
             );
         }
