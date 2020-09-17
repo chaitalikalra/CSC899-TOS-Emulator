@@ -76,8 +76,14 @@ class Memory {
         return arr[0];
     }
 
-    getSlice(start: number, size: number) {
-        return new Uint8Array(this.buffer.slice(start, start + size));
+    getSlice(start: number, size: number | undefined) {
+        let ret: ArrayBuffer;
+        if (size == undefined) {
+            ret =  this.buffer.slice(start);
+        } else {
+            ret = this.buffer.slice(start, start + size);
+        }
+        return new Uint8Array(ret);
     }
 }
 
