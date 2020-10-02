@@ -1,0 +1,14 @@
+{
+  "name": "x86-assembler",
+  "version": "1.0.0",
+  "description": "x86Assembler for CSC899",
+  "main": "../dist/x86Assembler/src/assembler.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "UNLICENSED"
+}
