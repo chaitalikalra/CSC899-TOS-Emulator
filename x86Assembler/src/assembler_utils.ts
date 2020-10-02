@@ -4,7 +4,6 @@ import {
     Operand,
     OperandType,
     RegisterOperand,
-    IndirectAddressScale,
 } from "./operand";
 import { assert } from "./error";
 
@@ -138,16 +137,16 @@ function makeModRmByte(
 function makeSibByte(rmOp: IndirectAddressOperand) {
     let scaleBits: number;
     switch (rmOp.scale) {
-        case IndirectAddressScale.Scale1:
+        case 1:
             scaleBits = 0;
             break;
-        case IndirectAddressScale.Scale2:
+        case 2:
             scaleBits = 1;
             break;
-        case IndirectAddressScale.Scale4:
+        case 4:
             scaleBits = 2;
             break;
-        case IndirectAddressScale.Scale8:
+        case 8:
             scaleBits = 3;
             break;
     }

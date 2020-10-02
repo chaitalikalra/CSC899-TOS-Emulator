@@ -64,18 +64,11 @@ class RegisterOperand implements Operand {
     }
 }
 
-enum IndirectAddressScale {
-    Scale1 = 1,
-    Scale2 = 2,
-    Scale4 = 4,
-    Scale8 = 8,
-}
-
 class IndirectAddressOperand implements Operand {
     type: OperandType;
     offset: number;
     baseRegister: string | null;
-    scale: IndirectAddressScale;
+    scale: number;
     indexRegister: string | null;
 
     constructor(
@@ -84,7 +77,6 @@ class IndirectAddressOperand implements Operand {
         indexRegister: string | null,
         scale: number
     ) {
-
         if (baseRegister != null) {
             baseRegister = baseRegister.trim().toLowerCase();
         }
@@ -152,5 +144,4 @@ export {
     LabelAddressOperand,
     IndirectAddressOperand,
     NumericConstantOperand,
-    IndirectAddressScale,
 };
