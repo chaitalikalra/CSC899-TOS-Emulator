@@ -9,11 +9,12 @@
         "allowJs": true,
         "allowUmdGlobalAccess": true,
         "noEmitOnError": true,
-        "outDir": "../build/x86Assembler/",
+        "outDir": "../dist/x86Assembler/",
         "composite": true,
         "experimentalDecorators": true,
         "lib": [
-            "es2019"
+            "es2019",
+            "dom"
         ]
     },
     "include": [
