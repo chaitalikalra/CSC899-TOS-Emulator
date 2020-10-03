@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "es6",
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -9,12 +9,12 @@
         "allowJs": true,
         "allowUmdGlobalAccess": true,
         "noEmitOnError": true,
-        "outDir": "../dist/application/",
+        "outDir": "../dist/main",
         "composite": true,
         "experimentalDecorators": true,
     },
     "include": [
-        "src/**/*"
+        "main.ts"
     ],
     "exclude": [
         "node_modules",
