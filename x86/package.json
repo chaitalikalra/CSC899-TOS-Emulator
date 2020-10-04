@@ -1,0 +1,21 @@
+{
+  "name": "x86",
+  "version": "1.0.0",
+  "description": "x86 Assembler and PC",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "npx tsc -b main/",
+    "build-peg": "npm run build-assembler-peg && npm run build-pc-peg",
+    "build-assembler-peg": "npx tspegjs -o x86Assembler/src/x86_parser.ts x86Assembler/src/x86_parser.peg",
+    "build-pc-peg": "npx tspegjs -o x86PC/src/x86_operands_parser.ts x86PC/src/x86_operands_parser.peg",
+    "test-assembler": "npx alsatian x86Assembler/tests/*",
+    "test-pc": "npx alsatian x86PC/tests/*",
+    "test": "npm run test-assembler && npm run test-pc"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "alsatian": "^3.2.1",
+    "ts-pegjs": "^0.2.6",
+    "typescript": "^4.0.3"
+  }
+}
