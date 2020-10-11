@@ -1,3 +1,7 @@
-.code-editor {
-    
+.browse {
+    margin: 0px;
+}
+
+.code-area {
+    min-height: 400px;
 }

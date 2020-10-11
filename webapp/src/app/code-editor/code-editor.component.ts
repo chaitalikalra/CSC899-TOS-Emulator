@@ -15,6 +15,10 @@ export class CodeEditorComponent implements OnInit {
 
   mode = 'assembly_x86';
   theme = 'dracula';
+  options = {
+    fontSize: 14,
+    showPrintMargin: false,
+  };
 
   constructor() {}
 

@@ -27,7 +27,23 @@ export class AssembleComponent implements OnInit {
     this.assembledCode = s.toString();
   }
 
-  onRoute(): void {
-    this.router.navigateByUrl('/test', { skipLocationChange: true });
+  onClear(): void {
+    // this.router.navigateByUrl('/test', { skipLocationChange: true });
+    this.code = '';
+  }
+
+  onFileSelect(files): void {
+    const file: File = files[0];
+    const reader: FileReader = new FileReader();
+
+    reader.readAsText(file);
+
+    reader.onload = () => {
+      console.log(reader.result);
+      this.code = reader.result as string;
+    };
+    reader.onerror = () => {
+      console.log(reader.error);
+    };
   }
 }
