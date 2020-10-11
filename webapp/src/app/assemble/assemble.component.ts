@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { X86Service } from '../x86.service';
 import { Router } from '@angular/router';
+import 'brace';
+import 'brace/mode/assembly_x86';
+import 'brace/theme/dracula';
 
 @Component({
   selector: 'app-assemble',

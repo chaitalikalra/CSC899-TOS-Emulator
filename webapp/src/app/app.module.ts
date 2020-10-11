@@ -1,17 +1,24 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms'; // <-- NgModel lives here
-// import { UIRouterModule } from '@uirouter/angular';
 
 import { AppComponent } from './app.component';
 import { AssembleComponent } from './assemble/assemble.component';
 import { EmulatorComponent } from './emulator/emulator.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AceEditorModule } from 'ng2-ace-editor';
+import { CodeEditorComponent } from './code-editor/code-editor.component';
 
 @NgModule({
-  declarations: [AppComponent, AssembleComponent, EmulatorComponent],
-  imports: [BrowserModule, FormsModule, AppRoutingModule, NgbModule],
+  declarations: [AppComponent, AssembleComponent, EmulatorComponent, CodeEditorComponent],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    AppRoutingModule,
+    NgbModule,
+    AceEditorModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

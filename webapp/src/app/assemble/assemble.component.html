@@ -1,8 +1,10 @@
 <div class="row">
-    <p>Code goes here</p>
-  </div>
+  <p>Code goes here</p>
+</div>
 <div class="row">
-  <textarea rows="15" cols="50" [(ngModel)]="code"></textarea>
+  <div class="col-sm-6">
+  <app-code-editor [(code)]="code"></app-code-editor>
+  </div>
 </div>
 
 <div class="row pt-2">
@@ -16,6 +18,5 @@
 </div>
 
 <div class="row">
-    <pre>{{ assembledCode }}</pre>
+  <pre>{{ assembledCode }}</pre>
 </div>
-
