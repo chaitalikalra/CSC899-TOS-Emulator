@@ -12,7 +12,8 @@ import 'brace/theme/dracula';
 })
 export class AssembleComponent implements OnInit {
   code = 'Type some code here';
-  assembledCode = '';
+  error = '';
+
   constructor(private x86Service: X86Service, private router: Router) {
     console.log('Assemble constructor');
   }
@@ -23,13 +24,22 @@ export class AssembleComponent implements OnInit {
   }
 
   onAssemble(): void {
-    let s = this.x86Service.assembleProgram(this.code);
-    this.assembledCode = s.toString();
+    if (this.code.trim().length === 0) {
+      return;
+    }
+    try {
+      this.x86Service.assembleProgram(this.code);
+    } catch (e) {
+      const errorObject = e.getErrorObject();
+      this.error = errorObject.message;
+    }
   }
 
   onClear(): void {
     // this.router.navigateByUrl('/test', { skipLocationChange: true });
     this.code = '';
+    this.error = '';
+    this.x86Service.clear();
   }
 
   onFileSelect(files): void {

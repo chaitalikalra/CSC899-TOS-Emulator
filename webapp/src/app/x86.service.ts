@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { x86Assembler, x86PC } from 'x86';
+import { x86Assembler, x86PC, x86AssembledProgram } from 'x86';
 
 enum States {
-  Begin = 0,
-  AssembleReady = 1,
-  Assembled = 2,
-  EmulatorReady = 3,
+  Begin,
+  AssembleReady,
+  AssembleError,
+  Assembled,
+  EmulatorReady,
 }
 
 @Injectable({
@@ -14,6 +15,8 @@ enum States {
 export class X86Service {
   state: States = States.Begin;
   assembler: x86Assembler;
+  assembledProgram: x86AssembledProgram = null;
+
   pc: x86PC;
 
   constructor() {
@@ -34,8 +37,18 @@ export class X86Service {
     }
   }
 
-  assembleProgram(code: string): object {
-    this.state = States.Assembled;
-    return this.assembler.assembleProgram(code);
+  assembleProgram(code: string): void {
+    try {
+      this.assembledProgram = this.assembler.assembleProgram(code);
+      this.state = States.Assembled;
+    } catch (e) {
+      this.state = States.AssembleError;
+      throw(e);
+    }
+  }
+
+  clear(): void {
+    this.state = States.AssembleReady;
+    this.assembleProgram = null;
   }
 }
