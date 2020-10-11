@@ -21,6 +21,17 @@ class AssemblyError extends Error {
         this.errorType = errorType;
     }
 
+    private _getMessage(): string {
+        return ErrorType[this.errorType] + ": " + this.message;
+    }
+
+    getErrorObject(): object {
+        return {
+            type: ErrorType[this.errorType],
+            message: this._getMessage(),
+        };
+    }
+
     static throwSyntaxError(m: string) {
         return new AssemblyError(
             ErrorType.SyntaxError,
