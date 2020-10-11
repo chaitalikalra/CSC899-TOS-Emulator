@@ -1,0 +1,21 @@
+<div class="row">
+    <p>Code goes here</p>
+  </div>
+<div class="row">
+  <textarea rows="15" cols="50" [(ngModel)]="code"></textarea>
+</div>
+
+<div class="row pt-2">
+  <button type="button" class="btn btn-primary" (click)="onAssemble()">
+    Assemble
+  </button>
+  &nbsp;
+  <button type="button" class="btn btn-secondary" (click)="onRoute()">
+    Route
+  </button>
+</div>
+
+<div class="row">
+    <pre>{{ assembledCode }}</pre>
+</div>
+
