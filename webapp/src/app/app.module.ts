@@ -12,6 +12,7 @@ import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { PropertyDisplayComponent } from './property-display/property-display.component';
 import { RegistersViewComponent } from './registers-view/registers-view.component';
+import { FlagsViewComponent } from './flags-view/flags-view.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { RegistersViewComponent } from './registers-view/registers-view.componen
     CodeEditorComponent,
     PropertyDisplayComponent,
     RegistersViewComponent,
+    FlagsViewComponent,
   ],
   imports: [
     BrowserModule,

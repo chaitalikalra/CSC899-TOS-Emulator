@@ -248,6 +248,10 @@ class CPU {
         }
         return registers;
     }
+
+    getFlagValues(): object {
+        return this.eFlags.getFlags();
+    }
 }
 
 export { CPU };

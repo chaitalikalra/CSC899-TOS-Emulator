@@ -57,6 +57,10 @@ class PC {
     public getRegisterValues(): object {
         return this.cpu.getRegisterValues();
     }
+
+    public getFlagValues(): object {
+        return this.cpu.getFlagValues();
+    }
 }
 
 export { PC };

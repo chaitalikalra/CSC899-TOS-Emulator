@@ -54,6 +54,17 @@ class EFlags {
     public getParityFlag(): boolean {
         return this.flags[EFlags.byteMappings["PF"]];
     }
+
+    public getFlags(): object {
+        return {
+            carry: this.getCarryFlag().toString(),
+            zero: this.getZeroFlag().toString(),
+            parity: this.getParityFlag().toString(),
+            overflow: this.getOverflowFlag().toString(),
+            sign: this.getSignFlag().toString(),
+        };
+        
+    }
 }
 
 export { EFlags };

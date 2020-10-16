@@ -3,6 +3,7 @@ import { x86PC } from 'x86';
 export class ExecutionContext {
   constructor(
     readonly registers: RegisterMapping,
+    readonly flags: FlagsMapping,
     readonly instructionPtr: number,
     readonly currentLineNumber: number,
     readonly programEnded: boolean
@@ -24,6 +25,7 @@ export class ExecutionContext {
     }
     return new ExecutionContext(
       pc.getRegisterValues() as RegisterMapping,
+      pc.getFlagValues() as FlagsMapping,
       eip,
       lineNum,
       programEnded
