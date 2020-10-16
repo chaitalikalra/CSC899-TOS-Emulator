@@ -49,6 +49,10 @@ class PC {
     public executeNextInstruction(): boolean {
         return this.cpu.executeNextInstruction(this.disassembler);
     }
+    
+    public getInstructionPtr(): number {
+        return this.cpu.getInstructionPointer();
+    }
 }
 
 export { PC };

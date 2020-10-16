@@ -31,6 +31,7 @@ export class AssembleComponent implements OnInit {
       this.x86Service.assembleProgram(this.code);
       this.router.navigateByUrl('/test', { skipLocationChange: true });
     } catch (e) {
+      console.log(e);
       const errorObject = e.getErrorObject();
       this.error = errorObject.message;
     }

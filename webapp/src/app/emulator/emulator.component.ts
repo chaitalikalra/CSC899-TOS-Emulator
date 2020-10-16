@@ -49,7 +49,9 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
   onStart(): void {
     this.x86Service.beginEmulation();
     this.updateButtonStates();
-    // Update cursor to first instruction
+    this.editor.setCursorLine(
+      this.x86Service.executionContext.currentLineNumber
+    );
   }
 
   onRestart(): void {
@@ -63,6 +65,10 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
 
   onNext(): void {
     console.log('On Next');
+    this.x86Service.executeNextInstruction();
+    this.editor.setCursorLine(
+      this.x86Service.executionContext.currentLineNumber
+    );
     this.updateButtonStates();
   }
 

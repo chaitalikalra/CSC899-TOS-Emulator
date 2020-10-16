@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { x86Assembler, x86PC, x86AssembledProgram } from 'x86';
+import { ExecutionContext } from './execution_context';
 
 export enum States {
   Begin,
@@ -27,6 +28,7 @@ export class X86Service {
   // Emulator
   pc: x86PC = null;
   metadata: object = null;
+  executionContext: ExecutionContext = null;
 
   constructor() {}
 
@@ -61,11 +63,12 @@ export class X86Service {
 
   clear(): void {
     this.state = States.Begin;
-    this.assembleProgram = null;
+    this.assembledProgram = null;
     this.assembler = null;
     this.pc = null;
     this.originalCode = '';
     this.metadata = null;
+    this.executionContext = null;
     this.onAssemblerReady();
   }
 
@@ -73,10 +76,35 @@ export class X86Service {
     this.state = States.EmulationStart;
     this.metadata = this.assembledProgram.genMetadata();
     this.pc.loadAssembledProgram(this.assembledProgram.getMachineCode(), 0);
+    this.executionContext = ExecutionContext.buildContext(
+      this.pc,
+      this.metadata,
+      this.executionContext,
+      false
+    );
+  }
+
+  executeNextInstruction(): void {
+    try {
+      const success = this.pc.executeNextInstruction();
+      this.executionContext = ExecutionContext.buildContext(
+        this.pc,
+        this.metadata,
+        this.executionContext,
+        !success
+      );
+      if (!success) {
+        this.state = States.EmulationEnd;
+      }
+    } catch (e) {
+      this.state = States.RuntimeError;
+      throw e;
+    }
   }
 
   restartEmulation(): void {
     this.onEmulatorReady();
     this.metadata = null;
+    this.executionContext = null;
   }
 }
