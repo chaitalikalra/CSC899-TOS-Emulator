@@ -228,16 +228,25 @@ class CPU {
         this.registers["esp"].setNumericvalue(spValue);
     }
 
-    popStack(operandSize: InstructionOperandSize = InstructionOperandSize.Long): number {
+    popStack(
+        operandSize: InstructionOperandSize = InstructionOperandSize.Long
+    ): number {
         let spValue: number = this.registers["esp"].getNumericValue();
         assert(spValue + operandSize <= this.memory.size, "Stack underflow!");
 
-        let retValue: number = this.memory.peekMemory(
-            spValue,
-            operandSize
-        );
+        let retValue: number = this.memory.peekMemory(spValue, operandSize);
         this.registers["esp"].setNumericvalue(spValue + operandSize);
         return retValue;
+    }
+
+    getRegisterValues(): object {
+        let registers = {
+            eip: this.eip.getHexadecimalBytes().join(" "),
+        };
+        for (const [name, reg] of Object.entries(this.registers)) {
+            registers[name] = reg.getHexadecimalBytes().join(" ");
+        }
+        return registers;
     }
 }
 

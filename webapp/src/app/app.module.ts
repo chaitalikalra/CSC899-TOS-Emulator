@@ -10,6 +10,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AceEditorModule } from 'ng2-ace-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { PropertyDisplayComponent } from './property-display/property-display.component';
+import { RegistersViewComponent } from './registers-view/registers-view.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
     AssembleComponent,
     EmulatorComponent,
     CodeEditorComponent,
+    PropertyDisplayComponent,
+    RegistersViewComponent,
   ],
   imports: [
     BrowserModule,

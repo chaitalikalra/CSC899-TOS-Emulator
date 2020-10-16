@@ -70,7 +70,7 @@ class Register {
 
         let retValue: string[] = [];
         for (let byte of data) {
-            retValue.push(byte.toString(16));
+            retValue.push(byte.toString(16).padStart(2, '0'));
         }
         return retValue.reverse();
     }

@@ -53,6 +53,10 @@ class PC {
     public getInstructionPtr(): number {
         return this.cpu.getInstructionPointer();
     }
+
+    public getRegisterValues(): object {
+        return this.cpu.getRegisterValues();
+    }
 }
 
 export { PC };

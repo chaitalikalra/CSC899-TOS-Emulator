@@ -22,7 +22,12 @@ export class ExecutionContext {
     } else {
       lineNum = metadata.line_nums[instructionNum];
     }
-    return new ExecutionContext({}, eip, lineNum, programEnded);
+    return new ExecutionContext(
+      pc.getRegisterValues() as RegisterMapping,
+      eip,
+      lineNum,
+      programEnded
+    );
   }
 }
 
