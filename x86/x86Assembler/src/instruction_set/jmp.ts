@@ -12,7 +12,7 @@ import {
 } from "../assembler_utils";
 
 class JmpInstruction extends Instruction {
-    readonly Opcode: number[] = [0xeb];
+    readonly Opcode: number[] = [0xe9];
 
     protected setBaseMnemonic_(): void {
         this.baseMnemonic = "jmp";
@@ -28,8 +28,8 @@ class JmpInstruction extends Instruction {
     }
 
     calculateLength(): number {
-        // Hardcoding only short jumps
-        return 2;
+        // Hardcoding only long jumps
+        return 5;
     }
 
     generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
@@ -46,8 +46,8 @@ class JmpInstruction extends Instruction {
             (assembledProgram.instructionStartAddr[idx] +
                 assembledProgram.instructionLengths[idx]);
         
-        // Offset is in 2's compliment form between -128 and +127
-        let immediate: number[] = getImmediateBytes(offset, 1);
+        // Offset is in 2's compliment form
+        let immediate: number[] = getImmediateBytes(offset, 4);
 
         this.machineCode = combineMachineCode(
             (opcode = opcode),
@@ -57,10 +57,15 @@ class JmpInstruction extends Instruction {
 }
 
 class JmpNZInstruction extends JmpInstruction {
-    readonly Opcode: number[] = [0x75];
+    readonly Opcode: number[] = [0x0f, 0x85];
 
     protected setBaseMnemonic_(): void {
         this.baseMnemonic = "jnz";
+    }
+
+    calculateLength(): number {
+        // Hardcoding only long jumps
+        return 6;
     }
 }
 
