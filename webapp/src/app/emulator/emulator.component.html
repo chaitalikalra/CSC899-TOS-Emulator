@@ -1,2 +1,67 @@
-<p>emulator works!</p>
-<pre>{{x86Service.state}}</pre>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="row">
+      <h4>Emulation</h4>
+    </div>
+
+    <div class="row pt-3">
+      <div class="col code-area" #lol>
+        <app-code-editor
+          [(code)]="originalCode"
+          [readOnly]="true"
+          #editor
+        ></app-code-editor>
+      </div>
+    </div>
+
+    <div class="row pt-2">
+      <span>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onStart()"
+          *ngIf="showStartButton"
+        >
+          Start
+        </button>
+        &nbsp;
+      </span>
+
+      <span>
+        <button
+          type="button"
+          class="btn btn-primary"
+          *ngIf="showNextButton"
+          (click)="onNext()"
+        >
+          Execute Next Instruction
+        </button>
+        &nbsp;
+      </span>
+
+      <span>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onRestart()"
+          *ngIf="showRestartButton"
+        >
+          Restart
+        </button>
+        &nbsp;
+      </span>
+
+      <span>
+        <button type="button" class="btn btn-primary" (click)="onExit()">
+          Exit
+        </button>
+        &nbsp;
+      </span>
+    </div>
+    <div class="row pt-3" *ngIf="errorMessage">
+      <div class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+    </div>
+  </div>
+</div>

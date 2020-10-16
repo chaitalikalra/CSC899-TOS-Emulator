@@ -29,6 +29,7 @@ export class AssembleComponent implements OnInit {
     }
     try {
       this.x86Service.assembleProgram(this.code);
+      this.router.navigateByUrl('/test', { skipLocationChange: true });
     } catch (e) {
       const errorObject = e.getErrorObject();
       this.error = errorObject.message;
@@ -36,7 +37,6 @@ export class AssembleComponent implements OnInit {
   }
 
   onClear(): void {
-    // this.router.navigateByUrl('/test', { skipLocationChange: true });
     this.code = '';
     this.error = '';
     this.x86Service.clear();

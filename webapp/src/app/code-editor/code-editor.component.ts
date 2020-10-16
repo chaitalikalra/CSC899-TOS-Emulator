@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import 'brace';
 import 'brace/mode/assembly_x86';
 import 'brace/theme/dracula';
@@ -8,10 +15,14 @@ import 'brace/theme/dracula';
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.css'],
 })
-export class CodeEditorComponent implements OnInit {
+export class CodeEditorComponent {
+  @ViewChild('editor') editor;
+
   @Input() code = '';
-  @Output() codeChange = new EventEmitter<string>();
   @Input() readOnly = false;
+  @Input() cursorLine = 1;
+
+  @Output() codeChange = new EventEmitter<string>();
 
   mode = 'assembly_x86';
   theme = 'dracula';
@@ -22,9 +33,15 @@ export class CodeEditorComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
-
   onChange(code: string): void {
     this.codeChange.emit(code);
+  }
+
+  public setCursorLine(val: number): void {
+    if (this.editor) {
+      this.editor.getEditor().gotoLine(val);
+    } else {
+      console.log('setCursorLine: editor not initialized');
+    }
   }
 }
