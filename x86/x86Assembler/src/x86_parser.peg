@@ -9,7 +9,7 @@
 }
 
 CodeSection
-  = (InstructionWithLabel / DirectiveWithLabel)*
+  = (  CommentBlock / InstructionWithLabel / DirectiveWithLabel )*
 
 DirectiveWithLabel
   = __ l:(Label __)? i:DirectiveInstruction c:(_ Comment)? __ {return {tag: "DirectiveWithLabel", directive:i, label:l == null? null: l[0], comment: c == null? null: c[1]};}
@@ -17,6 +17,8 @@ DirectiveWithLabel
 InstructionWithLabel
   = __ l:(Label __)? i:Instruction c:(_ Comment)? __ {return {tag: "InstructionWithLabel", instruction:i, label:l == null? null: l[0], comment: c == null? null: c[1]};}
 
+CommentBlock
+    = __ c:Comment {return {tag: "Comment", comment:c, location: location()}}
 Comment
 	= _ CommentMarker _ s:([^\n]*) _ {return {tag: "Comment", value: makeStringTrimmed(s)};}
 

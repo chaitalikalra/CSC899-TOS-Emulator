@@ -231,6 +231,8 @@ class AssembledProgram {
                 key = "directive";
             } else if (ins["tag"] == "InstructionWithLabel") {
                 key = "instruction";
+            } else {
+                continue;
             }
             this.metadata["line_nums"].push(
                 ins[key]["location"]["start"]["line"]

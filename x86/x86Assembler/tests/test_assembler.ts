@@ -127,6 +127,28 @@ export class AssemblerTestFixture {
     )
     @TestCase(
         `
+        xor    %cx, %cx
+        mov    $0x3, %ax
+        ; comment 
+        ; comment line
+        L1:add    %ax, %cx
+        dec    %ax
+        ; another comment
+        jnz    L1
+        mov    %cx, %ax
+        `,
+        // prettier-ignore
+        [
+            0x66, 0x31, 0xc9,
+            0x66, 0xb8, 0x03, 0x00,
+            0x66, 0x01, 0xc1,
+            0x66, 0x48,
+            0x0f, 0x85, 0xf5, 0xff, 0xff, 0xff,
+            0x66, 0x89, 0xc8,
+        ]
+    )
+    @TestCase(
+        `
         mov    $0x50000, %esp
         mov    $0x1234, %ax
         call   L2
