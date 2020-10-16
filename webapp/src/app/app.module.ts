@@ -9,15 +9,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AceEditorModule } from 'ng2-ace-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 @NgModule({
-  declarations: [AppComponent, AssembleComponent, EmulatorComponent, CodeEditorComponent],
+  declarations: [
+    AppComponent,
+    AssembleComponent,
+    EmulatorComponent,
+    CodeEditorComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     NgbModule,
     AceEditorModule,
+    DropzoneModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

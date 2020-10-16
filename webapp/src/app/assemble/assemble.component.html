@@ -1,52 +1,61 @@
-<div class="row">
-  <div class="col-sm-6">
-    <div class="row">
-      <h4>Enter the x86 Assembly code below</h4>
-    </div>
-    <div class="row pt-3">
-      <div class="col code-area">
-        <app-code-editor [(code)]="code"></app-code-editor>
+<div
+  class="dropzone-container"
+  [dropzone]="dropzoneConfig"
+  (addedFile)="onDropFileAdded($event)"
+>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="row">
+        <h4>Enter the x86 Assembly code below</h4>
+      </div>
+      <div class="row pt-3">
+        <div class="col code-area">
+          <app-code-editor [(code)]="code"></app-code-editor>
+        </div>
+      </div>
+
+      <div class="row pt-2">
+        <button type="button" class="btn btn-primary" (click)="onAssemble()">
+          Assemble
+        </button>
+        &nbsp;
+        <label class="btn btn-secondary browse">
+          Browse
+          <input
+            type="file"
+            accept=".txt, .s"
+            hidden
+            (change)="onFileSelect($event.target.files)"
+          />
+        </label>
+        &nbsp;
+        <button type="button" class="btn btn-secondary" (click)="onClear()">
+          Clear
+        </button>
+      </div>
+
+      <div class="row pt-3" *ngIf="error">
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
       </div>
     </div>
-
-    <div class="row pt-2">
-      <button type="button" class="btn btn-primary" (click)="onAssemble()">
-        Assemble
-      </button>
-      &nbsp;
-      <label class="btn btn-secondary browse">
-        Browse
-        <input
-          type="file"
-          accept=".txt, .s"
-          hidden
-          (change)="onFileSelect($event.target.files)"
-        />
-      </label>
-      &nbsp;
-      <button type="button" class="btn btn-secondary" (click)="onClear()">
-        Clear
-      </button>
-    </div>
-
-    <div class="row pt-3" *ngIf="error">
-      <div class="alert alert-danger" role="alert">
-        {{ error }}
-      </div>
+    <div class="col"></div>
+    <div class="col-sm-5 align-self-center">
+      <p class="lead">
+        Welcome to TOS x86 Emulator. <br />
+        Enter your assembly code in the editor on the left. You have the
+        following options to enter your code:
+      </p>
+      <ul class="lead">
+        <li>Type in your code</li>
+        <li>Upload a file (.s or .txt)</li>
+        <li>Select examples from class slides</li>
+        <li>Drag and Drop your file</li>
+      </ul>
     </div>
   </div>
-  <div class="col"></div>
-  <div class="col-sm-5 align-self-center">
-    <p class="lead">
-      Welcome to TOS x86 Emulator. <br />
-      Enter your assembly code in the editor on the left. You have the following
-      options to enter your code:
-    </p>
-    <ul class="lead">
-      <li>Type in your code</li>
-      <li>Upload a file (.s or .txt)</li>
-      <li>Select examples from class slides</li>
-      <li>Drag and Drop your file</li>
-    </ul>
-  </div>
+
+  <!-- Hidden element to hide dropzone notification -->
+  <div class="hidden-drop-preview" [hidden]="true"></div>
 </div>

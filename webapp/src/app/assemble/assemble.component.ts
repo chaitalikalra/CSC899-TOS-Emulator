@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import 'brace';
 import 'brace/mode/assembly_x86';
 import 'brace/theme/dracula';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 @Component({
   selector: 'app-assemble',
@@ -13,6 +14,15 @@ import 'brace/theme/dracula';
 export class AssembleComponent implements OnInit {
   code = 'Type some code here';
   error = '';
+
+  // Dropzone config
+  readonly dropzoneConfig: DropzoneConfigInterface = {
+    clickable: false,
+    url: 'https://httpbin.org/post',
+    autoProcessQueue: false,
+    acceptedFiles: '.txt,.s',
+    previewsContainer: '.hidden-drop-preview',
+  };
 
   constructor(private x86Service: X86Service, private router: Router) {
     console.log('Assemble constructor');
@@ -56,5 +66,9 @@ export class AssembleComponent implements OnInit {
     reader.onerror = () => {
       console.log(reader.error);
     };
+  }
+
+  onDropFileAdded(selectedFile: any): void {
+    this.onFileSelect([selectedFile]);
   }
 }
