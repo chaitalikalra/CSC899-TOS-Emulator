@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { X86Service } from '../x86.service';
 import { Router } from '@angular/router';
 import 'brace';
 import 'brace/mode/assembly_x86';
 import 'brace/theme/dracula';
-import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import {
+  DropzoneConfigInterface,
+  DropzoneDirective,
+} from 'ngx-dropzone-wrapper';
 
 @Component({
   selector: 'app-assemble',
@@ -14,6 +17,9 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 export class AssembleComponent implements OnInit {
   code = 'Type some code here';
   error = '';
+
+  @ViewChild('fileinput') fileInput: ElementRef;
+  @ViewChild(DropzoneDirective, { static: false }) dropzone: DropzoneDirective;
 
   // Dropzone config
   readonly dropzoneConfig: DropzoneConfigInterface = {
@@ -66,9 +72,17 @@ export class AssembleComponent implements OnInit {
     reader.onerror = () => {
       console.log(reader.error);
     };
+    // Clear File and Dropzone
+    this._clearFileInputs();
   }
 
   onDropFileAdded(selectedFile: any): void {
     this.onFileSelect([selectedFile]);
+  }
+
+  private _clearFileInputs(): void {
+    // Clear file input
+    this.fileInput.nativeElement.value = '';
+    this.dropzone.reset();
   }
 }
