@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { x86Assembler, x86PC, x86AssembledProgram } from 'x86';
 import { ExecutionContext } from './execution_context';
 
@@ -30,6 +31,10 @@ export class X86Service {
   metadata: object = null;
   executionContext: ExecutionContext = null;
 
+  // Observable for Clear instruction state
+  private clearInsStateSource = new Subject<boolean>();
+  clearInsState$ = this.clearInsStateSource.asObservable();
+
   constructor() {}
 
   onAssemblerReady(): void {
@@ -40,6 +45,7 @@ export class X86Service {
   onEmulatorReady(): void {
     this.state = States.EmulatorReady;
     this.pc = new x86PC(X86Service.ramSize);
+    this.clearInstructionState();
   }
 
   checkValidEmulatorState(): boolean {
@@ -69,12 +75,14 @@ export class X86Service {
     this.originalCode = '';
     this.metadata = null;
     this.executionContext = null;
+    this.clearInstructionState();
     this.onAssemblerReady();
   }
 
   beginEmulation(): void {
     this.state = States.EmulationStart;
     this.metadata = this.assembledProgram.genMetadata();
+    this.clearInstructionState();
     this.pc.loadAssembledProgram(this.assembledProgram.getMachineCode(), 0);
     this.executionContext = ExecutionContext.buildContext(
       this.pc,
@@ -85,6 +93,7 @@ export class X86Service {
   }
 
   executeNextInstruction(): void {
+    this.clearInstructionState();
     try {
       const success = this.pc.executeNextInstruction();
       this.executionContext = ExecutionContext.buildContext(
@@ -106,5 +115,9 @@ export class X86Service {
     this.onEmulatorReady();
     this.metadata = null;
     this.executionContext = null;
+  }
+
+  clearInstructionState(): void {
+    this.clearInsStateSource.next(true);
   }
 }

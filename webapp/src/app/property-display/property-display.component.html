@@ -5,5 +5,10 @@
     {{ name }}
   </div>
 
-  <div class="col-7 text-center p-1 text-monospace">{{ value }}</div>
+  <div class="col-7 text-center p-1 text-monospace" *ngIf="!highlightText">
+    {{ value }}
+  </div>
+  <div class="col-7 text-center p-1 text-monospace" *ngIf="highlightText">
+    <mark class="mark-text">{{ value }}</mark>
+  </div>
 </div>

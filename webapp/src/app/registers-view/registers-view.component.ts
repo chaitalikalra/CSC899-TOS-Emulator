@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { X86Service } from '../x86.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { X86Service } from '../x86.service';
   templateUrl: './registers-view.component.html',
   styleUrls: ['./registers-view.component.css'],
 })
-export class RegistersViewComponent {
+export class RegistersViewComponent implements OnChanges {
   static readonly Registers32Bits = [
     'eax',
     'ebx',
@@ -30,5 +30,10 @@ export class RegistersViewComponent {
 
   constructor(public x86Service: X86Service) {
     console.log('Register View Constructor');
+  }
+
+  ngOnChanges(s: SimpleChanges): void {
+
+    console.log('onChange');
   }
 }
