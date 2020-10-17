@@ -1,0 +1,18 @@
+<mat-card class="example-result-card">
+    <mat-card-content>
+      <h5>Result</h5>
+  
+      <mat-slider
+          class="example-margin"
+          [disabled]="disabled"
+          [invert]="invert"
+          [max]="max"
+          [min]="min"
+          [step]="step"
+          [thumbLabel]="thumbLabel"
+          [tickInterval]="getSliderTickInterval()"
+          [(ngModel)]="value"
+          [vertical]="vertical">
+      </mat-slider>
+    </mat-card-content>
+  </mat-card>

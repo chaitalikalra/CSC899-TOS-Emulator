@@ -13,6 +13,10 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { PropertyDisplayComponent } from './property-display/property-display.component';
 import { RegistersViewComponent } from './registers-view/registers-view.component';
 import { FlagsViewComponent } from './flags-view/flags-view.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSliderModule, } from '@angular/material/slider';
+import {MatCardModule} from '@angular/material/card';
+import { MemorySliderComponent } from './memory-slider/memory-slider.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +27,7 @@ import { FlagsViewComponent } from './flags-view/flags-view.component';
     PropertyDisplayComponent,
     RegistersViewComponent,
     FlagsViewComponent,
+    MemorySliderComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,6 +36,9 @@ import { FlagsViewComponent } from './flags-view/flags-view.component';
     NgbModule,
     AceEditorModule,
     DropzoneModule,
+    NoopAnimationsModule,
+    MatSliderModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent],
