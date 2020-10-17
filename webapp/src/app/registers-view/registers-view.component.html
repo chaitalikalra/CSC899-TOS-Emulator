@@ -1,13 +1,17 @@
-<!-- <div class="row">
-        <h5>Registers</h5>
-      </div> -->
 <h5>Registers</h5>
-<ul class="list-group border">
-  <li class="list-group-item p-0" *ngFor="let reg of register32Bits">
-    <app-property-display
-      [name]="reg"
-      [value]="x86Service.executionContext === null ? defaultValue : 
-      x86Service.executionContext.registers[reg]"
-    ></app-property-display>
-  </li>
-</ul>
+
+<table class="table table-bordered table-sm">
+  <tbody>
+    <tr *ngFor="let reg of register32Bits">
+      <app-property-display
+        class="property-display"
+        [name]="reg"
+        [value]="
+          x86Service.executionContext === null
+            ? defaultValue
+            : x86Service.executionContext.registers[reg]
+        "
+      ></app-property-display>
+    </tr>
+  </tbody>
+</table>

@@ -1,11 +1,16 @@
 <h5>Flags</h5>
-<ul class="list-group border">
-  <li class="list-group-item p-0" *ngFor="let flag of flags">
-    <app-property-display
-      [name]="flag"
-      [value]="x86Service.executionContext === null ? defaultValue : 
-      x86Service.executionContext.flags[flag]"
-      [takeHalf]="true"
-    ></app-property-display>
-  </li>
-</ul>
+<table class="table table-bordered table-sm">
+  <tbody>
+    <tr *ngFor="let flag of flags">
+      <app-property-display
+        class="property-display"
+        [name]="flag"
+        [value]="
+          x86Service.executionContext === null
+            ? defaultValue
+            : x86Service.executionContext.flags[flag]
+        "
+      ></app-property-display>
+    </tr>
+  </tbody>
+</table>
