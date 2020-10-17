@@ -1,18 +1,29 @@
-<mat-card class="example-result-card">
-    <mat-card-content>
-      <h5>Result</h5>
-  
-      <mat-slider
-          class="example-margin"
-          [disabled]="disabled"
-          [invert]="invert"
-          [max]="max"
-          [min]="min"
-          [step]="step"
-          [thumbLabel]="thumbLabel"
-          [tickInterval]="getSliderTickInterval()"
-          [(ngModel)]="value"
-          [vertical]="vertical">
-      </mat-slider>
-    </mat-card-content>
-  </mat-card>
+<h6 class="card-title">Memory</h6>
+<div class="card">
+  <div class="card-body">
+    <div class="text-center">
+      <small>
+        {{ max }}
+      </small>
+    </div>
+    <mat-slider
+      class="example-margin"
+      [disabled]="disabled"
+      [invert]="invert"
+      [max]="max"
+      [min]="min"
+      [step]="step"
+      [thumbLabel]="thumbLabel"
+      [tickInterval]="getSliderTickInterval()"
+      [(ngModel)]="value"
+      [vertical]="vertical"
+    >
+    </mat-slider>
+
+    <div class="text-center">
+      <small>
+        {{ min }}
+      </small>
+    </div>
+  </div>
+</div>

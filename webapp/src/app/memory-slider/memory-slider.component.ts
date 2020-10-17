@@ -13,9 +13,9 @@ export class MemorySliderComponent implements OnInit {
   min = 0;
   showTicks = false;
   step = 1;
-  thumbLabel = false;
+  thumbLabel = true;
   value = 0;
-  vertical = false;
+  vertical = true;
   tickInterval = 1;
 
   constructor() {}

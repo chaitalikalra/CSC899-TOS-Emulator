@@ -15,7 +15,6 @@ import { RegistersViewComponent } from './registers-view/registers-view.componen
 import { FlagsViewComponent } from './flags-view/flags-view.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule, } from '@angular/material/slider';
-import {MatCardModule} from '@angular/material/card';
 import { MemorySliderComponent } from './memory-slider/memory-slider.component';
 
 @NgModule({
@@ -38,7 +37,6 @@ import { MemorySliderComponent } from './memory-slider/memory-slider.component';
     DropzoneModule,
     NoopAnimationsModule,
     MatSliderModule,
-    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent],
