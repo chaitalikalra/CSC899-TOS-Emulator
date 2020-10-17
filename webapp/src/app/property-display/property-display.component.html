@@ -1,9 +1,9 @@
 <td class="col-6 text-center property-name font-weight-bold text-monospace">
-  {{name}}
+  <small>{{ name }}</small>
 </td>
 <td class="col-6 text-center text-monospace" *ngIf="!highlightText">
-  {{ value }}
+  <small>{{ value }}</small>
 </td>
 <td class="col-6 text-center text-monospace" *ngIf="highlightText">
-  <mark class="mark-text">{{ value }}</mark>
+  <mark class="mark-text"><small>{{ value }}</small></mark>
 </td>

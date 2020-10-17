@@ -14,8 +14,10 @@ import { PropertyDisplayComponent } from './property-display/property-display.co
 import { RegistersViewComponent } from './registers-view/registers-view.component';
 import { FlagsViewComponent } from './flags-view/flags-view.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSliderModule, } from '@angular/material/slider';
+import { MatSliderModule } from '@angular/material/slider';
 import { MemorySliderComponent } from './memory-slider/memory-slider.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MemoryGridComponent } from './memory-grid/memory-grid.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,7 @@ import { MemorySliderComponent } from './memory-slider/memory-slider.component';
     RegistersViewComponent,
     FlagsViewComponent,
     MemorySliderComponent,
+    MemoryGridComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,6 +40,7 @@ import { MemorySliderComponent } from './memory-slider/memory-slider.component';
     DropzoneModule,
     NoopAnimationsModule,
     MatSliderModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

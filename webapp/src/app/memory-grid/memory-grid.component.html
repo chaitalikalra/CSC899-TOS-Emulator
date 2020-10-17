@@ -1,0 +1,19 @@
+<div class="card border-0">
+  <div class="card-body">
+    <h6 class="card-title">Memory View</h6>
+  <div class="row no-gutters">
+      <div class="col">
+        <pre><small>Start Address: {{startAddress}}</small></pre>
+      </div>
+      <div class="col text-right">
+        <pre><small>End Address: {{startAddress + numCells -1}}</small></pre>
+      </div>
+  </div>
+  
+    <mat-grid-list [cols]="numCols">
+      <mat-grid-tile *ngFor="let d of data">
+        <small>{{ d }}</small>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>
