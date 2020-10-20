@@ -18,7 +18,7 @@ export enum States {
   providedIn: 'root',
 })
 export class X86Service {
-  static ramSize = 256;
+  static readonly ramSize = 256;
 
   state: States = States.Begin;
   // Assembler
@@ -35,15 +35,24 @@ export class X86Service {
   private clearInsStateSource = new Subject<boolean>();
   clearInsState$ = this.clearInsStateSource.asObservable();
 
+  // Observable for State change
+  private stateSource = new Subject<string>();
+  state$ = this.stateSource.asObservable();
+
   constructor() {}
 
+  private _changeState(state: States): void {
+    this.state = state;
+    this.stateSource.next(States[state]);
+  }
+
   onAssemblerReady(): void {
-    this.state = States.AssembleReady;
+    this._changeState(States.AssembleReady);
     this.assembler = new x86Assembler();
   }
 
   onEmulatorReady(): void {
-    this.state = States.EmulatorReady;
+    this._changeState(States.EmulatorReady);
     this.pc = new x86PC(X86Service.ramSize);
     this.clearInstructionState();
   }
@@ -59,16 +68,16 @@ export class X86Service {
   assembleProgram(code: string): void {
     try {
       this.assembledProgram = this.assembler.assembleProgram(code);
-      this.state = States.Assembled;
+      this._changeState(States.Assembled);
       this.originalCode = code;
     } catch (e) {
-      this.state = States.AssembleError;
+      this._changeState(States.AssembleError);
       throw e;
     }
   }
 
   clear(): void {
-    this.state = States.Begin;
+    this._changeState(States.Begin);
     this.assembledProgram = null;
     this.assembler = null;
     this.pc = null;
@@ -80,7 +89,7 @@ export class X86Service {
   }
 
   beginEmulation(): void {
-    this.state = States.EmulationStart;
+    this._changeState(States.EmulationStart);
     this.metadata = this.assembledProgram.genMetadata();
     this.clearInstructionState();
     this.pc.loadAssembledProgram(this.assembledProgram.getMachineCode(), 0);
@@ -103,10 +112,10 @@ export class X86Service {
         !success
       );
       if (!success) {
-        this.state = States.EmulationEnd;
+        this._changeState(States.EmulationEnd);
       }
     } catch (e) {
-      this.state = States.RuntimeError;
+      this._changeState(States.RuntimeError);
       throw e;
     }
   }
@@ -119,5 +128,9 @@ export class X86Service {
 
   clearInstructionState(): void {
     this.clearInsStateSource.next(true);
+  }
+
+  get ramSize(): number {
+    return X86Service.ramSize;
   }
 }
