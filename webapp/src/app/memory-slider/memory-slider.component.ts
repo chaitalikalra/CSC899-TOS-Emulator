@@ -34,18 +34,32 @@ export class MemorySliderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.max = this.x86Service.ramSize;
+    this.max = this.x86Service.ramSize - 1;
+    // this._setValue(0);
   }
 
   private _stateChanged(state: string): void {
     switch (state) {
       case 'EmulatorReady':
         this.disabled = true;
-        this.value = 0;
+        this._setValue(0);
         break;
       case 'EmulationStart':
         this.disabled = false;
         break;
     }
+  }
+
+  onChange(event): void {
+    this._informValueChange(event.value);
+  }
+
+  private _setValue(val: number): void {
+    this.value = val;
+    this._informValueChange(val);
+  }
+
+  private _informValueChange(val: number): void {
+    this.x86Service.sliderChanged(val);
   }
 }

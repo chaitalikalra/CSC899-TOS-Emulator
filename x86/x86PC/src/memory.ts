@@ -85,6 +85,15 @@ class Memory {
         }
         return new Uint8Array(ret);
     }
+
+    getHexadecimalBytes(): string[] {
+        let retValue: string[] = [];
+        let data = new Uint8Array(this.buffer);
+        for (let byte of data) {
+            retValue.push(byte.toString(16).padStart(2, '0'));
+        }
+        return retValue;
+    }
 }
 
 export { Memory };

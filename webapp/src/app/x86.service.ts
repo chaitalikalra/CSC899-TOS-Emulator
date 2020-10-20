@@ -39,6 +39,14 @@ export class X86Service {
   private stateSource = new Subject<string>();
   state$ = this.stateSource.asObservable();
 
+  // Observable for Slider value
+  private sliderSource = new Subject<number>();
+  slider$ = this.sliderSource.asObservable();
+
+  // Observable for execution context update
+  private executionCtxUpdateSource = new Subject<boolean>();
+  executionCtxUpdate$ = this.executionCtxUpdateSource.asObservable();
+
   constructor() {}
 
   private _changeState(state: States): void {
@@ -83,7 +91,8 @@ export class X86Service {
     this.pc = null;
     this.originalCode = '';
     this.metadata = null;
-    this.executionContext = null;
+    // this.executionContext = null;
+    this._updateExecutionContext(true);
     this.clearInstructionState();
     this.onAssemblerReady();
   }
@@ -93,24 +102,26 @@ export class X86Service {
     this.metadata = this.assembledProgram.genMetadata();
     this.clearInstructionState();
     this.pc.loadAssembledProgram(this.assembledProgram.getMachineCode(), 0);
-    this.executionContext = ExecutionContext.buildContext(
-      this.pc,
-      this.metadata,
-      this.executionContext,
-      false
-    );
+    this._updateExecutionContext(false, false);
+    // this.executionContext = ExecutionContext.buildContext(
+    //   this.pc,
+    //   this.metadata,
+    //   this.executionContext,
+    //   false
+    // );
   }
 
   executeNextInstruction(): void {
     this.clearInstructionState();
     try {
       const success = this.pc.executeNextInstruction();
-      this.executionContext = ExecutionContext.buildContext(
-        this.pc,
-        this.metadata,
-        this.executionContext,
-        !success
-      );
+      this._updateExecutionContext(false, !success);
+      // this.executionContext = ExecutionContext.buildContext(
+      //   this.pc,
+      //   this.metadata,
+      //   this.executionContext,
+      //   !success
+      // );
       if (!success) {
         this._changeState(States.EmulationEnd);
       }
@@ -123,7 +134,8 @@ export class X86Service {
   restartEmulation(): void {
     this.onEmulatorReady();
     this.metadata = null;
-    this.executionContext = null;
+    // this.executionContext = null;
+    this._updateExecutionContext(true);
   }
 
   clearInstructionState(): void {
@@ -132,5 +144,23 @@ export class X86Service {
 
   get ramSize(): number {
     return X86Service.ramSize;
+  }
+
+  sliderChanged(val: number): void {
+    this.sliderSource.next(val);
+  }
+
+  private _updateExecutionContext(setNull = false, programEnded = false): void {
+    if (setNull) {
+      this.executionContext = null;
+    } else {
+      this.executionContext = ExecutionContext.buildContext(
+        this.pc,
+        this.metadata,
+        this.executionContext,
+        programEnded
+      );
+    }
+    this.executionCtxUpdateSource.next(true);
   }
 }

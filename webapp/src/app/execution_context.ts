@@ -4,6 +4,7 @@ export class ExecutionContext {
   constructor(
     readonly registers: RegisterMapping,
     readonly flags: FlagsMapping,
+    readonly memory: string[],
     readonly instructionPtr: number,
     readonly currentLineNumber: number,
     readonly programEnded: boolean
@@ -26,6 +27,7 @@ export class ExecutionContext {
     return new ExecutionContext(
       pc.getRegisterValues() as RegisterMapping,
       pc.getFlagValues() as FlagsMapping,
+      pc.getMemoryBytes(),
       eip,
       lineNum,
       programEnded

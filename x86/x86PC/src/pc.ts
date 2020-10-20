@@ -61,6 +61,10 @@ class PC {
     public getFlagValues(): object {
         return this.cpu.getFlagValues();
     }
+
+    public getMemoryBytes(): string[] {
+        return this.memory.getHexadecimalBytes();
+    }
 }
 
 export { PC };
