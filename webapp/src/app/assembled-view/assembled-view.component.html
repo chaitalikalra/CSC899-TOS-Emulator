@@ -1,0 +1,23 @@
+<div class="card border-0">
+    <div class="card-body">
+      <h6 class="card-title">Assembled Code</h6>
+      <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th scope="col"><pre>Address</pre></th>
+                <th scope="col"><pre>Machine Code</pre></th>
+                <th scope="col"><pre>Label</pre></th>
+                <th scope="col"><pre>Instruction</pre></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ins of instructions">
+            <td><pre>{{ins.address}}</pre></td>
+            <td><pre>{{ins.machine_code}}</pre></td>
+            <td><pre>{{ins.label}}</pre></td>
+            <td><pre>{{ins.value}}</pre></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

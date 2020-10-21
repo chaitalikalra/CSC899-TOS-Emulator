@@ -19,6 +19,7 @@ import { MemorySliderComponent } from './memory-slider/memory-slider.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MemoryGridComponent } from './memory-grid/memory-grid.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AssembledViewComponent } from './assembled-view/assembled-view.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FlagsViewComponent,
     MemorySliderComponent,
     MemoryGridComponent,
+    AssembledViewComponent,
   ],
   imports: [
     BrowserModule,

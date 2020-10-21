@@ -13,6 +13,7 @@ interface InstructionInterface {
     generateMachineCode(assembledProgram: AssembledProgram, idx: number): void;
     calculateLength(): number;
     toString(label: string | null): string;
+    toTable(): object;
 }
 
 abstract class Instruction implements InstructionInterface {
@@ -68,6 +69,21 @@ abstract class Instruction implements InstructionInterface {
         return ret;
     }
 
+    public toTable(): object {
+        let ob = {};
+        let machineCodeStr_arr: string[] = [];
+        for (let byte of this.machineCode) {
+            machineCodeStr_arr.push(byte.toString(16).padStart(2, "0"));
+        }
+        ob['machine_code'] = machineCodeStr_arr.join(" ");
+        let ins = this.operator + " ";
+        let operandsStrArr: string[] = [];
+        for (let op of this.operands) operandsStrArr.push(op.toString());
+        ins += operandsStrArr.join(",");
+        ob['value'] = ins;
+        return ob;
+    }
+
     private validateAndSetOperandSize_(): void {
         for (let operand of this.operands) {
             if (operand.type != OperandType.Register) continue;
@@ -119,6 +135,21 @@ abstract class AssemblerDirective implements InstructionInterface {
         for (let op of this.expressions) operandsStrArr.push(op.toString());
         ret += operandsStrArr.join(",");
         return ret;
+    }
+
+    public toTable(): object {
+        let ob = {};
+        let machineCodeStr_arr: string[] = [];
+        for (let byte of this.machineCode) {
+            machineCodeStr_arr.push(byte.toString(16).padStart(2, "0"));
+        }
+        ob['machine_code'] = machineCodeStr_arr.join(" ");
+        let ins = this.directive + "  ";
+        let operandsStrArr: string[] = [];
+        for (let op of this.expressions) operandsStrArr.push(op.toString());
+        ins += operandsStrArr.join(",");
+        ob['value'] = ins;
+        return ob;
     }
 
     public abstract generateMachineCode(

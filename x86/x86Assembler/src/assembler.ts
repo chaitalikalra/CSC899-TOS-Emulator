@@ -212,6 +212,23 @@ class AssembledProgram {
         return ret;
     }
 
+    toTable(): object[] {
+        let ret: object[] = [];
+        for (let i = 0; i < this.instructions.length; i++) {
+            let ins: object = {};
+            ins['address'] = this.instructionStartAddr[i].toString(16);
+            ins['label'] = '';
+            if (this.reverseSymbolTable[i] != undefined) {
+                ins['label'] = this.reverseSymbolTable[i];
+            }
+            let ob = this.instructions[i].toTable();
+            ins['machine_code'] = ob['machine_code'];
+            ins['value'] = ob['value'];
+            ret.push(ins);
+        }
+        return ret;
+    }
+
     getMachineCode(): Uint8Array {
         let retBytes: number[] = [];
         for (let instruction of this.instructions) {
