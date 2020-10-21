@@ -1,3 +1,14 @@
+no-change {
+  background: lightblue;
+  color: black;
+}
+
+with-change {
+  background: #2bae66ff;
+  color: #fcf6f5ff;
+}
+
 mat-grid-tile {
-    background: lightblue;
-  }
+  background: lightblue;
+  color: black;
+}

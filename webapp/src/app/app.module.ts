@@ -18,6 +18,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MemorySliderComponent } from './memory-slider/memory-slider.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MemoryGridComponent } from './memory-grid/memory-grid.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { MemoryGridComponent } from './memory-grid/memory-grid.component';
     NoopAnimationsModule,
     MatSliderModule,
     MatGridListModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

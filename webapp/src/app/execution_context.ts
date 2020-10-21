@@ -5,6 +5,7 @@ export class ExecutionContext {
     readonly registers: RegisterMapping,
     readonly flags: FlagsMapping,
     readonly memory: string[],
+    readonly memoryChange: boolean[],
     readonly instructionPtr: number,
     readonly currentLineNumber: number,
     readonly programEnded: boolean
@@ -24,10 +25,24 @@ export class ExecutionContext {
     } else {
       lineNum = metadata.line_nums[instructionNum];
     }
+
+    const memoryBytes: string[] = pc.getMemoryBytes();
+    const memoryChange: boolean[] = Array(memoryBytes.length).fill(false);
+    if (oldContext) {
+      for (let i = 0; i < memoryBytes.length; i++) {
+        memoryChange[i] = memoryBytes[i] !== oldContext.memory[i];
+      }
+    } else {
+      for (let i = 0; i < memoryBytes.length; i++) {
+        memoryChange[i] = memoryBytes[i] !== '00';
+      }
+    }
+
     return new ExecutionContext(
       pc.getRegisterValues() as RegisterMapping,
       pc.getFlagValues() as FlagsMapping,
-      pc.getMemoryBytes(),
+      memoryBytes,
+      memoryChange,
       eip,
       lineNum,
       programEnded

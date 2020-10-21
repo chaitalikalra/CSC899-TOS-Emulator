@@ -10,6 +10,7 @@ export class MemoryGridComponent implements OnInit {
   readonly numCols = 20;
   readonly numCells = 100;
   data: string[] = Array(this.numCells).fill('');
+  dataChange: boolean[] = Array(this.numCells).fill(false);
   startAddress = 0;
   endAddress = this.startAddress + this.numCells - 1;
   ramSize = 256;
@@ -33,9 +34,13 @@ export class MemoryGridComponent implements OnInit {
   private _refreshMemory(): void {
     if (this.x86Service.executionContext === null) {
       this.data.fill('');
+      this.dataChange.fill(false);
     } else {
       for (let i = 0; i < this.numCells; i++) {
         this.data[i] = this.x86Service.executionContext.memory[
+          this.startAddress + i
+        ];
+        this.dataChange[i] = this.x86Service.executionContext.memoryChange[
           this.startAddress + i
         ];
       }
