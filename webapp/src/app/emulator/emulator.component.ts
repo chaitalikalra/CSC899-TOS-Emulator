@@ -8,6 +8,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./emulator.component.css'],
 })
 export class EmulatorComponent implements OnInit, AfterViewInit {
+  // Number of Memory grids
+  maxNumMemoryGrids = 4;
+  currentNumMemoryGrids = 1;
+
   // Editor
   originalCode: string;
 
@@ -80,5 +84,19 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
       this.x86Service.state === States.RuntimeError;
 
     this.showNextButton = this.x86Service.state === States.EmulationStart;
+  }
+
+  range(start: number, end: number): number[] {
+    const arr: number[] = [];
+    for (let i = start; i <= end; i++) {
+      arr.push(i);
+    }
+    return arr;
+  }
+
+  onAdd(): void {
+    if (this.currentNumMemoryGrids < this.maxNumMemoryGrids) {
+      this.currentNumMemoryGrids++;
+    }
   }
 }

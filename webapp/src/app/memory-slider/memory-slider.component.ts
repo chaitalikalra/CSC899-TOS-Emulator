@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { X86Service } from '../x86.service';
 
 @Component({
@@ -13,11 +13,14 @@ export class MemorySliderComponent implements OnInit {
   max = 100;
   min = 0;
   showTicks = false;
-  step = 1;
   thumbLabel = true;
   value = 0;
   vertical = true;
   tickInterval = 1;
+
+  @Input() index: number;
+  @Input() big = true;
+  @Input() step = 1;
 
   constructor(public x86Service: X86Service) {
     x86Service.state$.subscribe((state) => {
@@ -60,6 +63,6 @@ export class MemorySliderComponent implements OnInit {
   }
 
   private _informValueChange(val: number): void {
-    this.x86Service.sliderChanged(val);
+    this.x86Service.sliderChanged(val, this.index);
   }
 }

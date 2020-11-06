@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { X86Service } from '../x86.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { SliderChange, X86Service } from '../x86.service';
 
 @Component({
   selector: 'app-memory-grid',
@@ -15,10 +15,14 @@ export class MemoryGridComponent implements OnInit {
   endAddress = this.startAddress + this.numCells - 1;
   ramSize = 256;
 
+  @Input() index: number;
+
   constructor(public x86Service: X86Service) {
     this.ramSize = x86Service.ramSize;
-    x86Service.slider$.subscribe((val) => {
-      this._sliderChanged(val);
+    x86Service.slider$.subscribe((result: SliderChange) => {
+      if (result.index === this.index) {
+        this._sliderChanged(result.value);
+      }
     });
     x86Service.executionCtxUpdate$.subscribe((val) => {
       this._refreshMemory();

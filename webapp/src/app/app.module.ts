@@ -20,6 +20,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MemoryGridComponent } from './memory-grid/memory-grid.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AssembledViewComponent } from './assembled-view/assembled-view.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { AssembledViewComponent } from './assembled-view/assembled-view.componen
     MatSliderModule,
     MatGridListModule,
     MatTooltipModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

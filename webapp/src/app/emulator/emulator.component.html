@@ -2,7 +2,7 @@
   <h4>Emulation</h4>
 </div>
 
-<div class="row">
+<div class="row mb-4">
   <div class="col-sm-5">
     <div class="row pt-3">
       <div class="col code-area" #lol>
@@ -68,25 +68,66 @@
     </div>
   </div>
 
-  <div class="col-sm-5">
-    <div class="row mx-0 px-0">
-      <div class="col-6 mx-0 px-0">
-        <app-registers-view></app-registers-view>
+  <div class="col-sm-7">
+    <div class="row">
+      <div class="col-sm-9">
+        <div class="row mx-0 px-0">
+          <div class="col-6 mx-0 px-0">
+            <app-registers-view></app-registers-view>
+          </div>
+          <!-- <div class="col-1 no-gutter"></div> -->
+          <div class="col-6">
+            <app-flags-view></app-flags-view>
+          </div>
+        </div>
+
+        <div class="row mx-0 px-0">
+          <div class="col">
+            <app-memory-grid index="1"></app-memory-grid>
+          </div>
+        </div>
       </div>
-      <!-- <div class="col-1 no-gutter"></div> -->
-      <div class="col-6">
-        <app-flags-view></app-flags-view>
+
+      <div class="col-sm-2">
+        <app-memory-slider index="1"></app-memory-slider>
       </div>
     </div>
 
-    <div class="row mx-0 px-0">
-      <div class="col">
-        <app-memory-grid></app-memory-grid>
+    <div *ngFor="let idx of range(2, maxNumMemoryGrids)">
+      <div class="{{ 'slider' + idx }}" *ngIf="currentNumMemoryGrids >= idx">
+        <div class="row mb-2">
+          <hr />
+        </div>
+        <div class="row align-items-center">
+          <div class="col-sm-9">
+            <div class="col">
+              <app-memory-grid index="{{ idx }}"></app-memory-grid>
+            </div>
+          </div>
+
+          <div class="col-sm-2">
+            <app-memory-slider
+              index="{{ idx }}"
+              big="false"
+              step="2"
+            ></app-memory-slider>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="col-sm-1">
-    <app-memory-slider></app-memory-slider>
+    <div
+      class="row justify-content-end mt-4 mb-5"
+      *ngIf="currentNumMemoryGrids < maxNumMemoryGrids"
+    >
+      <div class="col-sm-1">
+        <button mat-mini-fab color="primary" (click)="onAdd()">
+          <mat-icon #tooltip="matTooltip" matTooltip="Add another memory view"
+            >add</mat-icon
+          >
+        </button>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
   </div>
 </div>

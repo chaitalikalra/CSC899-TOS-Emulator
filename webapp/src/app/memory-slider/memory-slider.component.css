@@ -1,3 +1,7 @@
-.mat-slider-vertical {
+.mat-slider.big-slider {
   height: 400px;
+}
+
+.mat-slider.small-slider {
+  height: 200px;
 }

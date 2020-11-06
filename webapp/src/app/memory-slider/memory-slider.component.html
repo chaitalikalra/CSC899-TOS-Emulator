@@ -8,7 +8,9 @@
     fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
     #tooltip="matTooltip"
-    matTooltip="Change the slider to update the Memory View below."
+    matTooltip="{{
+      'Change the slider to update the Memory View ' + index + '.'
+    }}"
   >
     <path
       fill-rule="evenodd"
@@ -32,7 +34,10 @@
       </small>
     </div>
     <mat-slider
-      class="example-margin"
+      [ngClass]="{
+        'big-slider': big == true,
+        'small-slider': big != true
+      }"
       [disabled]="disabled"
       [invert]="invert"
       [max]="max"

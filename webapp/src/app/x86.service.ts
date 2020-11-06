@@ -40,7 +40,7 @@ export class X86Service {
   state$ = this.stateSource.asObservable();
 
   // Observable for Slider value
-  private sliderSource = new Subject<number>();
+  private sliderSource = new Subject<SliderChange>();
   slider$ = this.sliderSource.asObservable();
 
   // Observable for execution context update
@@ -146,8 +146,8 @@ export class X86Service {
     return X86Service.ramSize;
   }
 
-  sliderChanged(val: number): void {
-    this.sliderSource.next(val);
+  sliderChanged(val: number, sliderIndex: number): void {
+    this.sliderSource.next(new SliderChange(val, sliderIndex));
   }
 
   private _updateExecutionContext(setNull = false, programEnded = false): void {
@@ -163,4 +163,8 @@ export class X86Service {
     }
     this.executionCtxUpdateSource.next(true);
   }
+}
+
+export class SliderChange {
+  constructor(public value: number, public index: number) {}
 }
