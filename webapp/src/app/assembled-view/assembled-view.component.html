@@ -1,23 +1,36 @@
-<div class="card border-0">
-    <div class="card-body">
-      <h6 class="card-title">Assembled Code</h6>
-      <table class="table table-bordered table-sm">
-        <thead>
-            <tr>
-                <th scope="col"><pre>Address</pre></th>
-                <th scope="col"><pre>Machine Code</pre></th>
-                <th scope="col"><pre>Label</pre></th>
-                <th scope="col"><pre>Instruction</pre></th>
-            </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let ins of instructions">
-            <td><pre>{{ins.address}}</pre></td>
-            <td><pre>{{ins.machine_code}}</pre></td>
-            <td><pre>{{ins.label}}</pre></td>
-            <td><pre>{{ins.value}}</pre></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="table-responsive">
+  <table class="table table-borderless table-sm dracula">
+    <thead>
+      <tr>
+        <th scope="col">Address</th>
+        <th scope="col">Machine Code</th>
+        <th scope="col">Label</th>
+        <th scope="col">Instruction</th>
+      </tr>
+    </thead>
+    <tbody style="min-height: 300px;">
+      <tr
+        *ngFor="let ins of instructions; let i = index"
+        [ngClass]="{ selected: i == selectedInstruction }"
+      >
+        <td>
+          <span class="code address">{{ ins.address }}</span>
+        </td>
+        <td>
+          <span class="code machine-code">{{ ins.machine_code }}</span>
+        </td>
+        <td>
+          <span class="code label">{{ ins.label }}</span>
+        </td>
+        <td>
+          <span class="code"
+            ><span class="operator">{{ ins.operator }}</span
+            >&nbsp;<span class="operands">{{
+              ins.operands.join(", ")
+            }}</span></span
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

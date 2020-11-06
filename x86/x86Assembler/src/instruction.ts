@@ -76,9 +76,11 @@ abstract class Instruction implements InstructionInterface {
             machineCodeStr_arr.push(byte.toString(16).padStart(2, "0"));
         }
         ob['machine_code'] = machineCodeStr_arr.join(" ");
+        ob['operator'] = this.operator;
         let ins = this.operator + " ";
         let operandsStrArr: string[] = [];
         for (let op of this.operands) operandsStrArr.push(op.toString());
+        ob['operands'] = operandsStrArr;
         ins += operandsStrArr.join(",");
         ob['value'] = ins;
         return ob;
@@ -144,10 +146,12 @@ abstract class AssemblerDirective implements InstructionInterface {
             machineCodeStr_arr.push(byte.toString(16).padStart(2, "0"));
         }
         ob['machine_code'] = machineCodeStr_arr.join(" ");
+        ob['operator'] = this.directive;
         let ins = this.directive + "  ";
         let operandsStrArr: string[] = [];
         for (let op of this.expressions) operandsStrArr.push(op.toString());
         ins += operandsStrArr.join(",");
+        ob['operands'] = operandsStrArr;
         ob['value'] = ins;
         return ob;
     }

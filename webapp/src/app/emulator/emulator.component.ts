@@ -23,7 +23,8 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
   showRestartButton = false;
   showNextButton = false;
 
-  @ViewChild('editor') editor;
+  // @ViewChild('editor') editor;
+  @ViewChild('assembledview') assembledView;
 
   constructor(public x86Service: X86Service, private router: Router) {
     console.log('Emulator Constructor');
@@ -42,7 +43,8 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // init cursor
-    this.editor.setCursorLine(1);
+    // this.editor.setCursorLine(1);
+    // this.assembledView.setSelectedInstruction(0);
   }
 
   onExit(): void {
@@ -53,8 +55,11 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
   onStart(): void {
     this.x86Service.beginEmulation();
     this.updateButtonStates();
-    this.editor.setCursorLine(
-      this.x86Service.executionContext.currentLineNumber
+    // this.editor.setCursorLine(
+    //   this.x86Service.executionContext.currentLineNumber
+    // );
+    this.assembledView.setSelectedInstruction(
+      this.x86Service.executionContext.instructionNum
     );
   }
 
@@ -64,14 +69,18 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
     this.x86Service.restartEmulation();
     this.updateButtonStates();
     // init cursor
-    this.editor.setCursorLine(1);
+    // this.editor.setCursorLine(1);
+    this.assembledView.setSelectedInstruction(-1);
   }
 
   onNext(): void {
     console.log('On Next');
     this.x86Service.executeNextInstruction();
-    this.editor.setCursorLine(
-      this.x86Service.executionContext.currentLineNumber
+    // this.editor.setCursorLine(
+    //   this.x86Service.executionContext.currentLineNumber
+    // );
+    this.assembledView.setSelectedInstruction(
+      this.x86Service.executionContext.instructionNum
     );
     this.updateButtonStates();
   }

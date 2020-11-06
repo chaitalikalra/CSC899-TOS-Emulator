@@ -8,6 +8,7 @@ export class ExecutionContext {
     readonly memory: string[],
     readonly memoryChange: boolean[],
     readonly instructionPtr: number,
+    readonly instructionNum: number,
     readonly currentLineNumber: number,
     readonly programEnded: boolean
   ) {}
@@ -20,10 +21,11 @@ export class ExecutionContext {
     assembledProgram: AssembledProgram
   ): ExecutionContext {
     const eip: number = pc.getInstructionPtr();
-    const instructionNum = metadata.addr_instruction_map[eip];
+    let instructionNum = metadata.addr_instruction_map[eip];
     let lineNum: number;
     if (instructionNum === undefined) {
       lineNum = oldContext ? oldContext.currentLineNumber : 1;
+      instructionNum = oldContext ? oldContext.instructionNum : 0;
     } else {
       lineNum = metadata.line_nums[instructionNum];
     }
@@ -48,6 +50,7 @@ export class ExecutionContext {
       memoryBytes,
       memoryChange,
       eip,
+      instructionNum,
       lineNum,
       programEnded
     );

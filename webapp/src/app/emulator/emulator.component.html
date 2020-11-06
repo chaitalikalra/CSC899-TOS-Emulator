@@ -5,12 +5,11 @@
 <div class="row mb-4">
   <div class="col-sm-5">
     <div class="row pt-3">
-      <div class="col code-area" #lol>
-        <app-code-editor
-          [(code)]="originalCode"
-          [readOnly]="true"
-          #editor
-        ></app-code-editor>
+      <div class="col code-area">
+        <app-assembled-view
+          class="assembled-view"
+          #assembledview
+        ></app-assembled-view>
       </div>
     </div>
 
@@ -63,9 +62,14 @@
         {{ errorMessage }}
       </div>
     </div>
-    <div class="row pt-3">
-      <app-assembled-view></app-assembled-view>
-    </div>
+    <!-- <div class="row pt-3">
+      <div class="col">
+        <app-assembled-view
+          class="assembled-view"
+          #assembledview
+        ></app-assembled-view>
+      </div>
+    </div> -->
   </div>
 
   <div class="col-sm-7">

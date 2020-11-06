@@ -224,6 +224,8 @@ class AssembledProgram {
             let ob = this.instructions[i].toTable();
             ins['machine_code'] = ob['machine_code'];
             ins['value'] = ob['value'];
+            ins['operator'] = ob['operator'];
+            ins['operands'] = ob['operands'];
             ret.push(ins);
         }
         return ret;
