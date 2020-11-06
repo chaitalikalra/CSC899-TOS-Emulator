@@ -1,4 +1,5 @@
 import { x86PC } from 'x86';
+import { AssembledProgram } from 'x86/dist/x86Assembler/src/assembler';
 
 export class ExecutionContext {
   constructor(
@@ -15,7 +16,8 @@ export class ExecutionContext {
     pc: x86PC,
     metadata: any,
     oldContext: ExecutionContext,
-    programEnded: boolean
+    programEnded: boolean,
+    assembledProgram: AssembledProgram
   ): ExecutionContext {
     const eip: number = pc.getInstructionPtr();
     const instructionNum = metadata.addr_instruction_map[eip];
@@ -33,8 +35,10 @@ export class ExecutionContext {
         memoryChange[i] = memoryBytes[i] !== oldContext.memory[i];
       }
     } else {
+      const assembledCodeLength = assembledProgram.getMachineCode().length;
       for (let i = 0; i < memoryBytes.length; i++) {
-        memoryChange[i] = memoryBytes[i] !== '00';
+        memoryChange[i] =
+          i < assembledCodeLength ? true : memoryBytes[i] !== '00';
       }
     }
 

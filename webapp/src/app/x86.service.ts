@@ -158,7 +158,8 @@ export class X86Service {
         this.pc,
         this.metadata,
         this.executionContext,
-        programEnded
+        programEnded,
+        this.assembledProgram
       );
     }
     this.executionCtxUpdateSource.next(true);

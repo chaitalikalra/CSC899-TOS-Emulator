@@ -94,7 +94,7 @@
     </div>
 
     <div *ngFor="let idx of range(2, maxNumMemoryGrids)">
-      <div class="{{ 'slider' + idx }}" *ngIf="currentNumMemoryGrids >= idx">
+      <div class="{{ 'slider' + idx }}" [hidden]="currentNumMemoryGrids < idx">
         <div class="row mb-2">
           <hr />
         </div>
