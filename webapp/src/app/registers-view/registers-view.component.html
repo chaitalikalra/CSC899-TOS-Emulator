@@ -5,6 +5,18 @@
     <table class="table table-bordered table-sm">
       <tbody>
         <tr *ngFor="let reg of register32Bits">
+          <ng-template #popContent>
+            <div *ngFor="let r of getPopoverRegisters(reg)">
+              <small
+                >{{ r }}:
+                {{
+                  x86Service.executionContext === null
+                    ? defaultValue
+                    : x86Service.executionContext.registers[r]
+                }}</small
+              >
+            </div>
+          </ng-template>
           <app-property-display
             class="property-display"
             [name]="reg"
@@ -13,6 +25,12 @@
                 ? defaultValue
                 : x86Service.executionContext.registers[reg]
             "
+            [ngbPopover]="
+              getPopoverRegisters(reg).length == 0 ? '' : popContent
+            "
+            triggers="mouseenter:mouseleave"
+            [popoverTitle]="getPopoverRegisters(reg).length == 0 ? '' : reg"
+            placement="bottom"
           ></app-property-display>
         </tr>
       </tbody>
