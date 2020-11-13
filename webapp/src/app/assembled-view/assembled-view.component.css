@@ -4,53 +4,57 @@
 }
 
 .table-div {
-    max-height: 370px;
-    height: 370px;
-    overflow-y: scroll;
-    display: block;
-    margin: 0px;
-    padding: 0px;
+  max-height: 370px;
+  height: 370px;
+  overflow-y: auto;
 }
 
 .assembled-view-table {
-    height: 350px;
+  height: 350px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.assembled-view-table thead th {
+  position: sticky;
+  top: 0;
+  background: #282a36;
 }
 
 .assembled-view-table td {
-    padding-top: 0px;
-    padding-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .content-row {
-    height: 25px;
+  height: 25px;
 }
 
 .code {
-  font-family: "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
-    monospace;
-    font-size: 14px;
+  font-family: "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+  font-size: 14px;
 }
 
 .operator {
-    color: #ff79c6;
+  color: #ff79c6;
 }
 
 .operands {
-    color: #bd93f9;
+  color: #bd93f9;
 }
 
 .label {
-    color: #8be9fd;
+  color: #8be9fd;
 }
 
 .machine-code {
-    color: #50fa7b;
+  color: #50fa7b;
 }
 
 .address {
-    color: #50fa7b;
+  color: #50fa7b;
 }
 
 .selected {
-    background-color: #44475a;
+  background-color: #44475a;
 }

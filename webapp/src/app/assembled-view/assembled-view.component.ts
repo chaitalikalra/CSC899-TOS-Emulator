@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { X86Service } from '../x86.service';
 
 @Component({
@@ -11,13 +11,20 @@ export class AssembledViewComponent implements OnInit {
 
   instructions: object[];
   selectedInstruction = -1;
+  @ViewChild('assembled') assembledTable: ElementRef;
 
   ngOnInit(): void {
     this.instructions = this.x86Service.assembledProgram.toTable();
   }
 
   public setSelectedInstruction(num: number): void {
-    console.log('Delho chaand aya');
     this.selectedInstruction = num;
+    if (this.assembledTable) {
+      const row = this.assembledTable.nativeElement.children[num];
+      row.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      });
+    }
   }
 }

@@ -1,5 +1,7 @@
 <div class="table-div">
-  <table class="table table-borderless table-sm dracula assembled-view-table">
+  <table
+    class="table table-borderless table-sm dracula assembled-view-table"
+  >
     <thead>
       <tr class="content-row">
         <th scope="col">Address</th>
@@ -8,7 +10,7 @@
         <th scope="col">Instruction</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody #assembled>
       <tr
         *ngFor="let ins of instructions; let i = index"
         [ngClass]="{ selected: i == selectedInstruction, 'content-row': true }"
