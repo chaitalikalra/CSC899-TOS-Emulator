@@ -3,6 +3,11 @@
   color: #f8f8f2;
 }
 
+.assembled-view-table tr td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 .code {
   font-family: "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro",
     monospace;
