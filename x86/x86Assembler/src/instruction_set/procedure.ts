@@ -1,5 +1,5 @@
 import { Instruction } from "../instruction";
-import { assert } from "../error";
+import { assert, AssemblyError } from "../error";
 import {
     Operand,
     OperandType,
@@ -60,6 +60,9 @@ class CallInstruction extends Instruction {
         let dst: Operand = this.operands[0];
         let opcode: number[] = [0xe8];
         let labelName: string = (dst as LabelAddressOperand).name;
+        if (!(labelName in assembledProgram.symbolTable)) {
+            throw AssemblyError.throwInvalidLabelError(labelName);
+        }
         let labelAddress =
             assembledProgram.instructionStartAddr[
                 assembledProgram.symbolTable[labelName]
@@ -68,7 +71,7 @@ class CallInstruction extends Instruction {
             labelAddress -
             (assembledProgram.instructionStartAddr[idx] +
                 assembledProgram.instructionLengths[idx]);
-        
+
         // Offset is in 2's compliment
         let immediate: number[] = getImmediateBytes(offset, 4);
 

@@ -1,5 +1,5 @@
 import { Instruction } from "../instruction";
-import { assert } from "../error";
+import { AssemblyError, assert } from "../error";
 import {
     Operand,
     OperandType,
@@ -37,6 +37,9 @@ class JmpInstruction extends Instruction {
         let dst: Operand = this.operands[0];
         let opcode: number[] = this.Opcode;
         let labelName: string = (dst as LabelAddressOperand).name;
+        if (!(labelName in assembledProgram.symbolTable)) {
+            throw AssemblyError.throwInvalidLabelError(labelName);
+        }
         let labelAddress =
             assembledProgram.instructionStartAddr[
                 assembledProgram.symbolTable[labelName]

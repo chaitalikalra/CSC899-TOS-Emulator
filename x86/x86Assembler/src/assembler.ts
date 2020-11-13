@@ -41,11 +41,11 @@ class Assembler {
             rawInstructions
         );
 
-        // Step 3: Pass 2 of the assembler generates machine code for the instructions
-        this.assemblerPass2_(assembledProgram);
-
-        // Step 4: Add metadata for the PC for debugging
+        // Step 3: Add metadata for the PC for debugging
         assembledProgram.createMetadata(rawInstructions, program);
+
+        // Step 4: Pass 2 of the assembler generates machine code for the instructions
+        this.assemblerPass2_(assembledProgram);
 
         return assembledProgram;
     }
@@ -207,7 +207,14 @@ class AssembledProgram {
 
     generateMachineCode(): void {
         for (let i = 0; i < this.instructions.length; i++) {
-            this.instructions[i].generateMachineCode(this, i);
+            try {
+                this.instructions[i].generateMachineCode(this, i);
+            } catch (ex) {
+                if (!ex.lineNum) {
+                    ex.lineNum = this.metadata["line_nums"][i];
+                }
+                throw ex;
+            }
         }
     }
 

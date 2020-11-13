@@ -5,6 +5,7 @@ enum ErrorType {
     InvalidRegister,
     InvalidOperandType,
     InvalidOperandSize,
+    InvalidLabel,
     AssertionError,
     InvalidIndirectAddress,
 }
@@ -24,7 +25,7 @@ class AssemblyError extends Error {
     }
 
     private _getMessage(): string {
-        if (this.lineNum != 0) {
+        if (this.lineNum) {
             return (
                 "Line " +
                 this.lineNum +
@@ -93,7 +94,15 @@ class AssemblyError extends Error {
     static throwInvalidIndirectAddressError(op: string, lineNum?: number) {
         return new AssemblyError(
             ErrorType.InvalidIndirectAddress,
-            `Invalid indirect address: ${op}`,
+            `Invalid indirect address ${op}`,
+            lineNum
+        );
+    }
+
+    static throwInvalidLabelError(label: string, lineNum?: number) {
+        return new AssemblyError(
+            ErrorType.InvalidLabel,
+            `Invalid label ${label}`,
             lineNum
         );
     }
