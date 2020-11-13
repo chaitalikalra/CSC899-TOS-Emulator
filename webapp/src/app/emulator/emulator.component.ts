@@ -7,13 +7,10 @@ import { Router } from '@angular/router';
   templateUrl: './emulator.component.html',
   styleUrls: ['./emulator.component.css'],
 })
-export class EmulatorComponent implements OnInit, AfterViewInit {
+export class EmulatorComponent implements OnInit {
   // Number of Memory grids
   maxNumMemoryGrids = 4;
   currentNumMemoryGrids = 1;
-
-  // Editor
-  originalCode: string;
 
   // Error State
   errorMessage = '';
@@ -37,27 +34,21 @@ export class EmulatorComponent implements OnInit, AfterViewInit {
     } else {
       this.x86Service.onEmulatorReady();
       this.updateButtonStates();
-      this.originalCode = this.x86Service.originalCode;
     }
   }
 
-  ngAfterViewInit(): void {
-    // init cursor
-    // this.editor.setCursorLine(1);
-    // this.assembledView.setSelectedInstruction(0);
-  }
-
   onExit(): void {
+    const originalCode = this.x86Service.originalCode;
     this.x86Service.clear();
+    // Fill original code backup so that editor is initialized with
+    // the current code
+    this.x86Service.originalCode = originalCode;
     this.router.navigateByUrl('');
   }
 
   onStart(): void {
     this.x86Service.beginEmulation();
     this.updateButtonStates();
-    // this.editor.setCursorLine(
-    //   this.x86Service.executionContext.currentLineNumber
-    // );
     this.assembledView.setSelectedInstruction(
       this.x86Service.executionContext.instructionNum
     );

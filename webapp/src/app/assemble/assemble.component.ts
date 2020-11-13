@@ -36,6 +36,10 @@ export class AssembleComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Assemble on init');
+    if (this.x86Service.originalCode.length !== 0) {
+      this.code = this.x86Service.originalCode;
+      this.x86Service.originalCode = '';
+    }
     this.x86Service.onAssemblerReady();
   }
 
