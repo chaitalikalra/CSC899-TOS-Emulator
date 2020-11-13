@@ -8,6 +8,7 @@ import {
   DropzoneConfigInterface,
   DropzoneDirective,
 } from 'ngx-dropzone-wrapper';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
 
 @Component({
   selector: 'app-assemble',
@@ -20,6 +21,7 @@ export class AssembleComponent implements OnInit {
 
   @ViewChild('fileinput') fileInput: ElementRef;
   @ViewChild(DropzoneDirective, { static: false }) dropzone: DropzoneDirective;
+  @ViewChild('codeEditor') codeEditor: CodeEditorComponent;
 
   // Dropzone config
   readonly dropzoneConfig: DropzoneConfigInterface = {
@@ -54,6 +56,9 @@ export class AssembleComponent implements OnInit {
       console.log(e);
       const errorObject = e.getErrorObject();
       this.error = errorObject.message;
+      if (errorObject.line) {
+        this.codeEditor.setCursorLine(errorObject.line);
+      }
     }
   }
 

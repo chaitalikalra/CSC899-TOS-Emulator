@@ -26,7 +26,10 @@ class Assembler {
         try {
             rawInstructions = parse(program);
         } catch (ex) {
-            throw AssemblyError.throwSyntaxError(ex.message);
+            throw AssemblyError.throwSyntaxError(
+                ex.message,
+                ex.location.start.line
+            );
         }
 
         // Step 1: Pass 1 of the Assembler that does the following:
@@ -56,13 +59,21 @@ class Assembler {
         for (let i of rawInstructions) {
             let label: object | null = i["label"];
             let count: number;
-
-            if (i["tag"] == Assembler.INSTRUCTION_TAG) {
-                count = instructions.push(
-                    this.parseInstruction(i["instruction"])
-                );
-            } else if (i["tag"] == Assembler.DIRECTIVE_TAG) {
-                count = instructions.push(this.parseDirective(i["directive"]));
+            try {
+                if (i["tag"] == Assembler.INSTRUCTION_TAG) {
+                    count = instructions.push(
+                        this.parseInstruction(i["instruction"])
+                    );
+                } else if (i["tag"] == Assembler.DIRECTIVE_TAG) {
+                    count = instructions.push(
+                        this.parseDirective(i["directive"])
+                    );
+                }
+            } catch (ex) {
+                if (!ex.lineNum) {
+                    ex.lineNum = i["instruction"]["location"]["start"]["line"];
+                }
+                throw ex;
             }
 
             if (label != null) {
@@ -92,7 +103,10 @@ class Assembler {
             operands.push(op["value"]);
         }
         if (AssemblerDirectives[operator] == undefined) {
-            throw AssemblyError.throwInvalidDirectiveError(operator);
+            throw AssemblyError.throwInvalidDirectiveError(
+                operator,
+                i["location"]["start"]["line"]
+            );
         }
         return new AssemblerDirectives[operator](operator, operands);
     }
@@ -144,7 +158,10 @@ class Assembler {
         }
 
         if (InstructionSet[operator] == undefined) {
-            throw AssemblyError.throwInvalidOperatorError(operator);
+            throw AssemblyError.throwInvalidOperatorError(
+                operator,
+                i["location"]["start"]["line"]
+            );
         }
         return new InstructionSet[operator](operator, operands);
     }
@@ -216,16 +233,16 @@ class AssembledProgram {
         let ret: object[] = [];
         for (let i = 0; i < this.instructions.length; i++) {
             let ins: object = {};
-            ins['address'] = this.instructionStartAddr[i].toString(16);
-            ins['label'] = '';
+            ins["address"] = this.instructionStartAddr[i].toString(16);
+            ins["label"] = "";
             if (this.reverseSymbolTable[i] != undefined) {
-                ins['label'] = this.reverseSymbolTable[i];
+                ins["label"] = this.reverseSymbolTable[i];
             }
             let ob = this.instructions[i].toTable();
-            ins['machine_code'] = ob['machine_code'];
-            ins['value'] = ob['value'];
-            ins['operator'] = ob['operator'];
-            ins['operands'] = ob['operands'];
+            ins["machine_code"] = ob["machine_code"];
+            ins["value"] = ob["value"];
+            ins["operator"] = ob["operator"];
+            ins["operands"] = ob["operands"];
             ret.push(ins);
         }
         return ret;
@@ -271,7 +288,6 @@ class AssembledProgram {
             this.addrInstructionIndexMap
         );
         return metadata;
-
     }
 }
 
