@@ -61,7 +61,7 @@ export class EmulatorComponent implements OnInit {
     this.updateButtonStates();
     // init cursor
     // this.editor.setCursorLine(1);
-    this.assembledView.setSelectedInstruction(-1);
+    this.assembledView.setSelectedInstruction(0);
   }
 
   onNext(): void {

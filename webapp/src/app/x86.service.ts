@@ -61,6 +61,7 @@ export class X86Service {
 
   onEmulatorReady(): void {
     this._changeState(States.EmulatorReady);
+    this.metadata = this.assembledProgram.genMetadata();
     this.pc = new x86PC(X86Service.ramSize);
     this.clearInstructionState();
   }
@@ -91,7 +92,6 @@ export class X86Service {
     this.pc = null;
     this.originalCode = '';
     this.metadata = null;
-    // this.executionContext = null;
     this._updateExecutionContext(true);
     this.clearInstructionState();
     this.onAssemblerReady();
@@ -99,16 +99,9 @@ export class X86Service {
 
   beginEmulation(): void {
     this._changeState(States.EmulationStart);
-    this.metadata = this.assembledProgram.genMetadata();
     this.clearInstructionState();
     this.pc.loadAssembledProgram(this.assembledProgram.getMachineCode(), 0);
     this._updateExecutionContext(false, false);
-    // this.executionContext = ExecutionContext.buildContext(
-    //   this.pc,
-    //   this.metadata,
-    //   this.executionContext,
-    //   false
-    // );
   }
 
   executeNextInstruction(): void {
@@ -116,12 +109,6 @@ export class X86Service {
     try {
       const success = this.pc.executeNextInstruction();
       this._updateExecutionContext(false, !success);
-      // this.executionContext = ExecutionContext.buildContext(
-      //   this.pc,
-      //   this.metadata,
-      //   this.executionContext,
-      //   !success
-      // );
       if (!success) {
         this._changeState(States.EmulationEnd);
       }
@@ -133,8 +120,6 @@ export class X86Service {
 
   restartEmulation(): void {
     this.onEmulatorReady();
-    this.metadata = null;
-    // this.executionContext = null;
     this._updateExecutionContext(true);
   }
 

@@ -6,22 +6,25 @@
       <tr class="content-row">
         <th scope="col">Address</th>
         <th scope="col">Machine Code</th>
-        <th scope="col">Label</th>
-        <th scope="col">Instruction</th>
+        <th scope="col">Source Code</th>
+        <!-- <th scope="col">Instruction</th> -->
       </tr>
     </thead>
     <tbody #assembled>
       <tr
-        *ngFor="let ins of instructions; let i = index"
+        *ngFor="let row of tableRows; let i = index"
         [ngClass]="{ selected: i == selectedInstruction, 'content-row': true }"
       >
         <td>
-          <span class="code address">{{ ins.address }}</span>
+          <span class="code address">{{ row.address }}</span>
         </td>
         <td>
-          <span class="code machine-code">{{ ins.machine_code }}</span>
+          <span class="code machine-code">{{ row.machineCode }}</span>
         </td>
         <td>
+          <span class="code source-code">{{ row.code }}</span>
+        </td>
+        <!-- <td>
           <span class="code label">{{ ins.label }}</span>
         </td>
         <td>
@@ -31,12 +34,11 @@
               ins.operands.join(", ")
             }}</span></span
           >
-        </td>
+        </td> -->
       </tr>
 
       <!--Dummy row for filling height-->
       <tr>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>

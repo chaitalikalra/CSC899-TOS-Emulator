@@ -47,6 +47,11 @@
   color: #8be9fd;
 }
 
+.source-code {
+  color: #8be9fd;
+  white-space: pre;
+}
+
 .machine-code {
   color: #50fa7b;
 }
