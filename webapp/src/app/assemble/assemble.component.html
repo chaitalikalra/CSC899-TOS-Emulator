@@ -33,6 +33,45 @@
         <button type="button" class="btn btn-secondary" (click)="onClear()">
           Clear
         </button>
+        &nbsp;
+        <div ngbDropdown placement="right" class="d-inline-block">
+          <button
+            class="btn btn-secondary"
+            id="dropdownSlides"
+            ngbDropdownToggle
+          >
+            Slide Examples
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="onClassExample('move')">
+              Move
+            </button>
+            <button
+              ngbDropdownItem
+              (click)="onClassExample('logical_arithmetic')"
+            >
+              Logical and Arithmetic
+            </button>
+            <button ngbDropdownItem (click)="onClassExample('eflags')">
+              EFlags
+            </button>
+            <button
+              ngbDropdownItem
+              (click)="onClassExample('indirect_addressing')"
+            >
+              Indirect Addressing
+            </button>
+            <button ngbDropdownItem (click)="onClassExample('stack')">
+              Stack
+            </button>
+            <button ngbDropdownItem (click)="onClassExample('subroutines1')">
+              Subroutines 1
+            </button>
+            <button ngbDropdownItem (click)="onClassExample('subroutines2')">
+              Subroutines 2
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="row pt-3" *ngIf="error">
@@ -46,8 +85,7 @@
       <p class="lead">
         Welcome to TOS x86 Emulator. <br />
         Enter your assembly code in the editor on the left. <br />
-        You have the
-        following options to enter your code:
+        You have the following options to enter your code:
       </p>
       <ul class="lead">
         <li>Type in your code</li>

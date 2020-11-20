@@ -89,6 +89,10 @@ export class AssembleComponent implements OnInit {
     this.onFileSelect([selectedFile]);
   }
 
+  onClassExample(example: string): void {
+    this.code = this.x86Service.getClassExample(example);
+  }
+
   private _clearFileInputs(): void {
     // Clear file input
     this.fileInput.nativeElement.value = '';

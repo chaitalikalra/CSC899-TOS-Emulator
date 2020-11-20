@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { x86Assembler, x86PC, x86AssembledProgram } from 'x86';
 import { ExecutionContext } from './execution_context';
+import { getClassExample } from './class_examples';
 
 export enum States {
   Begin,
@@ -129,6 +130,10 @@ export class X86Service {
 
   get ramSize(): number {
     return X86Service.ramSize;
+  }
+
+  getClassExample(example: string): string {
+    return getClassExample(example);
   }
 
   sliderChanged(val: number, sliderIndex: number): void {
