@@ -1,23 +1,49 @@
 <div class="card border-0">
   <div class="card-body">
-    <h6 class="card-title">{{'Memory View ' + index}}</h6>
+    <h6 class="card-title">{{ "Memory View " + index }}</h6>
     <div class="row no-gutters">
       <div class="col">
         <pre><small>Start Address: {{startAddress}}</small></pre>
       </div>
+    </div>
+
+    <mat-grid-list [cols]="numCols">
+      <div *ngFor="let d of data; let i = index">
+        <ng-template #popContent>
+          <div>
+            <small>Decimal: {{ startAddress + i }}</small>
+          </div>
+          <div>
+            <small>Hex: 0x{{ (startAddress + i).toString(16).toUpperCase() }}</small>
+          </div>
+          <!-- <div *ngFor="let r of getPopoverRegisters(reg)">
+            <small
+              >{{ r }}:
+              {{
+                x86Service.executionContext === null
+                  ? defaultValue
+                  : x86Service.executionContext.registers[r]
+              }}</small
+            >
+          </div> -->
+        </ng-template>
+        <mat-grid-tile
+        [style.background]="dataChange[i] ? '#2bae66ff' : 'lightblue'"
+        [style.color]="dataChange[i] ? '#fcf6f5ff' : 'black'"
+        [ngbPopover]="d.length == 0 ? '' : popContent"
+        [popoverTitle]="d.length == 0 ? '' : 'Address'"
+        triggers="mouseenter:mouseleave"
+        placement="bottom"
+      >
+        <small>{{ d }}</small>
+      </mat-grid-tile>
+      </div>
+    </mat-grid-list>
+
+    <div class="row">
       <div class="col text-right">
         <pre><small>End Address: {{startAddress + numCells -1}}</small></pre>
       </div>
     </div>
-
-    <mat-grid-list [cols]="numCols">
-      <mat-grid-tile
-        *ngFor="let d of data; let i = index"
-        [style.background]="dataChange[i] ? '#2bae66ff' : 'lightblue'"
-        [style.color]="dataChange[i] ? '#fcf6f5ff' : 'black'"
-      >
-        <small>{{ d }}</small>
-      </mat-grid-tile>
-    </mat-grid-list>
   </div>
 </div>
