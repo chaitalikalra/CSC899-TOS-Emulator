@@ -32,13 +32,22 @@ export class AssembledViewComponent implements OnInit {
   public setSelectedInstruction(num: number): void {
     // Line numbers begin from 1 and row numbers begin from 0
     const rowNum: number = this.x86Service.metadata['line_nums'][num] - 1;
+    const prevSelection = this.selectedInstruction;
     this.selectedInstruction = rowNum;
     if (this.assembledTable) {
       const row = this.assembledTable.nativeElement.children[rowNum];
-      row.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
+      if (this.selectedInstruction < prevSelection) {
+        row.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      } else {
+        row.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+      }
+      
     }
   }
 }
