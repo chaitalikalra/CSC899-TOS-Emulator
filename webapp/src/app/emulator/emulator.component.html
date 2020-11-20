@@ -27,6 +27,20 @@
       </span>
 
       <span>
+        <div ngbDropdown class="d-inline-block" *ngIf="showAutoButton">
+          <button class="btn btn-primary" id="dropdownSlides" ngbDropdownToggle>
+            Auto
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="onAuto(1000)">1s</button>
+            <button ngbDropdownItem (click)="onAuto(2000)">2s</button>
+            <button ngbDropdownItem (click)="onAuto(5000)">5s</button>
+          </div>
+        </div>
+        &nbsp;
+      </span>
+
+      <span>
         <button
           type="button"
           class="btn btn-primary"
@@ -56,6 +70,11 @@
         </button>
         &nbsp;
       </span>
+    </div>
+    <div class="row pt-3" *ngIf="infoMessage">
+      <div class="alert alert-info" role="alert">
+        {{ infoMessage }}
+      </div>
     </div>
     <div class="row pt-3" *ngIf="errorMessage">
       <div class="alert alert-danger" role="alert">

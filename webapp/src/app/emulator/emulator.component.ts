@@ -15,10 +15,14 @@ export class EmulatorComponent implements OnInit {
   // Error State
   errorMessage = '';
 
+  // Info Message
+  infoMessage = '';
+
   // Button states
   showStartButton = false;
   showRestartButton = false;
   showNextButton = false;
+  showAutoButton = false;
 
   // @ViewChild('editor') editor;
   @ViewChild('assembledview') assembledView;
@@ -46,8 +50,8 @@ export class EmulatorComponent implements OnInit {
     this.router.navigateByUrl('');
   }
 
-  onStart(): void {
-    this.x86Service.beginEmulation();
+  onStart(isAuto: boolean = false): void {
+    this.x86Service.beginEmulation(isAuto);
     this.updateButtonStates();
     this.assembledView.setSelectedInstruction(
       this.x86Service.executionContext.instructionNum
@@ -57,6 +61,7 @@ export class EmulatorComponent implements OnInit {
   onRestart(): void {
     console.log('On Restart');
     this.errorMessage = '';
+    this.infoMessage = '';
     this.x86Service.restartEmulation();
     this.updateButtonStates();
     // init cursor
@@ -77,13 +82,16 @@ export class EmulatorComponent implements OnInit {
   }
 
   updateButtonStates(): void {
-    this.showStartButton = this.x86Service.state === States.EmulatorReady;
+    this.showStartButton = this.showAutoButton =
+      this.x86Service.state === States.EmulatorReady;
     this.showRestartButton =
       this.x86Service.state === States.EmulationStart ||
       this.x86Service.state === States.EmulationEnd ||
       this.x86Service.state === States.RuntimeError;
 
-    this.showNextButton = this.x86Service.state === States.EmulationStart;
+    this.showNextButton =
+      this.x86Service.state === States.EmulationStart &&
+      !this.x86Service.isAuto;
   }
 
   range(start: number, end: number): number[] {
@@ -99,4 +107,17 @@ export class EmulatorComponent implements OnInit {
       this.currentNumMemoryGrids++;
     }
   }
+
+  async onAuto(milliseconds: number): Promise<void> {
+    this.onStart(true);
+    while (this.x86Service.state === States.EmulationStart) {
+      await sleep(milliseconds);
+      this.onNext();
+    }
+    this.infoMessage = 'Execution complete!';
+  }
+}
+
+function sleep(ms: number): Promise<any> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

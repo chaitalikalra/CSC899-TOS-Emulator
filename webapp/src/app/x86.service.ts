@@ -31,6 +31,7 @@ export class X86Service {
   pc: x86PC = null;
   metadata: object = null;
   executionContext: ExecutionContext = null;
+  isAuto = false;
 
   // Observable for Clear instruction state
   private clearInsStateSource = new Subject<boolean>();
@@ -50,8 +51,9 @@ export class X86Service {
 
   constructor() {}
 
-  private _changeState(state: States): void {
+  private _changeState(state: States, isAuto: boolean = false): void {
     this.state = state;
+    this.isAuto = isAuto;
     this.stateSource.next(States[state]);
   }
 
@@ -98,8 +100,8 @@ export class X86Service {
     this.onAssemblerReady();
   }
 
-  beginEmulation(): void {
-    this._changeState(States.EmulationStart);
+  beginEmulation(isAuto: boolean = false): void {
+    this._changeState(States.EmulationStart, isAuto);
     this.clearInstructionState();
     this.pc.loadAssembledProgram(this.assembledProgram.getMachineCode(), 0);
     this._updateExecutionContext(false, false);
