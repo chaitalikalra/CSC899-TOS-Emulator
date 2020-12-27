@@ -2,9 +2,15 @@ import { InstructionOperandSize } from "../instruction";
 import { MovInstruction, LeaInstruction } from "./mov";
 import { PopInstruction, PushInstruction } from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
-import { AddInstruction, SubInstruction, IncInstruction, DecInstruction } from "./arithmetic";
+import {
+    AddInstruction,
+    SubInstruction,
+    IncInstruction,
+    DecInstruction,
+} from "./arithmetic";
 import { JmpInstruction, JmpNZInstruction } from "./jmp";
 import { RetInstruction, CallInstruction } from "./procedure";
+import { NopInstruction } from "./nop";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, null),
@@ -53,6 +59,7 @@ const InstructionSet = {
     jnz: JmpNZInstruction.bind(null, null),
     ret: RetInstruction.bind(null, null),
     call: CallInstruction.bind(null, null),
+    nop: NopInstruction.bind(null, null),
 };
 
 export { InstructionSet };
