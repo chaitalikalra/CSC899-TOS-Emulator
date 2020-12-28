@@ -111,6 +111,12 @@ class CPU {
 
     executeNextInstruction(disassembler: x86Disassembler): boolean {
         let ipValue: number = this.getInstructionPointer();
+
+        // instruction pointer is greater than memory
+        if (ipValue >= this.memory.size) {
+            return false;
+        }
+
         let instruction: x86Instruction | null = disassembler.getNextInstructionFromBytes(
             this.memory.getSlice(
                 ipValue,
@@ -118,7 +124,8 @@ class CPU {
             ),
             ipValue
         );
-        if (instruction == null || instruction.instructionName == "nop") {
+        // Did not get an instruction
+        if (instruction == null) {
             return false;
         }
         this.setInstructionPointer(ipValue + instruction.byteLength);

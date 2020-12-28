@@ -9,8 +9,6 @@ class PC {
     memorySize: number;
     disassembler: x86Disassembler;
 
-    static NOOP_OPCODE = 0x90;
-
     constructor(memorySize: number) {
         this.memorySize = memorySize;
     }
@@ -37,9 +35,7 @@ class PC {
         for (let i: number = 0; i < codeByteCount; i++) {
             this.memory.pokeByte(i + loadAddress, code[i]);
         }
-        // Enter a dummy noop instruction to end execution
-        this.memory.pokeByte(codeByteCount + loadAddress, PC.NOOP_OPCODE);
-
+        
         // Set eip to point to startInstructionOffset
         this.cpu.setInstructionPointer(startInstructionOffset + loadAddress);
         // Init stack pointer to last memory address
