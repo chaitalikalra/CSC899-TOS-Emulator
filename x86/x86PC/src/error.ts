@@ -2,6 +2,7 @@ enum ErrorType {
     LowMemoryError,
     AssertionError,
     InstructionNotSupportedError,
+    IllegalMemoryAccessError,
 }
 
 class RuntimeError extends Error {
@@ -27,6 +28,13 @@ class RuntimeError extends Error {
         return new RuntimeError(
             ErrorType.InstructionNotSupportedError,
             `Instruction ${i} not yet supported.`
+        );
+    }
+
+    static throwIllegalMemoryAccessError(index: number, length: number) {
+        return new RuntimeError(
+            ErrorType.IllegalMemoryAccessError,
+            `Illegal memory access at address ${index} for length ${length}.`
         );
     }
 }

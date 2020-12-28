@@ -33,7 +33,7 @@ class PC {
         }
         // Copy code into memory
         for (let i: number = 0; i < codeByteCount; i++) {
-            this.memory.pokeByte(i + loadAddress, code[i]);
+            this.memory.pokeMemory(i + loadAddress, code[i], 1);
         }
         
         // Set eip to point to startInstructionOffset
