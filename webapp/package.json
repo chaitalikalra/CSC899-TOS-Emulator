@@ -25,6 +25,7 @@
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
     "@uirouter/core": "^6.0.6",
     "@uirouter/rx": "^0.6.5",
+    "adjust-sourcemap-loader": "^4.0.0",
     "bootstrap": "^4.5.0",
     "bufferutil": "^4.0.1",
     "fibers": "^5.0.0",
