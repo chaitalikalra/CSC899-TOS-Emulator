@@ -15,11 +15,11 @@
       </div>
 
       <div class="row pt-2">
-        <button type="button" class="btn btn-primary" (click)="onAssemble()">
+        <button type="button" class="btn btn-primary assemble-button" (click)="onAssemble()">
           Assemble
         </button>
         &nbsp;
-        <label class="btn btn-secondary browse">
+        <label class="btn btn-secondary browse browse-button">
           Browse
           <input
             type="file"
@@ -30,13 +30,13 @@
           />
         </label>
         &nbsp;
-        <button type="button" class="btn btn-secondary" (click)="onClear()">
+        <button type="button" class="btn btn-secondary clear-button" (click)="onClear()">
           Clear
         </button>
         &nbsp;
         <div ngbDropdown placement="right" class="d-inline-block">
           <button
-            class="btn btn-secondary"
+            class="btn btn-secondary slide-examples-dropdown"
             id="dropdownSlides"
             ngbDropdownToggle
           >
