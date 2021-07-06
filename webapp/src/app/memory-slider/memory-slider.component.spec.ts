@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemorySliderComponent } from './memory-slider.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 describe('MemorySliderComponent', () => {
   let component: MemorySliderComponent;
@@ -8,7 +9,8 @@ describe('MemorySliderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MemorySliderComponent ]
+      declarations: [ MemorySliderComponent ],
+      imports: [ MatTooltipModule ],
     })
     .compileComponents();
   });
