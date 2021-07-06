@@ -12,14 +12,4 @@ describe('AssembledViewComponent', () => {
     })
     .compileComponents();
   });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AssembledViewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 });
