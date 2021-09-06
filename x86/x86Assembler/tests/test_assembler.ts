@@ -39,6 +39,14 @@ export class AssemblerTestFixture {
     @TestCase("push %ax", [0x66, 0x50])
     @TestCase("push %bx", [0x66, 0x53])
     @TestCase("pop %ax", [0x66, 0x58])
+    @TestCase("pushf", [0x66, 0x9c])
+    @TestCase("pushfd", [0x9c])
+    @TestCase("popf", [0x66, 0x9d])
+    @TestCase("popfd", [0x9d])
+    @TestCase("pusha", [0x66, 0x60])
+    @TestCase("pushad", [0x60])
+    @TestCase("popa", [0x66, 0x61])
+    @TestCase("popad", [0x61])
 
     // Test Ret Instructions
     @TestCase("ret", [0xc3])
@@ -64,17 +72,28 @@ export class AssemblerTestFixture {
     @TestCase(".long 0xbeef, 0xdead", [0xef, 0xbe, 0, 0, 0xad, 0xde, 0, 0])
     @TestCase(".long 12345", [0x39, 0x30, 0, 0])
     @TestCase(".long 0xdeadbeef", [0xef, 0xbe, 0xad, 0xde])
+
+    // Test Stack Instructions
+    @TestCase("lahf", [0x9F])
+    @TestCase("sahf", [0x9E])
+    @TestCase("stc", [0xF9])
+    @TestCase("clc", [0xF8])
+    @TestCase("sti", [0xFB])
+    @TestCase("cli", [0xFA])
+    @TestCase("std", [0xFD])
+    @TestCase("cld", [0xFC])
+    @TestCase("cmc", [0xF5])
     testSingleInstructions(
         instruction: string,
         expectedMachineCode: Uint8Array
     ) {
-        let assembledProgram: AssembledProgram = this.assembler.assembleProgram(
-            instruction
-        );
+        let assembledProgram: AssembledProgram =
+            this.assembler.assembleProgram(instruction);
         Expect(assembledProgram.instructions.length).toBe(1);
         Expect(assembledProgram.instructionLengths.length).toBe(1);
 
-        let generatedMachineCode: Uint8Array = assembledProgram.getMachineCode();
+        let generatedMachineCode: Uint8Array =
+            assembledProgram.getMachineCode();
         Expect(assembledProgram.instructionLengths[0]).toBe(
             expectedMachineCode.length
         );
@@ -170,10 +189,10 @@ export class AssemblerTestFixture {
         program: string,
         expectedMachineCode: Uint8Array
     ) {
-        let assembledProgram: AssembledProgram = this.assembler.assembleProgram(
-            program
-        );
-        let generatedMachineCode: Uint8Array = assembledProgram.getMachineCode();
+        let assembledProgram: AssembledProgram =
+            this.assembler.assembleProgram(program);
+        let generatedMachineCode: Uint8Array =
+            assembledProgram.getMachineCode();
         Expect(generatedMachineCode.length).toBe(expectedMachineCode.length);
         for (let i = 0; i < generatedMachineCode.length; i++) {
             Expect(generatedMachineCode[i]).toBe(expectedMachineCode[i]);

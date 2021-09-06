@@ -148,4 +148,127 @@ class PushInstruction extends Instruction {
     }
 }
 
-export { PopInstruction, PushInstruction };
+class PushFlagsInstruction extends Instruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "pushf";
+    }
+
+    protected validateInstruction_(): void {
+        assert(this.operands.length == 0, "pushf does not take any operands");
+        assert(
+            this.operandSize >= 2,
+            "pushf operand size can only be 16/32 bits"
+        );
+    }
+
+    calculateLength(): number {
+        // 1 byte for opcode + 1 additional prefix byte for 16 bits
+        return 1 + (this.operandSize == 2 ? 1 : 0);
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_271.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let opcode: number[] = [0x9c];
+        this.machineCode = combineMachineCode(prefix, opcode);
+    }
+}
+
+class PopFlagsInstruction extends Instruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "popf";
+    }
+
+    protected validateInstruction_(): void {
+        assert(this.operands.length == 0, "popf does not take any operands");
+        assert(
+            this.operandSize >= 2,
+            "popf operand size can only be 16/32 bits"
+        );
+    }
+
+    calculateLength(): number {
+        // 1 byte for opcode + 1 additional prefix byte for 16 bits
+        return 1 + (this.operandSize == 2 ? 1 : 0);
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_250.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let opcode: number[] = [0x9d];
+        this.machineCode = combineMachineCode(prefix, opcode);
+    }
+}
+
+class PushAllInstruction extends Instruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "pusha";
+    }
+
+    protected validateInstruction_(): void {
+        assert(this.operands.length == 0, "pusha does not take any operands");
+        assert(
+            this.operandSize >= 2,
+            "pusha operand size can only be 16/32 bits"
+        );
+    }
+
+    calculateLength(): number {
+        // 1 byte for opcode + 1 additional prefix byte for 16 bits
+        return 1 + (this.operandSize == 2 ? 1 : 0);
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_270.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let opcode: number[] = [0x60];
+        this.machineCode = combineMachineCode(prefix, opcode);
+    }
+}
+
+class PopAllInstruction extends Instruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "popa";
+    }
+
+    protected validateInstruction_(): void {
+        assert(this.operands.length == 0, "popa does not take any operands");
+        assert(
+            this.operandSize >= 2,
+            "popa operand size can only be 16/32 bits"
+        );
+    }
+
+    calculateLength(): number {
+        // 1 byte for opcode + 1 additional prefix byte for 16 bits
+        return 1 + (this.operandSize == 2 ? 1 : 0);
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_249.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let opcode: number[] = [0x61];
+        this.machineCode = combineMachineCode(prefix, opcode);
+    }
+}
+
+export {
+    PopInstruction,
+    PushInstruction,
+    PushFlagsInstruction,
+    PopFlagsInstruction,
+    PushAllInstruction,
+    PopAllInstruction,
+};

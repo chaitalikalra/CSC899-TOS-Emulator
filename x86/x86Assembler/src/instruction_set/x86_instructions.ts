@@ -1,6 +1,6 @@
 import { InstructionOperandSize } from "../instruction";
 import { MovInstruction, LeaInstruction } from "./mov";
-import { PopInstruction, PushInstruction } from "./stack";
+import { PopAllInstruction, PopFlagsInstruction, PopInstruction, PushAllInstruction, PushFlagsInstruction, PushInstruction } from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
 import {
     AddInstruction,
@@ -11,6 +11,7 @@ import {
 import { JmpInstruction, JmpNZInstruction } from "./jmp";
 import { RetInstruction, CallInstruction } from "./procedure";
 import { NopInstruction } from "./nop";
+import { ClearCarryFlagInstruction, ClearDirectionFlagInstruction, ClearInterruptFlagInstruction, ComplementCarryFlagInstruction, LahfInstruction, SahfInstruction, SetCarryFlagInstruction, SetDirectionFlagInstruction, SetInterruptFlagInstruction } from "./eflags";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, null),
@@ -60,6 +61,23 @@ const InstructionSet = {
     ret: RetInstruction.bind(null, null),
     call: CallInstruction.bind(null, null),
     nop: NopInstruction.bind(null, null),
+    pushf: PushFlagsInstruction.bind(null, InstructionOperandSize.Word),
+    pushfd: PushFlagsInstruction.bind(null, InstructionOperandSize.Long),
+    popf: PopFlagsInstruction.bind(null, InstructionOperandSize.Word),
+    popfd: PopFlagsInstruction.bind(null, InstructionOperandSize.Long),
+    pusha: PushAllInstruction.bind(null, InstructionOperandSize.Word),
+    pushad: PushAllInstruction.bind(null, InstructionOperandSize.Long),
+    popa: PopAllInstruction.bind(null, InstructionOperandSize.Word),
+    popad: PopAllInstruction.bind(null, InstructionOperandSize.Long),
+    lahf: LahfInstruction.bind(null, null),
+    sahf: SahfInstruction.bind(null, null),
+    stc: SetCarryFlagInstruction.bind(null, null),
+    clc: ClearCarryFlagInstruction.bind(null, null),
+    cmc: ComplementCarryFlagInstruction.bind(null, null),
+    sti: SetInterruptFlagInstruction.bind(null, null),
+    cli: ClearInterruptFlagInstruction.bind(null, null),
+    std: SetDirectionFlagInstruction.bind(null, null),
+    cld: ClearDirectionFlagInstruction.bind(null, null),
 };
 
 export { InstructionSet };
