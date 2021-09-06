@@ -166,6 +166,66 @@ class AddInstruction extends BinaryArithmeticInstruction {
     }
 }
 
+class AddWithCarryInstruction extends BinaryArithmeticInstruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "adc";
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_4.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let src: Operand = this.operands[0];
+        let dst: Operand = this.operands[1];
+        let opcode: number[] = [];
+        let mod_rm_sib_disp: number[] = [];
+        let immediate: number[] = [];
+
+        // When source is an immediate value
+        if (src.type == OperandType.NumericConstant) {
+            // When destination is EAX/AX/AL
+            if (
+                (dst.type == OperandType.Register &&
+                    ((dst as RegisterOperand).name == "eax" ||
+                        (dst as RegisterOperand).name == "ax")) ||
+                (dst as RegisterOperand).name == "al"
+            ) {
+                if (this.operandSize == 1) opcode.push(0x14);
+                else opcode.push(0x15);
+            } else {
+                // Destination is R/M apart from EAX/AX/AL
+                if (this.operandSize == 1) opcode.push(0x80);
+                else opcode.push(0x81);
+                mod_rm_sib_disp = fillModRmSibDisp(dst, null, 2);
+            }
+            immediate = getImmediateBytes(
+                (src as NumericConstantOperand).getValue(),
+                this.operandSize
+            );
+        } else if (src.type == OperandType.Register) {
+            // src is a register
+            if (this.operandSize == 1) opcode.push(0x10);
+            else opcode.push(0x11);
+            mod_rm_sib_disp = fillModRmSibDisp(dst, src, null);
+        } else {
+            // src is a memory
+            // dst is a register
+            if (this.operandSize == 1) opcode.push(0x12);
+            else opcode.push(0x13);
+            mod_rm_sib_disp = fillModRmSibDisp(src, dst, null);
+        }
+
+        this.machineCode = combineMachineCode(
+            prefix,
+            opcode,
+            mod_rm_sib_disp,
+            immediate
+        );
+    }
+}
+
 class SubInstruction extends BinaryArithmeticInstruction {
     protected setBaseMnemonic_(): void {
         this.baseMnemonic = "sub";
@@ -214,6 +274,126 @@ class SubInstruction extends BinaryArithmeticInstruction {
             // src is a register
             if (this.operandSize == 1) opcode.push(0x2a);
             else opcode.push(0x2b);
+            mod_rm_sib_disp = fillModRmSibDisp(src, dst, null);
+        }
+
+        this.machineCode = combineMachineCode(
+            prefix,
+            opcode,
+            mod_rm_sib_disp,
+            immediate
+        );
+    }
+}
+
+class SubWithBorrowInstruction extends BinaryArithmeticInstruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "sbb";
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_286.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let src: Operand = this.operands[0];
+        let dst: Operand = this.operands[1];
+        let opcode: number[] = [];
+        let mod_rm_sib_disp: number[] = [];
+        let immediate: number[] = [];
+
+        // When source is an immediate value
+        if (src.type == OperandType.NumericConstant) {
+            // When destination is EAX/AX/AL
+            if (
+                (dst.type == OperandType.Register &&
+                    ((dst as RegisterOperand).name == "eax" ||
+                        (dst as RegisterOperand).name == "ax")) ||
+                (dst as RegisterOperand).name == "al"
+            ) {
+                if (this.operandSize == 1) opcode.push(0x1c);
+                else opcode.push(0x1d);
+            } else {
+                // Destination is R/M apart from EAX/AX/AL
+                if (this.operandSize == 1) opcode.push(0x80);
+                else opcode.push(0x81);
+                mod_rm_sib_disp = fillModRmSibDisp(dst, null, 3);
+            }
+            immediate = getImmediateBytes(
+                (src as NumericConstantOperand).getValue(),
+                this.operandSize
+            );
+        } else if (src.type == OperandType.Register) {
+            // src is a register
+            if (this.operandSize == 1) opcode.push(0x18);
+            else opcode.push(0x19);
+            mod_rm_sib_disp = fillModRmSibDisp(dst, src, null);
+        } else {
+            // src is a memory
+            // src is a register
+            if (this.operandSize == 1) opcode.push(0x1a);
+            else opcode.push(0x1b);
+            mod_rm_sib_disp = fillModRmSibDisp(src, dst, null);
+        }
+
+        this.machineCode = combineMachineCode(
+            prefix,
+            opcode,
+            mod_rm_sib_disp,
+            immediate
+        );
+    }
+}
+
+class CmpInstruction extends BinaryArithmeticInstruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "cmp";
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_35.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let src: Operand = this.operands[0];
+        let dst: Operand = this.operands[1];
+        let opcode: number[] = [];
+        let mod_rm_sib_disp: number[] = [];
+        let immediate: number[] = [];
+
+        // When source is an immediate value
+        if (src.type == OperandType.NumericConstant) {
+            // When destination is EAX/AX/AL
+            if (
+                (dst.type == OperandType.Register &&
+                    ((dst as RegisterOperand).name == "eax" ||
+                        (dst as RegisterOperand).name == "ax")) ||
+                (dst as RegisterOperand).name == "al"
+            ) {
+                if (this.operandSize == 1) opcode.push(0x3c);
+                else opcode.push(0x3d);
+            } else {
+                // Destination is R/M apart from EAX/AX/AL
+                if (this.operandSize == 1) opcode.push(0x80);
+                else opcode.push(0x81);
+                mod_rm_sib_disp = fillModRmSibDisp(dst, null, 7);
+            }
+            immediate = getImmediateBytes(
+                (src as NumericConstantOperand).getValue(),
+                this.operandSize
+            );
+        } else if (src.type == OperandType.Register) {
+            // src is a register
+            if (this.operandSize == 1) opcode.push(0x38);
+            else opcode.push(0x39);
+            mod_rm_sib_disp = fillModRmSibDisp(dst, src, null);
+        } else {
+            // src is a memory
+            // dst is a register
+            if (this.operandSize == 1) opcode.push(0x3a);
+            else opcode.push(0x3b);
             mod_rm_sib_disp = fillModRmSibDisp(src, dst, null);
         }
 
@@ -294,4 +474,30 @@ class DecInstruction extends UnaryArithmeticInstruction {
     }
 }
 
-export { AddInstruction, SubInstruction, IncInstruction, DecInstruction };
+class NegInstruction extends UnaryArithmeticInstruction {
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "neg";
+    }
+
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_216.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let opcode: number[] = this.operandSize == 1 ? [0xf6] : [0xf7];
+        let mod_rm_sib_disp = fillModRmSibDisp(this.operands[0], null, 3);
+        this.machineCode = combineMachineCode(prefix, opcode, mod_rm_sib_disp);
+    }
+}
+
+export {
+    AddInstruction,
+    SubInstruction,
+    IncInstruction,
+    DecInstruction,
+    AddWithCarryInstruction,
+    SubWithBorrowInstruction,
+    NegInstruction,
+    CmpInstruction,
+};

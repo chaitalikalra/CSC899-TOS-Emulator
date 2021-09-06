@@ -1,12 +1,16 @@
 import { InstructionOperandSize } from "../instruction";
 import { MovInstruction, LeaInstruction } from "./mov";
 import { PopAllInstruction, PopFlagsInstruction, PopInstruction, PushAllInstruction, PushFlagsInstruction, PushInstruction } from "./stack";
-import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
+import { AndInstruction, NotInstruction, OrInstruction, TestInstruction, XorInstruction } from "./logical";
 import {
     AddInstruction,
     SubInstruction,
     IncInstruction,
     DecInstruction,
+    AddWithCarryInstruction,
+    SubWithBorrowInstruction,
+    NegInstruction,
+    CmpInstruction,
 } from "./arithmetic";
 import { JmpInstruction, JmpNZInstruction } from "./jmp";
 import { RetInstruction, CallInstruction } from "./procedure";
@@ -40,14 +44,30 @@ const InstructionSet = {
     xorb: XorInstruction.bind(null, InstructionOperandSize.Byte),
     xorw: XorInstruction.bind(null, InstructionOperandSize.Word),
     xorl: XorInstruction.bind(null, InstructionOperandSize.Long),
+    not: NotInstruction.bind(null, null),
+    notb: NotInstruction.bind(null, InstructionOperandSize.Byte),
+    notw: NotInstruction.bind(null, InstructionOperandSize.Word),
+    notl: NotInstruction.bind(null, InstructionOperandSize.Long),
+    test: TestInstruction.bind(null, null),
+    testb: TestInstruction.bind(null, InstructionOperandSize.Byte),
+    testw: TestInstruction.bind(null, InstructionOperandSize.Word),
+    testl: TestInstruction.bind(null, InstructionOperandSize.Long),
     add: AddInstruction.bind(null, null),
     addb: AddInstruction.bind(null, InstructionOperandSize.Byte),
     addw: AddInstruction.bind(null, InstructionOperandSize.Word),
     addl: AddInstruction.bind(null, InstructionOperandSize.Long),
+    adc: AddWithCarryInstruction.bind(null, null),
+    adcb: AddWithCarryInstruction.bind(null, InstructionOperandSize.Byte),
+    adcw: AddWithCarryInstruction.bind(null, InstructionOperandSize.Word),
+    adcl: AddWithCarryInstruction.bind(null, InstructionOperandSize.Long),
     sub: SubInstruction.bind(null, null),
     subb: SubInstruction.bind(null, InstructionOperandSize.Byte),
     subw: SubInstruction.bind(null, InstructionOperandSize.Word),
     subl: SubInstruction.bind(null, InstructionOperandSize.Long),
+    sbb: SubWithBorrowInstruction.bind(null, null),
+    sbbb: SubWithBorrowInstruction.bind(null, InstructionOperandSize.Byte),
+    sbbw: SubWithBorrowInstruction.bind(null, InstructionOperandSize.Word),
+    sbbl: SubWithBorrowInstruction.bind(null, InstructionOperandSize.Long),
     inc: IncInstruction.bind(null, null),
     incb: IncInstruction.bind(null, InstructionOperandSize.Byte),
     incw: IncInstruction.bind(null, InstructionOperandSize.Word),
@@ -56,6 +76,14 @@ const InstructionSet = {
     decb: DecInstruction.bind(null, InstructionOperandSize.Byte),
     decw: DecInstruction.bind(null, InstructionOperandSize.Word),
     decl: DecInstruction.bind(null, InstructionOperandSize.Long),
+    neg: NegInstruction.bind(null, null),
+    negb: NegInstruction.bind(null, InstructionOperandSize.Byte),
+    negw: NegInstruction.bind(null, InstructionOperandSize.Word),
+    negl: NegInstruction.bind(null, InstructionOperandSize.Long),
+    cmp: CmpInstruction.bind(null, null),
+    cmpb: CmpInstruction.bind(null, InstructionOperandSize.Byte),
+    cmpw: CmpInstruction.bind(null, InstructionOperandSize.Word),
+    cmpl: CmpInstruction.bind(null, InstructionOperandSize.Long),
     jmp: JmpInstruction.bind(null, null),
     jnz: JmpNZInstruction.bind(null, null),
     ret: RetInstruction.bind(null, null),

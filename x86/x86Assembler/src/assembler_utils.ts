@@ -70,7 +70,7 @@ function fillModRmSibDisp(
 ): number[] {
     // Both reg and reg_val cannot be null
     assert(
-        reg != null || reg_val == null,
+        reg != null || reg_val != null,
         "Both reg and reg value cannot be null while setting mod r/m byte"
     );
     assert(
