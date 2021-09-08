@@ -1,7 +1,20 @@
 import { InstructionOperandSize } from "../instruction";
 import { MovInstruction, LeaInstruction } from "./mov";
-import { PopAllInstruction, PopFlagsInstruction, PopInstruction, PushAllInstruction, PushFlagsInstruction, PushInstruction } from "./stack";
-import { AndInstruction, NotInstruction, OrInstruction, TestInstruction, XorInstruction } from "./logical";
+import {
+    PopAllInstruction,
+    PopFlagsInstruction,
+    PopInstruction,
+    PushAllInstruction,
+    PushFlagsInstruction,
+    PushInstruction,
+} from "./stack";
+import {
+    AndInstruction,
+    NotInstruction,
+    OrInstruction,
+    TestInstruction,
+    XorInstruction,
+} from "./logical";
 import {
     AddInstruction,
     SubInstruction,
@@ -11,11 +24,35 @@ import {
     SubWithBorrowInstruction,
     NegInstruction,
     CmpInstruction,
+    MulInstruction,
+    ImulInstruction,
+    DivInstruction,
+    IdivInstruction,
 } from "./arithmetic";
 import { JmpInstruction, JmpNZInstruction } from "./jmp";
 import { RetInstruction, CallInstruction } from "./procedure";
 import { NopInstruction } from "./nop";
-import { ClearCarryFlagInstruction, ClearDirectionFlagInstruction, ClearInterruptFlagInstruction, ComplementCarryFlagInstruction, LahfInstruction, SahfInstruction, SetCarryFlagInstruction, SetDirectionFlagInstruction, SetInterruptFlagInstruction } from "./eflags";
+import {
+    ClearCarryFlagInstruction,
+    ClearDirectionFlagInstruction,
+    ClearInterruptFlagInstruction,
+    ComplementCarryFlagInstruction,
+    LahfInstruction,
+    SahfInstruction,
+    SetCarryFlagInstruction,
+    SetDirectionFlagInstruction,
+    SetInterruptFlagInstruction,
+} from "./eflags";
+import {
+    RclInstruction,
+    RcrInstruction,
+    RolInstruction,
+    RorInstruction,
+    SalInstruction,
+    SarInstruction,
+    ShlInstruction,
+    ShrInstruction,
+} from "./shift_rotate";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, null),
@@ -106,6 +143,54 @@ const InstructionSet = {
     cli: ClearInterruptFlagInstruction.bind(null, null),
     std: SetDirectionFlagInstruction.bind(null, null),
     cld: ClearDirectionFlagInstruction.bind(null, null),
+    sal: SalInstruction.bind(null, null),
+    salb: SalInstruction.bind(null, InstructionOperandSize.Byte),
+    salw: SalInstruction.bind(null, InstructionOperandSize.Word),
+    sall: SalInstruction.bind(null, InstructionOperandSize.Long),
+    sar: SarInstruction.bind(null, null),
+    sarb: SarInstruction.bind(null, InstructionOperandSize.Byte),
+    sarw: SarInstruction.bind(null, InstructionOperandSize.Word),
+    sarl: SarInstruction.bind(null, InstructionOperandSize.Long),
+    shl: ShlInstruction.bind(null, null),
+    shlb: ShlInstruction.bind(null, InstructionOperandSize.Byte),
+    shlw: ShlInstruction.bind(null, InstructionOperandSize.Word),
+    shll: ShlInstruction.bind(null, InstructionOperandSize.Long),
+    shr: ShrInstruction.bind(null, null),
+    shrb: ShrInstruction.bind(null, InstructionOperandSize.Byte),
+    shrw: ShrInstruction.bind(null, InstructionOperandSize.Word),
+    shrl: ShrInstruction.bind(null, InstructionOperandSize.Long),
+    rol: RolInstruction.bind(null, null),
+    rolb: RolInstruction.bind(null, InstructionOperandSize.Byte),
+    rolw: RolInstruction.bind(null, InstructionOperandSize.Word),
+    roll: RolInstruction.bind(null, InstructionOperandSize.Long),
+    ror: RorInstruction.bind(null, null),
+    rorb: RorInstruction.bind(null, InstructionOperandSize.Byte),
+    rorw: RorInstruction.bind(null, InstructionOperandSize.Word),
+    rorl: RorInstruction.bind(null, InstructionOperandSize.Long),
+    rcl: RclInstruction.bind(null, null),
+    rclb: RclInstruction.bind(null, InstructionOperandSize.Byte),
+    rclw: RclInstruction.bind(null, InstructionOperandSize.Word),
+    rcll: RclInstruction.bind(null, InstructionOperandSize.Long),
+    rcr: RcrInstruction.bind(null, null),
+    rcrb: RcrInstruction.bind(null, InstructionOperandSize.Byte),
+    rcrw: RcrInstruction.bind(null, InstructionOperandSize.Word),
+    rcrl: RcrInstruction.bind(null, InstructionOperandSize.Long),
+    mul: MulInstruction.bind(null, null),
+    mulb: MulInstruction.bind(null, InstructionOperandSize.Byte),
+    mulw: MulInstruction.bind(null, InstructionOperandSize.Word),
+    mull: MulInstruction.bind(null, InstructionOperandSize.Long),
+    imul: ImulInstruction.bind(null, null),
+    imulb: ImulInstruction.bind(null, InstructionOperandSize.Byte),
+    imulw: ImulInstruction.bind(null, InstructionOperandSize.Word),
+    imull: ImulInstruction.bind(null, InstructionOperandSize.Long),
+    div: DivInstruction.bind(null, null),
+    divb: DivInstruction.bind(null, InstructionOperandSize.Byte),
+    divw: DivInstruction.bind(null, InstructionOperandSize.Word),
+    divl: DivInstruction.bind(null, InstructionOperandSize.Long),
+    idiv: IdivInstruction.bind(null, null),
+    idivb: IdivInstruction.bind(null, InstructionOperandSize.Byte),
+    idivw: IdivInstruction.bind(null, InstructionOperandSize.Word),
+    idivl: IdivInstruction.bind(null, InstructionOperandSize.Long),
 };
 
 export { InstructionSet };

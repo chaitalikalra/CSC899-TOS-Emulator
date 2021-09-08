@@ -491,6 +491,53 @@ class NegInstruction extends UnaryArithmeticInstruction {
     }
 }
 
+abstract class MultiplyDivideInstruction extends UnaryArithmeticInstruction {
+    abstract readonly RegValue: number;
+    generateMachineCode(assembledProgram: AssembledProgram, idx: number): void {
+        // Reference: https://c9x.me/x86/html/file_module_x86_id_210.html
+        let prefix: number[] = [];
+        if (this.operandSize == 2) {
+            prefix.push(OPERAND_SIZE_OVERRIDE);
+        }
+        let op: Operand = this.operands[0];
+        let opcode: number[] = this.operandSize == 1 ? [0xf6] : [0xf7];
+        let mod_rm_sib_disp: number[] = fillModRmSibDisp(
+            op,
+            null,
+            this.RegValue
+        );
+        this.machineCode = combineMachineCode(prefix, opcode, mod_rm_sib_disp);
+    }
+}
+
+class MulInstruction extends MultiplyDivideInstruction {
+    readonly RegValue: number = 4;
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "mul";
+    }
+}
+
+class ImulInstruction extends MultiplyDivideInstruction {
+    readonly RegValue: number = 5;
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "imul";
+    }
+}
+
+class DivInstruction extends MultiplyDivideInstruction {
+    readonly RegValue: number = 6;
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "div";
+    }
+}
+
+class IdivInstruction extends MultiplyDivideInstruction {
+    readonly RegValue: number = 7;
+    protected setBaseMnemonic_(): void {
+        this.baseMnemonic = "idiv";
+    }
+}
+
 export {
     AddInstruction,
     SubInstruction,
@@ -500,4 +547,8 @@ export {
     SubWithBorrowInstruction,
     NegInstruction,
     CmpInstruction,
+    MulInstruction,
+    ImulInstruction,
+    DivInstruction,
+    IdivInstruction,
 };
