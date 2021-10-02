@@ -117,13 +117,14 @@ class CPU {
             return false;
         }
 
-        let instruction: x86Instruction | null = disassembler.getNextInstructionFromBytes(
-            this.memory.getSlice(
-                ipValue,
-                x86Instruction.MAX_INSTRUCTION_LENGTH
-            ),
-            ipValue
-        );
+        let instruction: x86Instruction | null =
+            disassembler.getNextInstructionFromBytes(
+                this.memory.getSlice(
+                    ipValue,
+                    x86Instruction.MAX_INSTRUCTION_LENGTH
+                ),
+                ipValue
+            );
         // Did not get an instruction
         if (instruction == null) {
             return false;
@@ -209,9 +210,8 @@ class CPU {
     getMemoryAddressFromOperand(operand: x86AddressOperand): number {
         let baseAddress: number = 0;
         if (operand.baseRegister != null) {
-            baseAddress = this.registers[
-                operand.baseRegister
-            ].getNumericValue();
+            baseAddress =
+                this.registers[operand.baseRegister].getNumericValue();
         }
 
         let indexAddress: number = 0;
@@ -258,6 +258,14 @@ class CPU {
 
     getFlagValues(): object {
         return this.eFlags.getFlags();
+    }
+
+    getFlagsNumericValue(lowerWord: boolean = false): number {
+        return this.eFlags.getFlagsNumericValue(lowerWord);
+    }
+
+    writeNumericToFlags(value: number, lowerWord: boolean = false): void {
+        this.eFlags.writeNumericToFlags(value, lowerWord);
     }
 }
 

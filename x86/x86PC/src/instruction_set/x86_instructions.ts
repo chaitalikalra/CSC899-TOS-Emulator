@@ -1,6 +1,17 @@
 import { MovInstruction, LeaInstruction } from "./mov";
 import { NopInstruction } from "./nop";
-import { PushInstruction, PopInstruction } from "./stack";
+import {
+    PushInstruction,
+    PopInstruction,
+    PushfInstruction,
+    PushfdInstruction,
+    PopfInstruction,
+    PopfdInstruction,
+    PopadInstruction,
+    PopaInstruction,
+    PushadInstruction,
+    PushaInstruction,
+} from "./stack";
 import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
 import {
     AddInstruction,
@@ -29,6 +40,14 @@ const InstructionSet = {
     jne: JnzInstruction.bind(null, "jne"),
     call: CallInstruction.bind(null, "call"),
     ret: RetInstruction.bind(null, "ret"),
+    pushf: PushfInstruction.bind(null, "pushf"),
+    pushfd: PushfdInstruction.bind(null, "pushfd"),
+    popf: PopfInstruction.bind(null, "popf"),
+    popfd: PopfdInstruction.bind(null, "popfd"),
+    pusha: PushaInstruction.bind(null, "pusha"),
+    pushad: PushadInstruction.bind(null, "pushad"),
+    popa: PopaInstruction.bind(null, "popa"),
+    popad: PopadInstruction.bind(null, "popad"),
 };
 
 export { InstructionSet };

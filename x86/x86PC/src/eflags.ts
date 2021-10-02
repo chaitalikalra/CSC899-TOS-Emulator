@@ -7,7 +7,9 @@ class EFlags {
         AF: 4,
         ZF: 6,
         SF: 7,
+        TF: 8,
         IF: 9,
+        DF: 10,
         OF: 11,
     };
 
@@ -63,7 +65,34 @@ class EFlags {
             overflow: this.getOverflowFlag().toString(),
             sign: this.getSignFlag().toString(),
         };
-        
+    }
+
+    public getFlagsNumericValue(lowerWord: boolean = false): number {
+        let arrToReduce: number[];
+        if (lowerWord) arrToReduce = this.flags.slice(0, 16).map(Number);
+        else arrToReduce = this.flags.map(Number);
+        // convert bit array to number
+        return arrToReduce.reduce((res, x) => (res << 1) | x);
+    }
+
+    public writeNumericToFlags(
+        value: number,
+        lowerWord: boolean = false
+    ): void {
+        let boolArray: boolean[] = value
+            .toString(2)
+            .padStart(32, "0")
+            .split("")
+            .reverse()
+            .map((x) => (x == "1" ? true : false));
+        if (lowerWord) {
+            this.flags = [
+                ...boolArray.slice(0, 16),
+                ...this.flags.slice(16, 32),
+            ];
+        } else {
+            this.flags = boolArray.slice(0, 32);
+        }
     }
 }
 
