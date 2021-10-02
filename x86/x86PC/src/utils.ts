@@ -46,4 +46,26 @@ function getParity(data: number): boolean {
     return (count & 1) == 0;
 }
 
-export { getSignMask, uint8, uint16, uint32, getParity, get_uint };
+function booleanArrayToNumber(arr: boolean[]): number {
+    return arr.map(Number).reduce((res, x) => (res << 1) | x);
+}
+
+function numberToBooleanArray(value: number, arrSize: number = 32): boolean[] {
+    return value
+        .toString(2)
+        .padStart(arrSize, "0")
+        .split("")
+        .reverse()
+        .map((x) => (x == "1" ? true : false));
+}
+
+export {
+    getSignMask,
+    uint8,
+    uint16,
+    uint32,
+    getParity,
+    get_uint,
+    booleanArrayToNumber,
+    numberToBooleanArray,
+};

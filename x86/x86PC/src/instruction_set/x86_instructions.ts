@@ -21,6 +21,7 @@ import {
 } from "./arithmetic";
 import { JmpInstruction, JnzInstruction } from "./jmp";
 import { CallInstruction, RetInstruction } from "./procedure";
+import { ClcInstruction, CldInstruction, CliInstruction, CmcInstruction, LahfInstruction, SahfInstruction, StcInstruction, StdInstruction, StiInstruction } from "./eflags";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, "mov"),
@@ -48,6 +49,15 @@ const InstructionSet = {
     pushad: PushadInstruction.bind(null, "pushad"),
     popa: PopaInstruction.bind(null, "popa"),
     popad: PopadInstruction.bind(null, "popad"),
+    lahf: LahfInstruction.bind(null, "lahf"),
+    sahf: SahfInstruction.bind(null, "sahf"),
+    stc: StcInstruction.bind(null, "stc"),
+    std: StdInstruction.bind(null, "std"),
+    sti: StiInstruction.bind(null, "sti"),
+    clc: ClcInstruction.bind(null, "clc"),
+    cld: CldInstruction.bind(null, "cld"),
+    cli: CliInstruction.bind(null, "cli"),
+    cmc: CmcInstruction.bind(null, "cmc"),
 };
 
 export { InstructionSet };

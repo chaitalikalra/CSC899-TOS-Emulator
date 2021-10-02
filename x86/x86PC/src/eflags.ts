@@ -1,3 +1,5 @@
+import { booleanArrayToNumber, numberToBooleanArray } from "./utils";
+
 class EFlags {
     flags: boolean[];
     // From https://en.wikipedia.org/wiki/FLAGS_register
@@ -37,6 +39,18 @@ class EFlags {
         this.flags[EFlags.byteMappings["PF"]] = val;
     }
 
+    public setAdjustFlag(val: boolean): void {
+        this.flags[EFlags.byteMappings["AF"]] = val;
+    }
+
+    public setDirectionFlag(val: boolean): void {
+        this.flags[EFlags.byteMappings["DF"]] = val;
+    }
+
+    public setInterruptFlag(val: boolean): void {
+        this.flags[EFlags.byteMappings["IF"]] = val;
+    }
+
     public getCarryFlag(): boolean {
         return this.flags[EFlags.byteMappings["CF"]];
     }
@@ -57,6 +71,18 @@ class EFlags {
         return this.flags[EFlags.byteMappings["PF"]];
     }
 
+    public getAdjustFlag(): boolean {
+        return this.flags[EFlags.byteMappings["AF"]];
+    }
+
+    public getDirectionFlag(): boolean {
+        return this.flags[EFlags.byteMappings["DF"]];
+    }
+
+    public getInterruptFlag(): boolean {
+        return this.flags[EFlags.byteMappings["IF"]];
+    }
+
     public getFlags(): object {
         return {
             carry: this.getCarryFlag().toString(),
@@ -68,23 +94,18 @@ class EFlags {
     }
 
     public getFlagsNumericValue(lowerWord: boolean = false): number {
-        let arrToReduce: number[];
-        if (lowerWord) arrToReduce = this.flags.slice(0, 16).map(Number);
-        else arrToReduce = this.flags.map(Number);
+        let arrToReduce: boolean[];
+        if (lowerWord) arrToReduce = this.flags.slice(0, 16);
+        else arrToReduce = this.flags;
         // convert bit array to number
-        return arrToReduce.reduce((res, x) => (res << 1) | x);
+        return booleanArrayToNumber(arrToReduce);
     }
 
     public writeNumericToFlags(
         value: number,
         lowerWord: boolean = false
     ): void {
-        let boolArray: boolean[] = value
-            .toString(2)
-            .padStart(32, "0")
-            .split("")
-            .reverse()
-            .map((x) => (x == "1" ? true : false));
+        let boolArray: boolean[] = numberToBooleanArray(value, 32);
         if (lowerWord) {
             this.flags = [
                 ...boolArray.slice(0, 16),
