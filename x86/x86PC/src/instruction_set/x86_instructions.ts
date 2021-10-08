@@ -21,7 +21,27 @@ import {
 } from "./arithmetic";
 import { JmpInstruction, JnzInstruction } from "./jmp";
 import { CallInstruction, RetInstruction } from "./procedure";
-import { ClcInstruction, CldInstruction, CliInstruction, CmcInstruction, LahfInstruction, SahfInstruction, StcInstruction, StdInstruction, StiInstruction } from "./eflags";
+import {
+    ClcInstruction,
+    CldInstruction,
+    CliInstruction,
+    CmcInstruction,
+    LahfInstruction,
+    SahfInstruction,
+    StcInstruction,
+    StdInstruction,
+    StiInstruction,
+} from "./eflags";
+import {
+    RclInstruction,
+    RcrInstruction,
+    RolInstruction,
+    RorInstruction,
+    SalInstruction,
+    SarInstruction,
+    ShlInstruction,
+    ShrInstruction,
+} from "./shift_rotate";
 
 const InstructionSet = {
     mov: MovInstruction.bind(null, "mov"),
@@ -58,6 +78,14 @@ const InstructionSet = {
     cld: CldInstruction.bind(null, "cld"),
     cli: CliInstruction.bind(null, "cli"),
     cmc: CmcInstruction.bind(null, "cmc"),
+    shl: ShlInstruction.bind(null, "shl"),
+    shr: ShrInstruction.bind(null, "shr"),
+    sal: SalInstruction.bind(null, "sal"),
+    sar: SarInstruction.bind(null, "sar"),
+    rol: RolInstruction.bind(null, "rol"),
+    ror: RorInstruction.bind(null, "ror"),
+    rcl: RclInstruction.bind(null, "rcl"),
+    rcr: RcrInstruction.bind(null, "rcr"),
 };
 
 export { InstructionSet };

@@ -47,10 +47,14 @@ function getParity(data: number): boolean {
 }
 
 function booleanArrayToNumber(arr: boolean[]): number {
-    return arr.map(Number).reduce((res, x) => (res << 1) | x);
+    // arr is a bit array where the 0th index refers to the 0th bit position
+    // [true, false, true, true] -> 1101 -> 13
+    return arr.reverse().map(Number).reduce((res, x) => (res << 1) | x);
 }
 
 function numberToBooleanArray(value: number, arrSize: number = 32): boolean[] {
+    // returns a bit array with 0th bit at 0th index
+    // 13 -> 1101 -> [true, false, true, true]
     return value
         .toString(2)
         .padStart(arrSize, "0")
