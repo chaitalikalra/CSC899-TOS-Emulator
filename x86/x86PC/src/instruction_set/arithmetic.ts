@@ -130,4 +130,36 @@ class DecInstruction extends ArithmeticInstruction {
     }
 }
 
-export { AddInstruction, SubInstruction, IncInstruction, DecInstruction };
+class NegInstruction extends ArithmeticInstruction {
+    executeInstruction(cpu: CPU): void {
+        let dst: x86Operand = this.operands[0];
+        let op1: number = cpu.readOperand(dst, this.instructionOpSize);
+        // Set CF
+        if (op1 == 0) cpu.eFlags.setCarryFlag(false);
+        else cpu.eFlags.setCarryFlag(true);
+        let result: number = -op1;
+        this.setSomeFlags_(result, cpu);
+        // Set OF
+        let uint_result: number = get_uint(result, this.instructionOpSize);
+        if (
+            (op1 & getSignMask(this.instructionOpSize)) ==
+            (-1 & getSignMask(this.instructionOpSize))
+        ) {
+            cpu.eFlags.setOverflowFlag(
+                (op1 & getSignMask(this.instructionOpSize)) !=
+                    (uint_result & getSignMask(this.instructionOpSize))
+            );
+        } else {
+            cpu.eFlags.setOverflowFlag(false);
+        }
+        cpu.writeOperand(dst, result, this.instructionOpSize);
+    }
+}
+
+export {
+    AddInstruction,
+    SubInstruction,
+    IncInstruction,
+    DecInstruction,
+    NegInstruction,
+};

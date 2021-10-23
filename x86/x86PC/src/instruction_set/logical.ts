@@ -56,4 +56,14 @@ class XorInstruction extends BinaryLogicalInstruction {
     }
 }
 
+class NotInstruction extends x86Instruction {
+    executeInstruction(cpu: CPU): void {
+        let dst: x86Operand = this.operands[0];
+        let result: number =
+            ~cpu.readOperand(dst, this.instructionOpSize) >>> 0;
+        cpu.writeOperand(dst, result, this.instructionOpSize);
+        // No flags are updated in this instruction
+    }
+}
+
 export { AndInstruction, OrInstruction, XorInstruction };

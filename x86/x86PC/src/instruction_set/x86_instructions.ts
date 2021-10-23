@@ -12,12 +12,13 @@ import {
     PushadInstruction,
     PushaInstruction,
 } from "./stack";
-import { AndInstruction, OrInstruction, XorInstruction } from "./logical";
+import { AndInstruction, NotInstruction, OrInstruction, XorInstruction } from "./logical";
 import {
     AddInstruction,
     SubInstruction,
     IncInstruction,
     DecInstruction,
+    NegInstruction,
 } from "./arithmetic";
 import { JmpInstruction, JnzInstruction } from "./jmp";
 import { CallInstruction, RetInstruction } from "./procedure";
@@ -52,10 +53,12 @@ const InstructionSet = {
     and: AndInstruction.bind(null, "and"),
     or: OrInstruction.bind(null, "or"),
     xor: XorInstruction.bind(null, "xor"),
+    not: NotInstruction.bind(null, "not"),
     add: AddInstruction.bind(null, "add"),
     sub: SubInstruction.bind(null, "sub"),
     inc: IncInstruction.bind(null, "inc"),
     dec: DecInstruction.bind(null, "dec"),
+    neg: NegInstruction.bind(null, "neg"),
     jmp: JmpInstruction.bind(null, "jmp"),
     jnz: JnzInstruction.bind(null, "jnz"),
     jne: JnzInstruction.bind(null, "jne"),
