@@ -12,13 +12,21 @@ import {
     PushadInstruction,
     PushaInstruction,
 } from "./stack";
-import { AndInstruction, NotInstruction, OrInstruction, XorInstruction } from "./logical";
+import {
+    AndInstruction,
+    NotInstruction,
+    OrInstruction,
+    XorInstruction,
+} from "./logical";
 import {
     AddInstruction,
     SubInstruction,
     IncInstruction,
     DecInstruction,
     NegInstruction,
+    CmpInstruction,
+    MulInstruction,
+    DivInstruction,
 } from "./arithmetic";
 import { JmpInstruction, JnzInstruction } from "./jmp";
 import { CallInstruction, RetInstruction } from "./procedure";
@@ -59,6 +67,7 @@ const InstructionSet = {
     inc: IncInstruction.bind(null, "inc"),
     dec: DecInstruction.bind(null, "dec"),
     neg: NegInstruction.bind(null, "neg"),
+    cmp: CmpInstruction.bind(null, "cmp"),
     jmp: JmpInstruction.bind(null, "jmp"),
     jnz: JnzInstruction.bind(null, "jnz"),
     jne: JnzInstruction.bind(null, "jne"),
@@ -89,6 +98,8 @@ const InstructionSet = {
     ror: RorInstruction.bind(null, "ror"),
     rcl: RclInstruction.bind(null, "rcl"),
     rcr: RcrInstruction.bind(null, "rcr"),
+    mul: MulInstruction.bind(null, "mul"),
+    div: DivInstruction.bind(null, "div"),
 };
 
 export { InstructionSet };

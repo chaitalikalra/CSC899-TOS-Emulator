@@ -66,4 +66,4 @@ class NotInstruction extends x86Instruction {
     }
 }
 
-export { AndInstruction, OrInstruction, XorInstruction };
+export { AndInstruction, OrInstruction, XorInstruction, NotInstruction };
