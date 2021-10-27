@@ -71,10 +71,13 @@ export class EmulatorComponent implements OnInit {
 
   onNext(): void {
     console.log('On Next');
-    this.x86Service.executeNextInstruction();
-    // this.editor.setCursorLine(
-    //   this.x86Service.executionContext.currentLineNumber
-    // );
+    try {
+      this.x86Service.executeNextInstruction();  
+    } catch (e) {
+      console.log(e);
+      const errorObject = e.getErrorObject();
+      this.errorMessage = errorObject.message;
+    }
     this.assembledView.setSelectedInstruction(
       this.x86Service.executionContext.instructionNum
     );

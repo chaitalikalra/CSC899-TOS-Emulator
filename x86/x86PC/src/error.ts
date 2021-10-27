@@ -37,6 +37,17 @@ class RuntimeError extends Error {
             `Illegal memory access at address ${index} for length ${length}.`
         );
     }
+
+    private _getMessage(): string {
+        return ErrorType[this.errorType] + ": " + this.message;
+    }
+
+    getErrorObject(): object {
+        return {
+            type: ErrorType[this.errorType],
+            message: this._getMessage()
+        };
+    }
 }
 
 function assert(condition: boolean, message: string) {
