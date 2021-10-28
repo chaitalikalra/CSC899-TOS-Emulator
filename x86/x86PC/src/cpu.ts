@@ -216,7 +216,7 @@ class CPU {
 
         let indexAddress: number = 0;
         if (operand.indexRegister != null) {
-            baseAddress =
+            indexAddress =
                 this.registers[operand.indexRegister].getNumericValue() *
                 operand.scale;
         }
